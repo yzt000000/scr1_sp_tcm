@@ -1,0 +1,167 @@
+Magic 271485
+Revision Verdi3_L-2016.06-SP2
+
+; Window Layout <x> <y> <width> <height> <signalwidth> <valuewidth>
+viewPort 0 28 1195 515 223 162
+
+; File list:
+; openDirFile [-d delimiter] [-s time_offset] [-rf auto_bus_rule_file] path_name file_name
+openDirFile -d / -i 2 "" "/home/wjfan/syntacore/scr1/build/riscv_isa.fsdb"
+
+; file time scale:
+; fileTimeScale ### s|ms|us|ns|ps
+
+; signal spacing:
+signalSpacing 5
+
+; windowTimeUnit is used for zoom, cursor & marker
+; waveform viewport range
+zoom 145817.151121 187770.568955
+cursor 155000.000000
+marker 0.000000
+
+; visible top row signal index
+top 74
+; marker line index
+markerPos 93
+
+; logical expression list
+; addExprSig expr_name expression_string
+activeDirFile "" "/home/wjfan/syntacore/scr1/build/riscv_isa.fsdb"
+
+addExprSig -b 1 -n U logical_expression_1 "/scr1_top_tb_ahb/i_top/i_core_top/i_pipe_top/curr_pc[31:0]"== 32'h004\
+8_00f8
+
+; event list
+; addEvent event_name event_expression
+; curEvent event_name
+
+
+
+COMPLEX_EVENT_BEGIN
+
+
+COMPLEX_EVENT_END
+
+
+
+; toolbar current search type
+; curSTATUS search_type
+curSTATUS ByChange
+
+
+addGroup "G1"
+activeDirFile "" "/home/wjfan/syntacore/scr1/build/riscv_isa.fsdb"
+addSignal -h 15 /scr1_top_tb_ahb/i_top/i_core_top/rst_n
+addSignal -h 15 -holdScope clk
+addSignal -h 15 -holdScope rst_n_out
+addSignal -h 15 -holdScope rst_n
+addSignal -h 15 -holdScope clk
+addSignal -h 15 -holdScope rst_n_out
+addGroup "G2"
+addSignal -h 15 -UNSIGNED -HEX /scr1_top_tb_ahb/i_top/i_core_top/i_pipe_top/curr_pc[31:0]
+addSignal -h 15 -UNSIGNED -HEX /scr1_top_tb_ahb/i_top/i_core_top/imem_rdata[31:0]
+addSignal -h 15 -UNSIGNED -HEX /scr1_top_tb_ahb/i_top/i_core_top/i_pipe_top/i_pipe_exu/curr_pc[31:0]
+addSignal -h 15 /scr1_top_tb_ahb/i_top/i_core_top/imem_req
+addSignal -h 15 -holdScope imem_cmd
+addSignal -h 15 -UNSIGNED -HEX -holdScope imem_addr[31:0]
+addSignal -h 15 -UNSIGNED -holdScope imem_resp[1:0]
+addSignal -h 15 -UNSIGNED -HEX /scr1_top_tb_ahb/i_top/i_core_top/i_pipe_top/curr_pc[31:0]
+addSignal -h 15 /scr1_top_tb_ahb/i_top/i_core_top/imem_req_ack
+addSignal -h 15 -holdScope imem_req
+addSignal -h 15 -holdScope imem_cmd
+addSignal -h 15 -UNSIGNED -HEX -holdScope imem_addr[31:0]
+addSignal -h 15 -UNSIGNED -HEX -holdScope imem_rdata[31:0]
+addSignal -h 15 -UNSIGNED -holdScope imem_resp[1:0]
+addGroup "G3"
+addGroup "G4" -e FALSE
+addSignal -h 15 -UNSIGNED -HEX /scr1_top_tb_ahb/i_top/dmem_hprot[3:0]
+addSignal -h 15 -UNSIGNED -HEX -holdScope dmem_hburst[2:0]
+addSignal -h 15 -UNSIGNED -HEX -holdScope dmem_hsize[2:0]
+addSignal -h 15 -UNSIGNED -HEX -holdScope dmem_htrans[1:0]
+addSignal -h 15 -holdScope dmem_hmastlock
+addSignal -h 15 -UNSIGNED -HEX -holdScope dmem_haddr[31:0]
+addSignal -h 15 -holdScope dmem_hwrite
+addSignal -h 15 -UNSIGNED -HEX -holdScope dmem_hwdata[31:0]
+addSignal -h 15 -holdScope dmem_hready
+addSignal -h 15 -UNSIGNED -HEX -holdScope dmem_hrdata[31:0]
+addSignal -h 15 -holdScope dmem_hresp
+addSignal -h 15 /logical_expression_1
+addGroup "G5"
+addSignal -h 15 -UNSIGNED -HEX /scr1_top_tb_ahb/i_top/i_core_top/i_pipe_top/i_pipe_exu/curr_pc[31:0]
+addSignal -h 15 -holdScope new_pc_req
+addSignal -h 15 -UNSIGNED -HEX -holdScope new_pc[31:0]
+addSignal -h 15 -UNSIGNED -HEX -holdScope inc_pc[31:0]
+addSignal -h 15 /scr1_top_tb_ahb/i_top/i_core_top/imem_req_ack
+addGroup "G6"
+addSignal -h 15 /scr1_top_tb_ahb/i_top/i_core_top/i_pipe_top/i_pipe_exu/init_pc
+addSignal -h 15 -holdScope exu2csr_take_irq
+addSignal -h 15 -holdScope exu2csr_take_exc
+addSignal -h 15 -holdScope exu2csr_mret_instr
+addSignal -h 15 -holdScope exu_queue_vd
+addSignal -h 15 -holdScope wfi_run_start
+addSignal -h 15 -holdScope exu_queue.fencei_req
+addSignal -h 15 -holdScope csr2exu_mstatus_mie_up
+addSignal -h 15 -holdScope dbg_run_start
+addSignal -h 15 -holdScope fetch_dbgc
+addSignal -h 15 -holdScope exu_queue_vd
+addSignal -h 15 -holdScope exu_queue.jump_req
+addSignal -h 15 -holdScope exu_queue.branch_req
+addSignal -h 15 -holdScope ialu_cmp
+addSignal -h 15 -UNSIGNED /scr1_top_tb_ahb/i_top/i_core_top/i_pipe_top/i_pipe_exu/i_ialu/ialu_cmd[4:0]
+addSignal -h 15 -holdScope sum1_flags.z
+addSignal -h 15 -UNSIGNED -HEX -holdScope sum1_res[31:0]
+addSignal -h 15 -holdScope sum1_sub
+addSignal -h 15 -holdScope sum1_sub
+addSignal -h 15 -UNSIGNED -HEX -holdScope sum1_op1[31:0]
+addSignal -h 15 -UNSIGNED -HEX -holdScope sum1_op2[31:0]
+addSignal -h 15 -UNSIGNED -holdScope mdu_cmd[1:0]
+addSignal -h 15 -UNSIGNED -HEX -holdScope ialu_op1[31:0]
+addSignal -h 15 -UNSIGNED -HEX -holdScope ialu_op2[31:0]
+addSignal -h 15 /scr1_top_tb_ahb/i_top/i_core_top/i_pipe_top/i_pipe_exu/exu_queue.ialu_op[0:0]
+addSignal -h 15 -UNSIGNED -HEX -holdScope exu_queue.imm[31:0]
+addSignal -h 15 -UNSIGNED -HEX -holdScope mprf2exu_rs2_data[31:0]
+addSignal -h 15 -UNSIGNED /scr1_top_tb_ahb/i_top/i_core_top/i_pipe_top/i_pipe_idu/instr_type[1:0]
+addSignal -h 15 -UNSIGNED -holdScope rvi_opcode[6:2]
+addSignal -h 15 -UNSIGNED -HEX -holdScope idu2exu_cmd.imm[31:0]
+addSignal -h 15 -holdScope instr[31]
+addSignal -h 15 -UNSIGNED -HEX -holdScope instr[30:20]
+addSignal -h 15 -UNSIGNED -HEX /scr1_top_tb_ahb/i_top/i_core_top/i_pipe_top/i_pipe_exu/mprf2exu_rs1_data[31:0]
+addSignal -h 15 -UNSIGNED -HEX /scr1_top_tb_ahb/i_top/i_core_top/i_pipe_top/i_pipe_mprf/exu2mprf_rs1_addr[4:0]
+addSignal -h 15 -UNSIGNED -HEX -holdScope mprf_int[1:31]
+addSignal -h 15 -UNSIGNED -HEX -holdScope exu2mprf_rd_data[31:0]
+addSignal -h 15 -UNSIGNED /scr1_top_tb_ahb/i_top/i_core_top/i_pipe_top/i_pipe_exu/exu_queue.rd_wb_sel[2:0]
+addSignal -h 15 -UNSIGNED -HEX -holdScope ialu_sum2_res[31:0]
+addSignal -h 15 -UNSIGNED -HEX /scr1_top_tb_ahb/i_top/i_core_top/i_pipe_top/i_pipe_exu/i_ialu/sum2_res[31:0]
+addSignal -h 15 -holdScope sum2_sub
+addSignal -h 15 -UNSIGNED -HEX -holdScope sum2_op1[32:0]
+addSignal -h 15 -UNSIGNED -HEX -holdScope sum2_op2[32:0]
+addSignal -h 15 -UNSIGNED -HEX -holdScope ialu_sum2_op1[31:0]
+addSignal -h 15 -UNSIGNED -holdScope mdu_cmd[1:0]
+addSignal -h 15 -UNSIGNED -HEX /scr1_top_tb_ahb/i_top/i_core_top/i_pipe_top/i_pipe_exu/mprf2exu_rs1_data[31:0]
+addSignal -h 15 -UNSIGNED -HEX -holdScope curr_pc[31:0]
+addSignal -expanded -h 15 -UNSIGNED -HEX /scr1_top_tb_ahb/i_top/i_core_top/i_pipe_top/i_pipe_mprf/mprf_int[1:31]
+addSignal -h 15 -UNSIGNED -HEX /scr1_top_tb_ahb/i_top/i_core_top/i_pipe_top/i_tracelog/mprf_int_alias.INT_10_A0[31:0]
+addSignal -h 15 -UNSIGNED -HEX -holdScope mprf_int_alias.INT_11_A1[31:0]
+addSignal -h 15 -UNSIGNED -HEX -holdScope mprf_int_alias.INT_10_A0[31:0]
+addSignal -h 15 -UNSIGNED -HEX -holdScope mprf_int_alias.INT_11_A1[31:0]
+addGroup "G7"
+
+; getSignalForm Scope Hierarchy Status
+; active file of getSignalForm
+activeDirFile "" "/home/wjfan/syntacore/scr1/build/riscv_isa.fsdb"
+
+GETSIGNALFORM_SCOPE_HIERARCHY_BEGIN
+getSignalForm close
+
+"/scr1_top_tb_ahb"
+"/scr1_top_tb_ahb/i_top"
+
+SCOPE_LIST_BEGIN
+"/scr1_top_tb_ahb"
+"/scr1_top_tb_ahb/i_top"
+SCOPE_LIST_END
+
+GETSIGNALFORM_SCOPE_HIERARCHY_END
+
+

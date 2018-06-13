@@ -1,0 +1,2 @@
+set ::sHtml::reports(MemoryAddressMaps) [list {Memory Address Maps} {AHB and APB Memory Address Maps} /root/Subsystem1/report/address_map.html]
+set ::sHtml::reports(SubsystemSourceCode) [list {Subsystem Source Code} {Documents the source files of the subsystem.} ./SubsystemSourceCode.html]

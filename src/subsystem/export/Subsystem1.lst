@@ -1,0 +1,84 @@
+// component: /i_uart
+// library: work
+// files:
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_cc_constants.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_bcm_params.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_bcm57.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_bcm25.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_bcm23.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_bcm21.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_bcm41.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_bcm06.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_bcm99.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_biu.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_rst.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_regfile.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_fifo.v
+/root/Subsystem1/components/i_uart/src/DW_apb_async_rst_gen.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_sync.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_mc_sync.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_bclk_gen.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_tx.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_rx.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_to_det.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart-undef.v
+
+// component: /i_gpio
+// library: work
+// files:
+/root/Subsystem1/components/i_gpio/src/DW_apb_gpio_cc_constants.v
+/root/Subsystem1/components/i_gpio/src/DW_apb_gpio_bcm_params.v
+/root/Subsystem1/components/i_gpio/src/DW_apb_gpio_bcm21.v
+/root/Subsystem1/components/i_gpio/src/DW_apb_gpio_bcm99.v
+/root/Subsystem1/components/i_gpio/src/DW_apb_gpio_ctrl.v
+/root/Subsystem1/components/i_gpio/src/DW_apb_gpio_apbif.v
+/root/Subsystem1/components/i_gpio/src/DW_apb_gpio.v
+/root/Subsystem1/components/i_gpio/src/DW_apb_gpio-undef.v
+
+// component: /i_apb
+// library: work
+// files:
+/root/Subsystem1/components/i_apb/src/DW_amba_constants.v
+/root/Subsystem1/components/i_apb/src/DW_apb_cc_constants.v
+/root/Subsystem1/components/i_apb/src/DW_apb_constants.v
+/root/Subsystem1/components/i_apb/src/DW_apb_dcdr.v
+/root/Subsystem1/components/i_apb/src/DW_apb_slcr.v
+/root/Subsystem1/components/i_apb/src/DW_apb_ahbsif.v
+/root/Subsystem1/components/i_apb/src/DW_apb_prdmux.v
+/root/Subsystem1/components/i_apb/src/DW_apb_psel.v
+/root/Subsystem1/components/i_apb/src/DW_apb_deslcr.v
+/root/Subsystem1/components/i_apb/src/DW_apb_mux.v
+/root/Subsystem1/components/i_apb/src/DW_apb_rdretime.v
+/root/Subsystem1/components/i_apb/src/DW_apb.v
+/root/Subsystem1/components/i_apb/src/DW_apb-undef.v
+
+// component: /i_ahb
+// library: work
+// files:
+/root/Subsystem1/components/i_ahb/src/DW_amba_constants.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_cc_constants.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_constants.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_bcm_params.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_bcm02.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_bcm01.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_bcm53.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_arbif.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_dcdr.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_dfltslv.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_ebt.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_gctrl.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_mask.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_mux.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_cntc.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_gating.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_wtps.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_arb.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb-undef.v
+
+// component: (top level)
+// library: work
+// files:
+/root/Subsystem1/src/Subsystem1.v
+

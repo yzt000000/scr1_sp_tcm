@@ -1,0 +1,17 @@
+// component: /i_apb
+// library: work
+// files:
+/root/Subsystem1/components/i_apb/src/DW_amba_constants.v
+/root/Subsystem1/components/i_apb/src/DW_apb_cc_constants.v
+/root/Subsystem1/components/i_apb/src/DW_apb_constants.v
+/root/Subsystem1/components/i_apb/src/DW_apb_dcdr.v
+/root/Subsystem1/components/i_apb/src/DW_apb_slcr.v
+/root/Subsystem1/components/i_apb/src/DW_apb_ahbsif.v
+/root/Subsystem1/components/i_apb/src/DW_apb_prdmux.v
+/root/Subsystem1/components/i_apb/src/DW_apb_psel.v
+/root/Subsystem1/components/i_apb/src/DW_apb_deslcr.v
+/root/Subsystem1/components/i_apb/src/DW_apb_mux.v
+/root/Subsystem1/components/i_apb/src/DW_apb_rdretime.v
+/root/Subsystem1/components/i_apb/src/DW_apb.v
+/root/Subsystem1/components/i_apb/src/DW_apb-undef.v
+

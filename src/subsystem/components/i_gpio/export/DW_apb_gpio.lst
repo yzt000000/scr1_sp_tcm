@@ -1,0 +1,12 @@
+// component: /i_gpio
+// library: work
+// files:
+/root/Subsystem1/components/i_gpio/src/DW_apb_gpio_cc_constants.v
+/root/Subsystem1/components/i_gpio/src/DW_apb_gpio_bcm_params.v
+/root/Subsystem1/components/i_gpio/src/DW_apb_gpio_bcm21.v
+/root/Subsystem1/components/i_gpio/src/DW_apb_gpio_bcm99.v
+/root/Subsystem1/components/i_gpio/src/DW_apb_gpio_ctrl.v
+/root/Subsystem1/components/i_gpio/src/DW_apb_gpio_apbif.v
+/root/Subsystem1/components/i_gpio/src/DW_apb_gpio.v
+/root/Subsystem1/components/i_gpio/src/DW_apb_gpio-undef.v
+

@@ -1,0 +1,26 @@
+// component: /i_uart
+// library: work
+// files:
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_cc_constants.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_bcm_params.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_bcm57.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_bcm25.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_bcm23.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_bcm21.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_bcm41.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_bcm06.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_bcm99.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_biu.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_rst.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_regfile.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_fifo.v
+/root/Subsystem1/components/i_uart/src/DW_apb_async_rst_gen.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_sync.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_mc_sync.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_bclk_gen.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_tx.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_rx.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart_to_det.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart.v
+/root/Subsystem1/components/i_uart/src/DW_apb_uart-undef.v
+

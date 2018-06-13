@@ -1,0 +1,1 @@
+/software/vip_amba/iip/DW_apb/3.01a/sim/cA/setio_DW_apb.tcl

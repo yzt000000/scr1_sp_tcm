@@ -1,0 +1,1866 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ipxact:component xmlns:ipxact="http://www.accellera.org/XMLSchema/IPXACT/1685-2014" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:snps="http://www.synopsys.com/SPIRIT-snps" xsi:schemaLocation="http://www.accellera.org/XMLSchema/IPXACT/1685-2014 http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd">
+  <ipxact:vendor>Synopsys</ipxact:vendor>
+  <ipxact:library>DesignWareLibrary</ipxact:library>
+  <ipxact:name>i_gpio_DW_apb_gpio</ipxact:name>
+  <ipxact:version>2.12a</ipxact:version>
+  <ipxact:busInterfaces>
+    <ipxact:busInterface>
+      <ipxact:name>APB_Slave</ipxact:name>
+      <ipxact:busType vendor="amba.com" library="busdef.amba.amba3" name="apb" version="r1p0"/>
+      <ipxact:abstractionTypes>
+        <ipxact:abstractionType>
+          <ipxact:abstractionRef vendor="amba.com" library="busdef.amba.amba3" name="apb_rtl" version="r1p0"/>
+          <ipxact:portMaps>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>PRDATA</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>prdata</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>PADDR</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>paddr</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>PENABLE</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>penable</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>PSELx</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>psel</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>PWDATA</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>pwdata</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>PWRITE</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>pwrite</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+          </ipxact:portMaps>
+        </ipxact:abstractionType>
+      </ipxact:abstractionTypes>
+      <ipxact:slave>
+        <ipxact:memoryMapRef memoryMapRef="DW_apb_gpio_mem_map"/>
+      </ipxact:slave>
+      <ipxact:vendorExtensions>
+        <snps:busInterface>
+          <snps:attribute name="MemoryMap">DW_apb_gpio_mem_map</snps:attribute>
+          <snps:interfaceParameter>
+            <name>APB3</name>
+            <snps:attribute name="InterfaceLink">&lt;open&gt;</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>APB4</name>
+            <snps:attribute name="InterfaceLink">&lt;open&gt;</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>BigEndian</name>
+            <snps:attribute name="InterfaceLink">&lt;open&gt;</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>DataWidth</name>
+            <snps:attribute name="InterfaceLink">APB_DATA_WIDTH</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfacePort>
+            <name>PADDR</name>
+            <snps:attribute name="BusAlignment">slice</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>PRDATA</name>
+            <snps:attribute name="BusAlignment">right</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>PWDATA</name>
+            <snps:attribute name="BusAlignment">right</snps:attribute>
+          </snps:interfacePort>
+        </snps:busInterface>
+      </ipxact:vendorExtensions>
+    </ipxact:busInterface>
+    <ipxact:busInterface>
+      <ipxact:name>PCLK</ipxact:name>
+      <ipxact:busType vendor="amba.com" library="busdef.amba.amba3" name="apb" version="r1p0"/>
+      <ipxact:abstractionTypes>
+        <ipxact:abstractionType>
+          <ipxact:abstractionRef vendor="amba.com" library="busdef.amba.amba3" name="apb_rtl" version="r1p0"/>
+          <ipxact:portMaps>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>PCLK</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>pclk</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+          </ipxact:portMaps>
+        </ipxact:abstractionType>
+      </ipxact:abstractionTypes>
+      <ipxact:system>
+        <ipxact:group>APB_CLK</ipxact:group>
+      </ipxact:system>
+    </ipxact:busInterface>
+    <ipxact:busInterface>
+      <ipxact:name>PRESETn</ipxact:name>
+      <ipxact:busType vendor="amba.com" library="busdef.amba.amba3" name="apb" version="r1p0"/>
+      <ipxact:abstractionTypes>
+        <ipxact:abstractionType>
+          <ipxact:abstractionRef vendor="amba.com" library="busdef.amba.amba3" name="apb_rtl" version="r1p0"/>
+          <ipxact:portMaps>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>PRESETn</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>presetn</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+          </ipxact:portMaps>
+        </ipxact:abstractionType>
+      </ipxact:abstractionTypes>
+      <ipxact:system>
+        <ipxact:group>APB_RESET</ipxact:group>
+      </ipxact:system>
+    </ipxact:busInterface>
+  </ipxact:busInterfaces>
+  <ipxact:memoryMaps>
+    <ipxact:memoryMap>
+      <ipxact:name>DW_apb_gpio_mem_map</ipxact:name>
+      <ipxact:addressBlock>
+        <ipxact:name>DW_apb_gpio_addr_block</ipxact:name>
+        <ipxact:baseAddress>'h0</ipxact:baseAddress>
+        <ipxact:range>'h1000</ipxact:range>
+        <ipxact:width>32</ipxact:width>
+        <ipxact:register>
+          <ipxact:name>GPIO_SWPORTA_DR</ipxact:name>
+          <ipxact:displayName>Port A data register</ipxact:displayName>
+          <ipxact:description>Port A data register</ipxact:description>
+          <ipxact:addressOffset>'h0</ipxact:addressOffset>
+          <ipxact:size>32</ipxact:size>
+          <ipxact:volatile>false</ipxact:volatile>
+          <ipxact:access>read-write</ipxact:access>
+          <ipxact:field>
+            <ipxact:name>GPIO_SWPORTA_DR</ipxact:name>
+            <ipxact:description>Values written to this register are output on the I/O signals
+for Port A if the corresponding data direction bits for Port A
+are set to Output mode and the corresponding control bit for
+Port A is set to Software mode. The value read back is equal
+to the last value written to this register.
+Reset Value: GPIO_SWPORTA_RESET</ipxact:description>
+            <ipxact:bitOffset>0</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>8</ipxact:bitWidth>
+            <ipxact:access>read-write</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>RSVD_GPIO_SWPORTA_DR</ipxact:name>
+            <ipxact:description>RSVD_GPIO_SWPORTA_DR Reserved bits - read as zero</ipxact:description>
+            <ipxact:bitOffset>8</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>24</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:vendorExtensions>
+            <snps:register>
+              <snps:attribute name="PingTestMask">00000000000000000000000000000001</snps:attribute>
+              <snps:attribute name="SideEffects">0</snps:attribute>
+            </snps:register>
+          </ipxact:vendorExtensions>
+        </ipxact:register>
+        <ipxact:register>
+          <ipxact:name>GPIO_SWPORTA_DDR</ipxact:name>
+          <ipxact:displayName>Port A Data Direction Register</ipxact:displayName>
+          <ipxact:description>Port A Data Direction Register</ipxact:description>
+          <ipxact:addressOffset>'h4</ipxact:addressOffset>
+          <ipxact:size>32</ipxact:size>
+          <ipxact:volatile>false</ipxact:volatile>
+          <ipxact:access>read-write</ipxact:access>
+          <ipxact:field>
+            <ipxact:name>GPIO_SWPORTA_DDR</ipxact:name>
+            <ipxact:description>Values written to this register independently control the
+direction of the corresponding data bit in Port A. The
+default direction can be configured as input or output after
+system reset through the GPIO_DFLT_DIR_A parameter.</ipxact:description>
+            <ipxact:bitOffset>0</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>8</ipxact:bitWidth>
+            <ipxact:access>read-write</ipxact:access>
+            <ipxact:enumeratedValues>
+              <ipxact:enumeratedValue>
+                <ipxact:name>IN</ipxact:name>
+                <ipxact:displayName>Input Direction</ipxact:displayName>
+                <ipxact:value>0x0</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>OUT</ipxact:name>
+                <ipxact:displayName>Output Direction</ipxact:displayName>
+                <ipxact:value>0x1</ipxact:value>
+              </ipxact:enumeratedValue>
+            </ipxact:enumeratedValues>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>RSVD_GPIO_SWPORTA_DDR</ipxact:name>
+            <ipxact:description>RSVD_GPIO_SWPORTA_DDR Reserved bits - read as zero</ipxact:description>
+            <ipxact:bitOffset>8</ipxact:bitOffset>
+            <ipxact:bitWidth>24</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:vendorExtensions>
+            <snps:register>
+              <snps:attribute name="PingTestMask">00000000000000000000000000000001</snps:attribute>
+              <snps:attribute name="SideEffects">0</snps:attribute>
+            </snps:register>
+          </ipxact:vendorExtensions>
+        </ipxact:register>
+        <ipxact:register>
+          <ipxact:name>GPIO_INTEN</ipxact:name>
+          <ipxact:displayName>Interrupt enable register</ipxact:displayName>
+          <ipxact:description>Name: Interrupt enable register 
+Note:  This register is available only if Port A is configured to generate interrupts (GPIO_PORTA_INTR = Include (1)).</ipxact:description>
+          <ipxact:addressOffset>'h30</ipxact:addressOffset>
+          <ipxact:size>32</ipxact:size>
+          <ipxact:volatile>false</ipxact:volatile>
+          <ipxact:access>read-write</ipxact:access>
+          <ipxact:field>
+            <ipxact:name>GPIO_INTEN</ipxact:name>
+            <ipxact:description>Allows each bit of Port A to be configured for interrupts. By
+default the generation of interrupts is disabled. Whenever a 1
+is written to a bit of this register, it configures the
+corresponding bit on Port A to become an interrupt;
+otherwise, Port A operates as a normal GPIO signal.
+Interrupts are disabled on the corresponding bits of Port A if
+the corresponding data direction register is set to Output or if
+Port A mode is set to Hardware.
+
+Reset Value: 0x0</ipxact:description>
+            <ipxact:bitOffset>0</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>8</ipxact:bitWidth>
+            <ipxact:access>read-write</ipxact:access>
+            <ipxact:enumeratedValues>
+              <ipxact:enumeratedValue>
+                <ipxact:name>DISABLED</ipxact:name>
+                <ipxact:displayName>Interrupt is disabled</ipxact:displayName>
+                <ipxact:value>0x0</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>ENABLED</ipxact:name>
+                <ipxact:displayName>Interrupt is enabled</ipxact:displayName>
+                <ipxact:value>0x1</ipxact:value>
+              </ipxact:enumeratedValue>
+            </ipxact:enumeratedValues>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>RSVD_GPIO_INTEN</ipxact:name>
+            <ipxact:description>RSVD_GPIO_INTEN Reserved bits - read as zero</ipxact:description>
+            <ipxact:bitOffset>8</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>24</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+        </ipxact:register>
+        <ipxact:register>
+          <ipxact:name>GPIO_INTMASK</ipxact:name>
+          <ipxact:displayName>Interrupt mask register</ipxact:displayName>
+          <ipxact:description>Interrupt mask register
+Note:  This register is available only if Port A is configured to generate interrupts (GPIO_PORTA_INTR = Include (1)).</ipxact:description>
+          <ipxact:addressOffset>'h34</ipxact:addressOffset>
+          <ipxact:size>32</ipxact:size>
+          <ipxact:volatile>false</ipxact:volatile>
+          <ipxact:access>read-write</ipxact:access>
+          <ipxact:field>
+            <ipxact:name>GPIO_INTMASK</ipxact:name>
+            <ipxact:description>Controls whether an interrupt on Port A can create an
+interrupt for the interrupt controller by not masking it. By
+default, all interrupts bits are unmasked. Whenever a 1 is
+written to a bit in this register, it masks the interrupt
+generation capability for this signal; otherwise interrupts are
+allowed through. The unmasked status can be read as well as
+the resultant status after masking.
+Reset Value: 0x0</ipxact:description>
+            <ipxact:bitOffset>0</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>8</ipxact:bitWidth>
+            <ipxact:access>read-write</ipxact:access>
+            <ipxact:enumeratedValues>
+              <ipxact:enumeratedValue>
+                <ipxact:name>DISABLED</ipxact:name>
+                <ipxact:displayName>Interrupt bits are unmasked</ipxact:displayName>
+                <ipxact:value>0x0</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>ENABLED</ipxact:name>
+                <ipxact:displayName>Mask interrupt</ipxact:displayName>
+                <ipxact:value>0x1</ipxact:value>
+              </ipxact:enumeratedValue>
+            </ipxact:enumeratedValues>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>RSVD_GPIO_INTMASK</ipxact:name>
+            <ipxact:description>RSVD_GPIO_INTMASK Reserved bits - read as zero</ipxact:description>
+            <ipxact:bitOffset>8</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>24</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+        </ipxact:register>
+        <ipxact:register>
+          <ipxact:name>GPIO_INTTYPE_LEVEL</ipxact:name>
+          <ipxact:displayName>Interrupt level</ipxact:displayName>
+          <ipxact:description>Interrupt level
+Note:  This register is available only if Port A is configured to generate interrupts (GPIO_PORTA_INTR = Include (1)).</ipxact:description>
+          <ipxact:addressOffset>'h38</ipxact:addressOffset>
+          <ipxact:size>32</ipxact:size>
+          <ipxact:volatile>false</ipxact:volatile>
+          <ipxact:access>read-write</ipxact:access>
+          <ipxact:field>
+            <ipxact:name>GPIO_INTTYPE_LEVEL</ipxact:name>
+            <ipxact:description>Controls the type of interrupt that can occur on Port A.
+Whenever a 0 is written to a bit of this register, it configures
+the interrupt type to be level-sensitive; otherwise, it is
+edge-sensitive.
+Reset Value: 0x0</ipxact:description>
+            <ipxact:bitOffset>0</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>8</ipxact:bitWidth>
+            <ipxact:access>read-write</ipxact:access>
+            <ipxact:enumeratedValues>
+              <ipxact:enumeratedValue>
+                <ipxact:name>EDGE_SENSITIVE</ipxact:name>
+                <ipxact:displayName>Interrupt is edge sensitive</ipxact:displayName>
+                <ipxact:value>0x1</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>LEVEL_SENSITIVE</ipxact:name>
+                <ipxact:displayName>Interrupt is level sensitive</ipxact:displayName>
+                <ipxact:value>0x0</ipxact:value>
+              </ipxact:enumeratedValue>
+            </ipxact:enumeratedValues>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>RSVD_GPIO_INTTYPE_LEVEL</ipxact:name>
+            <ipxact:description>RSVD_GPIO_INTTYPE_LEVEL Reserved bits - read as zero</ipxact:description>
+            <ipxact:bitOffset>8</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>24</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+        </ipxact:register>
+        <ipxact:register>
+          <ipxact:name>GPIO_INT_POLARITY</ipxact:name>
+          <ipxact:displayName>Interrupt polarity</ipxact:displayName>
+          <ipxact:description>Interrupt polarity
+Note:  This register is available only if Port A is configured to generate interrupts (GPIO_PORTA_INTR = Include (1)).</ipxact:description>
+          <ipxact:addressOffset>'h3c</ipxact:addressOffset>
+          <ipxact:size>32</ipxact:size>
+          <ipxact:volatile>false</ipxact:volatile>
+          <ipxact:access>read-write</ipxact:access>
+          <ipxact:field>
+            <ipxact:name>GPIO_INT_POLARITY</ipxact:name>
+            <ipxact:description>Controls the polarity of edge or level sensitivity that can
+occur on input of Port A. Whenever a 0 is written to a bit of
+this register, it configures the interrupt type to falling-edge or
+active-low sensitive; otherwise, it is rising-edge or
+active-high sensitive.
+Reset Value: 0x0</ipxact:description>
+            <ipxact:bitOffset>0</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>8</ipxact:bitWidth>
+            <ipxact:access>read-write</ipxact:access>
+            <ipxact:enumeratedValues>
+              <ipxact:enumeratedValue>
+                <ipxact:name>ACTIVE_HIGH</ipxact:name>
+                <ipxact:displayName>Active High polarity</ipxact:displayName>
+                <ipxact:value>0x1</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>ACTIVE_LOW</ipxact:name>
+                <ipxact:displayName>Active Low polarity</ipxact:displayName>
+                <ipxact:value>0x0</ipxact:value>
+              </ipxact:enumeratedValue>
+            </ipxact:enumeratedValues>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>RSVD_GPIO_INT_POLARITY</ipxact:name>
+            <ipxact:description>RSVD_GPIO_INT_POLARITY Reserved bits - read as zero</ipxact:description>
+            <ipxact:bitOffset>8</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>24</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+        </ipxact:register>
+        <ipxact:register>
+          <ipxact:name>GPIO_INTSTATUS</ipxact:name>
+          <ipxact:displayName>Interrupt status</ipxact:displayName>
+          <ipxact:description>Interrupt status
+Note:  This register is available only if Port A is configured to generate interrupts (GPIO_PORTA_INTR = Include (1)).</ipxact:description>
+          <ipxact:addressOffset>'h40</ipxact:addressOffset>
+          <ipxact:size>32</ipxact:size>
+          <ipxact:volatile>true</ipxact:volatile>
+          <ipxact:access>read-only</ipxact:access>
+          <ipxact:field>
+            <ipxact:name>GPIO_INTSTATUS</ipxact:name>
+            <ipxact:description>Interrupt status of Port A.
+Reset Value: 0x0</ipxact:description>
+            <ipxact:bitOffset>0</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>8</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:enumeratedValues>
+              <ipxact:enumeratedValue>
+                <ipxact:name>ACTIVE</ipxact:name>
+                <ipxact:displayName>Active</ipxact:displayName>
+                <ipxact:value>0x1</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>INACTIVE</ipxact:name>
+                <ipxact:displayName>Inactive</ipxact:displayName>
+                <ipxact:value>0x0</ipxact:value>
+              </ipxact:enumeratedValue>
+            </ipxact:enumeratedValues>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>RSVD_GPIO_INTSTATUS</ipxact:name>
+            <ipxact:description>RSVD_GPIO_INTSTATUS Reserved bits - read as zero</ipxact:description>
+            <ipxact:bitOffset>8</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>24</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+        </ipxact:register>
+        <ipxact:register>
+          <ipxact:name>GPIO_RAW_INTSTATUS</ipxact:name>
+          <ipxact:displayName>Raw interrupt status</ipxact:displayName>
+          <ipxact:description>Raw interrupt status
+Note:  This register is available only if Port A is configured to generate interrupts (GPIO_PORTA_INTR = Include (1)).</ipxact:description>
+          <ipxact:addressOffset>'h44</ipxact:addressOffset>
+          <ipxact:size>32</ipxact:size>
+          <ipxact:volatile>true</ipxact:volatile>
+          <ipxact:access>read-only</ipxact:access>
+          <ipxact:field>
+            <ipxact:name>GPIO_RAW_INTSTATUS</ipxact:name>
+            <ipxact:description>Raw interrupt of status of Port A (premasking bits)
+Reset Value: 0x0</ipxact:description>
+            <ipxact:bitOffset>0</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>8</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:enumeratedValues>
+              <ipxact:enumeratedValue>
+                <ipxact:name>ACTIVE</ipxact:name>
+                <ipxact:displayName>Active</ipxact:displayName>
+                <ipxact:value>0x1</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>INACTIVE</ipxact:name>
+                <ipxact:displayName>Inactive</ipxact:displayName>
+                <ipxact:value>0x0</ipxact:value>
+              </ipxact:enumeratedValue>
+            </ipxact:enumeratedValues>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>RSVD_GPIO_RAW_INTMASK</ipxact:name>
+            <ipxact:description>RSVD_GPIO_RAW_INTMASK Reserved bits - read as zero</ipxact:description>
+            <ipxact:bitOffset>8</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>24</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+        </ipxact:register>
+        <ipxact:register>
+          <ipxact:name>GPIO_PORTA_EOI</ipxact:name>
+          <ipxact:displayName>Port A clear interrupt register</ipxact:displayName>
+          <ipxact:description>Port A clear interrupt register
+Note: This register is available only if Port A is configured to generate interrupts (GPIO_PORTA_INTR = Include (1)) and when the debounce logic is included (GPIO_DEBOUNCE = Include (1)).</ipxact:description>
+          <ipxact:addressOffset>'h4c</ipxact:addressOffset>
+          <ipxact:size>32</ipxact:size>
+          <ipxact:volatile>false</ipxact:volatile>
+          <ipxact:access>write-only</ipxact:access>
+          <ipxact:field>
+            <ipxact:name>GPIO_PORTA_EOI</ipxact:name>
+            <ipxact:description>Controls the clearing of edge type interrupts from Port A.
+When a 1 is written into a corresponding bit of this register,
+the interrupt is cleared. All interrupts are cleared when
+Port A is not configured for interrupts.
+Reset Value: 0x0</ipxact:description>
+            <ipxact:bitOffset>0</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>8</ipxact:bitWidth>
+            <ipxact:access>write-only</ipxact:access>
+            <ipxact:enumeratedValues>
+              <ipxact:enumeratedValue>
+                <ipxact:name>DISABLED</ipxact:name>
+                <ipxact:displayName>No interrupt clear</ipxact:displayName>
+                <ipxact:value>0x0</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>ENABLED</ipxact:name>
+                <ipxact:displayName>Clear Interrupt</ipxact:displayName>
+                <ipxact:value>0x1</ipxact:value>
+              </ipxact:enumeratedValue>
+            </ipxact:enumeratedValues>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>RSVD_GPIO_PORTA_EOI</ipxact:name>
+            <ipxact:description>RSVD_GPIO_PORTA_EOI Reserved bits - read as zero</ipxact:description>
+            <ipxact:bitOffset>8</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>24</ipxact:bitWidth>
+            <ipxact:access>write-only</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+        </ipxact:register>
+        <ipxact:register>
+          <ipxact:name>GPIO_EXT_PORTA</ipxact:name>
+          <ipxact:displayName>External port A register</ipxact:displayName>
+          <ipxact:description>External port A register</ipxact:description>
+          <ipxact:addressOffset>'h50</ipxact:addressOffset>
+          <ipxact:size>32</ipxact:size>
+          <ipxact:volatile>true</ipxact:volatile>
+          <ipxact:access>read-only</ipxact:access>
+          <ipxact:field>
+            <ipxact:name>GPIO_EXT_PORTA</ipxact:name>
+            <ipxact:description>This register always reflects the signals value on the External Port A.
+Reset Value: 0x0</ipxact:description>
+            <ipxact:bitOffset>0</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>8</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>RSVD_GPIO_EXT_PORTA</ipxact:name>
+            <ipxact:description>RSVD_GPIO_EXT_PORTA Reserved bits - read as zero</ipxact:description>
+            <ipxact:bitOffset>8</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>24</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+        </ipxact:register>
+        <ipxact:register>
+          <ipxact:name>GPIO_LS_SYNC</ipxact:name>
+          <ipxact:displayName>Synchronization level</ipxact:displayName>
+          <ipxact:description>Synchronization level</ipxact:description>
+          <ipxact:addressOffset>'h60</ipxact:addressOffset>
+          <ipxact:size>32</ipxact:size>
+          <ipxact:volatile>false</ipxact:volatile>
+          <ipxact:access>read-write</ipxact:access>
+          <ipxact:field>
+            <ipxact:name>GPIO_LS_SYNC</ipxact:name>
+            <ipxact:description>Writing a 1 to this register results in all level-sensitive interrupts being
+synchronized to pclk_intr.
+Reset Value: 0x0</ipxact:description>
+            <ipxact:bitOffset>0</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>1</ipxact:bitWidth>
+            <ipxact:access>read-write</ipxact:access>
+            <ipxact:enumeratedValues>
+              <ipxact:enumeratedValue>
+                <ipxact:name>DISABLED</ipxact:name>
+                <ipxact:displayName>No synchronization to pclk_int (default)r</ipxact:displayName>
+                <ipxact:value>0x0</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>ENABLED</ipxact:name>
+                <ipxact:displayName>Synchronize to pclk_intr</ipxact:displayName>
+                <ipxact:value>0x1</ipxact:value>
+              </ipxact:enumeratedValue>
+            </ipxact:enumeratedValues>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>RSVD_GPIO_LS_SYNC</ipxact:name>
+            <ipxact:description>RSVD_GPIO_LS_SYNC Reserved bits - read as zero</ipxact:description>
+            <ipxact:bitOffset>1</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>31</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+        </ipxact:register>
+        <ipxact:register>
+          <ipxact:name>GPIO_ID_CODE</ipxact:name>
+          <ipxact:displayName>GPIO ID code</ipxact:displayName>
+          <ipxact:description>GPIO ID code</ipxact:description>
+          <ipxact:addressOffset>'h64</ipxact:addressOffset>
+          <ipxact:size>32</ipxact:size>
+          <ipxact:volatile>false</ipxact:volatile>
+          <ipxact:access>read-only</ipxact:access>
+          <ipxact:field>
+            <ipxact:name>GPIO_ID_CODE</ipxact:name>
+            <ipxact:description>This is a user-specified code that a system can read. It can
+be used for chip identification, and so on.
+Reset Value: GPIO_ID_NUM</ipxact:description>
+            <ipxact:bitOffset>0</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>32</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+        </ipxact:register>
+        <ipxact:register>
+          <ipxact:name>GPIO_VER_ID_CODE</ipxact:name>
+          <ipxact:displayName>GPIO Component Version</ipxact:displayName>
+          <ipxact:description>GPIO Component Version</ipxact:description>
+          <ipxact:addressOffset>'h6c</ipxact:addressOffset>
+          <ipxact:size>32</ipxact:size>
+          <ipxact:volatile>false</ipxact:volatile>
+          <ipxact:access>read-only</ipxact:access>
+          <ipxact:field>
+            <ipxact:name>GPIO_VER_ID_CODE</ipxact:name>
+            <ipxact:description>ASCII value for each number in the version, followed by *. For example
+32_31_32_2A represents the version 2.12*. 
+Reset Value: See the releases table in the Release Notes</ipxact:description>
+            <ipxact:bitOffset>0</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h3231322a</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>32</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+        </ipxact:register>
+        <ipxact:register>
+          <ipxact:name>GPIO_CONFIG_REG2</ipxact:name>
+          <ipxact:displayName>GPIO Configuration Register 2</ipxact:displayName>
+          <ipxact:description>GPIO Configuration Register 2 
+ This register is a read-only register that is present when the configuration parameter GPIO_ADD_ENCODED_PARAMS is set to True. If this configuration is set to False, then this register reads back 0.
+Reset Value: ((GPIO_ADD_ENCODED_PARAMS==1'b0) ? 32'h0 : {12'h0, `GPIO_ENCODED_PWIDTH_D, `GPIO_ENCODED_PWIDTH_C, `GPIO_ENCODED_PWIDTH_B, `GPIO_ENCODED_PWIDTH_A})</ipxact:description>
+          <ipxact:addressOffset>'h70</ipxact:addressOffset>
+          <ipxact:size>32</ipxact:size>
+          <ipxact:volatile>false</ipxact:volatile>
+          <ipxact:access>read-only</ipxact:access>
+          <ipxact:field>
+            <ipxact:name>ENCODED_ID_PWIDTH_A</ipxact:name>
+            <ipxact:description>The value of this register is derived from the
+GPIO_PWIDTH_A configuration parameter.
+
+0x0 = 8 bits
+
+0x1 = 16 bits
+
+0x2 = 32 bits
+
+0x3 = Reserved</ipxact:description>
+            <ipxact:bitOffset>0</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h7</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>5</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>ENCODED_ID_PWIDTH_B</ipxact:name>
+            <ipxact:description>The value of this register is derived from the
+GPIO_PWIDTH_B configuration parameter.
+
+0x0 = 8 bits
+
+0x1 = 16 bits
+
+0x2 = 32 bits
+
+0x3 = Reserved</ipxact:description>
+            <ipxact:bitOffset>5</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h7</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>5</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>ENCODED_ID_PWIDTH_C</ipxact:name>
+            <ipxact:description>The value of this register is derived from the
+GPIO_PWIDTH_C configuration parameter.
+
+0x0 = 8 bits
+
+0x1 = 16 bits
+
+0x2 = 32 bits
+
+0x3 = Reserved</ipxact:description>
+            <ipxact:bitOffset>10</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h7</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>5</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>ENCODED_ID_PWIDTH_D</ipxact:name>
+            <ipxact:description>The value of this register is derived from the
+GPIO_PWIDTH_D configuration parameter.
+0x0 = 8 bits
+
+0x1 = 16 bits
+
+0x2 = 32 bits
+
+0x3 = Reserved</ipxact:description>
+            <ipxact:bitOffset>15</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h7</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>5</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>RSVD_GPIO_CONFIG_REG2</ipxact:name>
+            <ipxact:description>RSVD_GPIO_CONFIG_REG2 Reserved bits - read as zero</ipxact:description>
+            <ipxact:bitOffset>20</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>12</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+        </ipxact:register>
+        <ipxact:register>
+          <ipxact:name>GPIO_CONFIG_REG1</ipxact:name>
+          <ipxact:displayName>GPIO Configuration Register 1</ipxact:displayName>
+          <ipxact:description>GPIO Configuration Register 1 
+ This register is present when the configuration parameter GPIO_ADD_ENCODED_PARAMS is set to True. If this parameter is set to False, this register reads back zero (0).
+Reset Value: GPIO_CID_RESET_REG1</ipxact:description>
+          <ipxact:addressOffset>'h74</ipxact:addressOffset>
+          <ipxact:size>32</ipxact:size>
+          <ipxact:volatile>false</ipxact:volatile>
+          <ipxact:access>read-only</ipxact:access>
+          <ipxact:field>
+            <ipxact:name>APB_DATA_WIDTH</ipxact:name>
+            <ipxact:description>The value of this register is derived from the
+GPIO_APB_DATA_WIDTH configuration parameter.
+ Note: 
+0x3 = Reserved</ipxact:description>
+            <ipxact:bitOffset>0</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h2</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>2</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:enumeratedValues>
+              <ipxact:enumeratedValue>
+                <ipxact:name>APB_16BITS</ipxact:name>
+                <ipxact:displayName>APB DATA WIDTH is 16 bits</ipxact:displayName>
+                <ipxact:value>0x1</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>APB_32BITS</ipxact:name>
+                <ipxact:displayName>APB DATA WIDTH is 32 bits</ipxact:displayName>
+                <ipxact:value>0x2</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>APB_8BITS</ipxact:name>
+                <ipxact:displayName>APB DATA WIDTH is 8 bits</ipxact:displayName>
+                <ipxact:value>0x0</ipxact:value>
+              </ipxact:enumeratedValue>
+            </ipxact:enumeratedValues>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>NUM_PORTS</ipxact:name>
+            <ipxact:description>The value of this register is derived from the
+GPIO_NUM_PORT configuration parameter.</ipxact:description>
+            <ipxact:bitOffset>2</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>2</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:enumeratedValues>
+              <ipxact:enumeratedValue>
+                <ipxact:name>NUM_PORTS_1</ipxact:name>
+                <ipxact:displayName>Number of ports is 1</ipxact:displayName>
+                <ipxact:value>0x0</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>NUM_PORTS_2</ipxact:name>
+                <ipxact:displayName>Number of ports is 2</ipxact:displayName>
+                <ipxact:value>0x1</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>NUM_PORTS_3</ipxact:name>
+                <ipxact:displayName>Number of ports is 3</ipxact:displayName>
+                <ipxact:value>0x2</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>NUM_PORTS_4</ipxact:name>
+                <ipxact:displayName>Number of ports is 4</ipxact:displayName>
+                <ipxact:value>0x3</ipxact:value>
+              </ipxact:enumeratedValue>
+            </ipxact:enumeratedValues>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>PORTA_SINGLE_CTL</ipxact:name>
+            <ipxact:description>The value of this register is derived from the
+GPIO_PORTA_SINGLE_CTL configuration parameter.</ipxact:description>
+            <ipxact:bitOffset>4</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h1</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>1</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:enumeratedValues>
+              <ipxact:enumeratedValue>
+                <ipxact:name>DISABLED</ipxact:name>
+                <ipxact:displayName>PORTA is not controlled from a single source</ipxact:displayName>
+                <ipxact:value>0x0</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>ENABLED</ipxact:name>
+                <ipxact:displayName>PORTA is controlled from a single source</ipxact:displayName>
+                <ipxact:value>0x1</ipxact:value>
+              </ipxact:enumeratedValue>
+            </ipxact:enumeratedValues>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>PORTB_SINGLE_CTL</ipxact:name>
+            <ipxact:description>The value of this register is derived from the
+GPIO_PORTB_SINGLE_CTL configuration parameter.</ipxact:description>
+            <ipxact:bitOffset>5</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h1</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>1</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:enumeratedValues>
+              <ipxact:enumeratedValue>
+                <ipxact:name>DISABLED</ipxact:name>
+                <ipxact:displayName>PORTB is not controlled from a single source</ipxact:displayName>
+                <ipxact:value>0x0</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>ENABLED</ipxact:name>
+                <ipxact:displayName>PORTB is controlled from a single source</ipxact:displayName>
+                <ipxact:value>0x1</ipxact:value>
+              </ipxact:enumeratedValue>
+            </ipxact:enumeratedValues>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>PORTC_SINGLE_CTL</ipxact:name>
+            <ipxact:description>The value of this register is derived from the
+GPIO_PORTC_SINGLE_CTL configuration parameter.</ipxact:description>
+            <ipxact:bitOffset>6</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h1</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>1</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:enumeratedValues>
+              <ipxact:enumeratedValue>
+                <ipxact:name>DISABLED</ipxact:name>
+                <ipxact:displayName>PORTC is not controlled from a single source</ipxact:displayName>
+                <ipxact:value>0x0</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>ENABLED</ipxact:name>
+                <ipxact:displayName>PORTC is controlled from a single source</ipxact:displayName>
+                <ipxact:value>0x1</ipxact:value>
+              </ipxact:enumeratedValue>
+            </ipxact:enumeratedValues>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>PORTD_SINGLE_CTL</ipxact:name>
+            <ipxact:description>The value of this register is derived from the
+GPIO_PORTD_SINGLE_CTL configuration parameter.</ipxact:description>
+            <ipxact:bitOffset>7</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h1</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>1</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:enumeratedValues>
+              <ipxact:enumeratedValue>
+                <ipxact:name>DISABLED</ipxact:name>
+                <ipxact:displayName>PORTD is not controlled from a single source</ipxact:displayName>
+                <ipxact:value>0x0</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>ENABLED</ipxact:name>
+                <ipxact:displayName>PORTD is controlled from a single source</ipxact:displayName>
+                <ipxact:value>0x1</ipxact:value>
+              </ipxact:enumeratedValue>
+            </ipxact:enumeratedValues>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>HW_PORTA</ipxact:name>
+            <ipxact:description>The value of this register is derived from the
+GPIO_HW_PORTA configuration parameter.</ipxact:description>
+            <ipxact:bitOffset>8</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>1</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:enumeratedValues>
+              <ipxact:enumeratedValue>
+                <ipxact:name>DISABLED</ipxact:name>
+                <ipxact:displayName>Port A has external, auxiliary hardware signals
+excluded</ipxact:displayName>
+                <ipxact:value>0x0</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>ENABLED</ipxact:name>
+                <ipxact:displayName>Port A has external, auxiliary hardware signals
+included</ipxact:displayName>
+                <ipxact:value>0x1</ipxact:value>
+              </ipxact:enumeratedValue>
+            </ipxact:enumeratedValues>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>HW_PORTB</ipxact:name>
+            <ipxact:description>The value of this register is derived from the
+GPIO_HW_PORTB configuration parameter.</ipxact:description>
+            <ipxact:bitOffset>9</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>1</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:enumeratedValues>
+              <ipxact:enumeratedValue>
+                <ipxact:name>DISABLED</ipxact:name>
+                <ipxact:displayName>Port B has external, auxiliary hardware signals
+excluded</ipxact:displayName>
+                <ipxact:value>0x0</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>ENABLED</ipxact:name>
+                <ipxact:displayName>Port B has external, auxiliary hardware signals
+included</ipxact:displayName>
+                <ipxact:value>0x1</ipxact:value>
+              </ipxact:enumeratedValue>
+            </ipxact:enumeratedValues>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>HW_PORTC</ipxact:name>
+            <ipxact:description>The value of this register is derived from the
+GPIO_HW_PORTC configuration parameter.</ipxact:description>
+            <ipxact:bitOffset>10</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>1</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:enumeratedValues>
+              <ipxact:enumeratedValue>
+                <ipxact:name>DISABLED</ipxact:name>
+                <ipxact:displayName>Port C has external, auxiliary hardware signals
+excluded</ipxact:displayName>
+                <ipxact:value>0x0</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>ENABLED</ipxact:name>
+                <ipxact:displayName>Port C has external, auxiliary hardware signals
+included</ipxact:displayName>
+                <ipxact:value>0x1</ipxact:value>
+              </ipxact:enumeratedValue>
+            </ipxact:enumeratedValues>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>HW_PORTD</ipxact:name>
+            <ipxact:description>The value of this register is derived from the
+GPIO_HW_PORTD configuration parameter.</ipxact:description>
+            <ipxact:bitOffset>11</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>1</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:enumeratedValues>
+              <ipxact:enumeratedValue>
+                <ipxact:name>DISABLED</ipxact:name>
+                <ipxact:displayName>Port D has external, auxiliary hardware signals
+excluded</ipxact:displayName>
+                <ipxact:value>0x0</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>ENABLED</ipxact:name>
+                <ipxact:displayName>Port D has external, auxiliary hardware signals
+included</ipxact:displayName>
+                <ipxact:value>0x1</ipxact:value>
+              </ipxact:enumeratedValue>
+            </ipxact:enumeratedValues>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>PORTA_INTR</ipxact:name>
+            <ipxact:description>The value of this register is derived from the
+GPIO_PORTA_INTR configuration parameter.</ipxact:description>
+            <ipxact:bitOffset>12</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h1</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>1</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:enumeratedValues>
+              <ipxact:enumeratedValue>
+                <ipxact:name>DISABLED</ipxact:name>
+                <ipxact:displayName>PORT A is not used as an interrupt source</ipxact:displayName>
+                <ipxact:value>0x0</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>ENABLED</ipxact:name>
+                <ipxact:displayName>PORT A is required to be used as an interrupt 
+source</ipxact:displayName>
+                <ipxact:value>0x1</ipxact:value>
+              </ipxact:enumeratedValue>
+            </ipxact:enumeratedValues>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>DEBOUNCE</ipxact:name>
+            <ipxact:description>The value of this register is derived from the
+GPIO_DEBOUNCE configuration parameter.</ipxact:description>
+            <ipxact:bitOffset>13</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>1</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:enumeratedValues>
+              <ipxact:enumeratedValue>
+                <ipxact:name>DISABLED</ipxact:name>
+                <ipxact:displayName>Exclude debounce capability</ipxact:displayName>
+                <ipxact:value>0x0</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>ENABLED</ipxact:name>
+                <ipxact:displayName>Include debounce capability</ipxact:displayName>
+                <ipxact:value>0x1</ipxact:value>
+              </ipxact:enumeratedValue>
+            </ipxact:enumeratedValues>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>ADD_ENCODED_PARAMS</ipxact:name>
+            <ipxact:description>The value of this register is derived from the
+GPIO_ADD_ENCODED_PARAMS configuration parameter.</ipxact:description>
+            <ipxact:bitOffset>14</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h1</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>1</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:enumeratedValues>
+              <ipxact:enumeratedValue>
+                <ipxact:name>DISABLED</ipxact:name>
+                <ipxact:displayName>Encoded parameters not added</ipxact:displayName>
+                <ipxact:value>0x0</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>ENABLED</ipxact:name>
+                <ipxact:displayName>Encoded parameters added</ipxact:displayName>
+                <ipxact:value>0x1</ipxact:value>
+              </ipxact:enumeratedValue>
+            </ipxact:enumeratedValues>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>GPIO_ID</ipxact:name>
+            <ipxact:description>The value of this register is derived from the
+GPIO_ID configuration parameter.</ipxact:description>
+            <ipxact:bitOffset>15</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h1</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>1</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:enumeratedValues>
+              <ipxact:enumeratedValue>
+                <ipxact:name>DISABLED</ipxact:name>
+                <ipxact:displayName>GPIO_ID not included</ipxact:displayName>
+                <ipxact:value>0x0</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>ENABLED</ipxact:name>
+                <ipxact:displayName>GPIO_ID is included</ipxact:displayName>
+                <ipxact:value>0x1</ipxact:value>
+              </ipxact:enumeratedValue>
+            </ipxact:enumeratedValues>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>ENCODED_ID_WIDTH</ipxact:name>
+            <ipxact:description>The value of this register is derived from the
+GPIO_ID_WIDTH configuration parameter.</ipxact:description>
+            <ipxact:bitOffset>16</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h1f</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>5</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>INTERRUPT_BOTH_EDGE_TYPE</ipxact:name>
+            <ipxact:description>The value of this register is derived from the 
+GPIO_INT_BOTH_EDGE configuration parameter</ipxact:description>
+            <ipxact:bitOffset>21</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>1</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:enumeratedValues>
+              <ipxact:enumeratedValue>
+                <ipxact:name>DISABLED</ipxact:name>
+                <ipxact:displayName>Interrupt generation on rising or falling edge</ipxact:displayName>
+                <ipxact:value>0x0</ipxact:value>
+              </ipxact:enumeratedValue>
+              <ipxact:enumeratedValue>
+                <ipxact:name>ENABLED</ipxact:name>
+                <ipxact:displayName>Interrupt generation on both rising and falling edge</ipxact:displayName>
+                <ipxact:value>0x1</ipxact:value>
+              </ipxact:enumeratedValue>
+            </ipxact:enumeratedValues>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>RSVD_GPIO_CONFIG_REG1</ipxact:name>
+            <ipxact:description>RSVD_GPIO_CONFIG_REG1 Reserved bits - read as zero</ipxact:description>
+            <ipxact:bitOffset>22</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>10</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+        </ipxact:register>
+      </ipxact:addressBlock>
+      <ipxact:addressUnitBits>8</ipxact:addressUnitBits>
+    </ipxact:memoryMap>
+  </ipxact:memoryMaps>
+  <ipxact:model>
+    <ipxact:views>
+      <ipxact:view>
+        <ipxact:name>RTL</ipxact:name>
+        <ipxact:envIdentifier>:*Synthesis:</ipxact:envIdentifier>
+        <ipxact:componentInstantiationRef>RTL</ipxact:componentInstantiationRef>
+      </ipxact:view>
+    </ipxact:views>
+    <ipxact:instantiations>
+      <ipxact:componentInstantiation>
+        <ipxact:name>RTL</ipxact:name>
+        <ipxact:description>No description available.</ipxact:description>
+        <ipxact:language strict="true">verilog</ipxact:language>
+        <ipxact:moduleName>i_gpio_DW_apb_gpio</ipxact:moduleName>
+        <ipxact:fileSetRef>
+          <ipxact:localName>Hdl</ipxact:localName>
+        </ipxact:fileSetRef>
+      </ipxact:componentInstantiation>
+    </ipxact:instantiations>
+    <ipxact:ports>
+      <ipxact:port>
+        <ipxact:name>paddr</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>6</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>pclk</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+          <ipxact:drivers>
+            <ipxact:driver>
+              <ipxact:clockDriver>
+                <ipxact:clockPeriod>6</ipxact:clockPeriod>
+                <ipxact:clockPulseOffset>0</ipxact:clockPulseOffset>
+                <ipxact:clockPulseValue>1</ipxact:clockPulseValue>
+                <ipxact:clockPulseDuration>3</ipxact:clockPulseDuration>
+              </ipxact:clockDriver>
+            </ipxact:driver>
+          </ipxact:drivers>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>pclk_intr</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+          <ipxact:drivers>
+            <ipxact:driver>
+              <ipxact:clockDriver>
+                <ipxact:clockPeriod>6</ipxact:clockPeriod>
+                <ipxact:clockPulseOffset>0</ipxact:clockPulseOffset>
+                <ipxact:clockPulseValue>1</ipxact:clockPulseValue>
+                <ipxact:clockPulseDuration>3</ipxact:clockPulseDuration>
+              </ipxact:clockDriver>
+            </ipxact:driver>
+          </ipxact:drivers>
+        </ipxact:wire>
+        <ipxact:vendorExtensions>
+          <snps:componentSignal>
+            <snps:attribute name="SimTieOff">pclk</snps:attribute>
+          </snps:componentSignal>
+        </ipxact:vendorExtensions>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>penable</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>presetn</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>psel</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>pwdata</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>31</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>pwrite</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>gpio_intr_n</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>out</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>7</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>gpio_intrclk_en</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>out</ipxact:direction>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>prdata</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>out</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>31</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>gpio_ext_porta</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>7</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>gpio_porta_ddr</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>out</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>7</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>gpio_porta_dr</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>out</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>7</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+    </ipxact:ports>
+  </ipxact:model>
+  <ipxact:fileSets>
+    <ipxact:fileSet>
+      <ipxact:name>Hdl</ipxact:name>
+      <ipxact:file>
+        <ipxact:name>i_gpio/src/DW_apb_gpio_cc_constants.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_gpio/src/DW_apb_gpio_bcm_params.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_gpio/src/DW_apb_gpio_bcm21.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_gpio/src/DW_apb_gpio_bcm99.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_gpio/src/DW_apb_gpio_ctrl.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_gpio/src/DW_apb_gpio_apbif.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_gpio/src/DW_apb_gpio.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_gpio/src/DW_apb_gpio-undef.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+    </ipxact:fileSet>
+  </ipxact:fileSets>
+  <ipxact:parameters>
+    <ipxact:parameter parameterId="GPIO_ADD_ENCODED_PARAMS" resolve="immediate" type="bit">
+      <ipxact:name>GPIO_ADD_ENCODED_PARAMS</ipxact:name>
+      <ipxact:value>'h1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="APB_DATA_WIDTH" resolve="immediate" type="longint">
+      <ipxact:name>APB_DATA_WIDTH</ipxact:name>
+      <ipxact:value>32</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_NUM_PORTS" resolve="immediate" type="longint">
+      <ipxact:name>GPIO_NUM_PORTS</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_ID" resolve="immediate" type="bit">
+      <ipxact:name>GPIO_ID</ipxact:name>
+      <ipxact:value>'h1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_ID_WIDTH" resolve="immediate" type="longint">
+      <ipxact:name>GPIO_ID_WIDTH</ipxact:name>
+      <ipxact:value>32</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_ID_NUM" resolve="immediate" type="bit">
+      <ipxact:name>GPIO_ID_NUM</ipxact:name>
+      <ipxact:value>'h0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_PWIDTH_A" resolve="immediate" type="longint">
+      <ipxact:name>GPIO_PWIDTH_A</ipxact:name>
+      <ipxact:value>8</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_HW_PORTA" resolve="immediate" type="bit">
+      <ipxact:name>GPIO_HW_PORTA</ipxact:name>
+      <ipxact:value>'h0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_PORTA_SINGLE_CTL" resolve="immediate" type="bit">
+      <ipxact:name>GPIO_PORTA_SINGLE_CTL</ipxact:name>
+      <ipxact:value>'h1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_DFLT_DIR_A" resolve="immediate" type="longint">
+      <ipxact:name>GPIO_DFLT_DIR_A</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_DFLT_SRC_A" resolve="immediate" type="longint">
+      <ipxact:name>GPIO_DFLT_SRC_A</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_DEBOUNCE" resolve="immediate" type="bit">
+      <ipxact:name>GPIO_DEBOUNCE</ipxact:name>
+      <ipxact:value>'h0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_PORTA_INTR" resolve="immediate" type="bit">
+      <ipxact:name>GPIO_PORTA_INTR</ipxact:name>
+      <ipxact:value>'h1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_INT_POL" resolve="immediate" type="longint">
+      <ipxact:name>GPIO_INT_POL</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_INTR_IO" resolve="immediate" type="longint">
+      <ipxact:name>GPIO_INTR_IO</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_PA_SYNC_EXT_DATA" resolve="immediate" type="longint">
+      <ipxact:name>GPIO_PA_SYNC_EXT_DATA</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_SWPORTA_RESET" resolve="immediate" type="bit">
+      <ipxact:name>GPIO_SWPORTA_RESET</ipxact:name>
+      <ipxact:value>'h0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_PA_SYNC_INTERRUPTS" resolve="immediate" type="longint">
+      <ipxact:name>GPIO_PA_SYNC_INTERRUPTS</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_INT_BOTH_EDGE" resolve="immediate" type="longint">
+      <ipxact:name>GPIO_INT_BOTH_EDGE</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_PWIDTH_B" resolve="immediate" type="longint">
+      <ipxact:name>GPIO_PWIDTH_B</ipxact:name>
+      <ipxact:value>8</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_HW_PORTB" resolve="immediate" type="bit">
+      <ipxact:name>GPIO_HW_PORTB</ipxact:name>
+      <ipxact:value>'h0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_PORTB_SINGLE_CTL" resolve="immediate" type="bit">
+      <ipxact:name>GPIO_PORTB_SINGLE_CTL</ipxact:name>
+      <ipxact:value>'h1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_DFLT_DIR_B" resolve="immediate" type="longint">
+      <ipxact:name>GPIO_DFLT_DIR_B</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_DFLT_SRC_B" resolve="immediate" type="longint">
+      <ipxact:name>GPIO_DFLT_SRC_B</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_PB_SYNC_EXT_DATA" resolve="immediate" type="longint">
+      <ipxact:name>GPIO_PB_SYNC_EXT_DATA</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_SWPORTB_RESET" resolve="immediate" type="bit">
+      <ipxact:name>GPIO_SWPORTB_RESET</ipxact:name>
+      <ipxact:value>'h0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_PWIDTH_C" resolve="immediate" type="longint">
+      <ipxact:name>GPIO_PWIDTH_C</ipxact:name>
+      <ipxact:value>8</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_HW_PORTC" resolve="immediate" type="bit">
+      <ipxact:name>GPIO_HW_PORTC</ipxact:name>
+      <ipxact:value>'h0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_PORTC_SINGLE_CTL" resolve="immediate" type="bit">
+      <ipxact:name>GPIO_PORTC_SINGLE_CTL</ipxact:name>
+      <ipxact:value>'h1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_DFLT_DIR_C" resolve="immediate" type="longint">
+      <ipxact:name>GPIO_DFLT_DIR_C</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_DFLT_SRC_C" resolve="immediate" type="longint">
+      <ipxact:name>GPIO_DFLT_SRC_C</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_PC_SYNC_EXT_DATA" resolve="immediate" type="longint">
+      <ipxact:name>GPIO_PC_SYNC_EXT_DATA</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_SWPORTC_RESET" resolve="immediate" type="bit">
+      <ipxact:name>GPIO_SWPORTC_RESET</ipxact:name>
+      <ipxact:value>'h0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_PWIDTH_D" resolve="immediate" type="longint">
+      <ipxact:name>GPIO_PWIDTH_D</ipxact:name>
+      <ipxact:value>8</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_HW_PORTD" resolve="immediate" type="bit">
+      <ipxact:name>GPIO_HW_PORTD</ipxact:name>
+      <ipxact:value>'h0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_PORTD_SINGLE_CTL" resolve="immediate" type="bit">
+      <ipxact:name>GPIO_PORTD_SINGLE_CTL</ipxact:name>
+      <ipxact:value>'h1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_DFLT_DIR_D" resolve="immediate" type="longint">
+      <ipxact:name>GPIO_DFLT_DIR_D</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_DFLT_SRC_D" resolve="immediate" type="longint">
+      <ipxact:name>GPIO_DFLT_SRC_D</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_PD_SYNC_EXT_DATA" resolve="immediate" type="longint">
+      <ipxact:name>GPIO_PD_SYNC_EXT_DATA</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GPIO_SWPORTD_RESET" resolve="immediate" type="bit">
+      <ipxact:name>GPIO_SWPORTD_RESET</ipxact:name>
+      <ipxact:value>'h0</ipxact:value>
+    </ipxact:parameter>
+  </ipxact:parameters>
+  <ipxact:vendorExtensions>
+    <snps:component>
+      <snps:checksum>XCKMejrSmhsjWEiP0YfOPA==</snps:checksum>
+      <snps:attribute instance="true" name="SymbolLibraryPath">=file join $synopsys_root auxx/dware/designware/dw_symbols.xml</snps:attribute>
+      <snps:attribute instance="true" name="SymbolName">DW_apb_gpio</snps:attribute>
+      <snps:attribute name="OriginalUnelabName">DW_apb_gpio</snps:attribute>
+      <snps:attribute name="SymbolType">slave</snps:attribute>
+      <snps:attribute name="SimPingTestText[axi]">// reuse-pragma startSub ALL [::sVer::replace %subText]
+// ---------------------------------------------------------------------
+//
+//    This confidential and proprietary software may be used only
+//    as authorized by a licensing agreement from Synopsys Inc.
+//    In the event of publication, the following notice is applicable:
+//
+//                   (C) COPYRIGHT 2007 SYNOPSYS INC.
+//                          ALL RIGHTS RESERVED
+//
+//  The entire notice above must be reproduced on all authorized copies.
+// ---------------------------------------------------------------------
+
+# reuse-pragma startSub [::sVer::get_slave_base_addr %%C%% APB_Slave 0 %%H%% ]
+
+`define DW_apb_gpio_OFFSET  8'h00
+
+task test_ping_%%L_%%_by_%%M%%;
+ 
+ integer   nCmdHandle;
+ integer   nWriteBufferHandle;
+ integer   nReadBufferHandle;
+ integer   ResultBufHandle;
+ 
+ reg [1:0] bresp;
+ reg [7:0] read_data;
+ reg [7:0] write_data;
+  begin
+   $display("\n=====: STARTING %%L%% PING TEST from %%M%%");
+    //---------------------------------------------------------------------
+    // Enable messages
+    //---------------------------------------------------------------------
+     %%H%%.enable_msg_type    (0, `VMT_MSG_ALL,       `VMT_MSG_ROUTE_ALL);
+     %%H%%.enable_msg_type    (0, `VMT_MSG_NOTIFY,    `VMT_MSG_ROUTE_ALL);
+     %%H%%.enable_msg_feature (0, `VMT_MSG_SCOPE_ALL, `VMT_MSG_FEATURES_ALL, `VMT_MSG_ROUTE_ALL);
+     %%H%%.disable_msg_type   (0, `VMT_MSG_CMD,       `VMT_MSG_ROUTE_ALL);
+     
+     
+    //-----------------------------------------------------------------------
+    // Create buffers for write, read, and slave response with default values
+    //-----------------------------------------------------------------------
+     %%H%%.new_buffer (nWriteBufferHandle);
+     %%H%%.new_buffer (nReadBufferHandle);
+    //-----------------------------------------------------------------------
+    // Fill up transaction buffer for a write transaction
+    //-----------------------------------------------------------------------
+     // Set the value for write data
+     write_data = 8'h01;
+     // Set write transaction for write
+     %%H%%.set_buffer_attr_int    (nWriteBufferHandle, `DW_VIP_AXI_WRITE, 0, `VMT_TRUE);
+     // Set address for write
+     %%H%%.set_buffer_attr_bitvec (nWriteBufferHandle, `DW_VIP_AXI_ADDR,  0, 
+                                     (`%%L_%%_BASE_ADDR + `DW_apb_gpio_OFFSET) );
+     // Set size of write to a 32 bit word 
+     %%H%%.set_buffer_attr_bitvec (nWriteBufferHandle, `DW_VIP_AXI_ASIZE,  0, 3'b010); 
+     // Set data for write 
+     %%H%%.set_buffer_attr_bitvec (nWriteBufferHandle, `DW_VIP_AXI_DATA, 0, write_data[7:0]);
+     // Set a 2 cycle delay on AVALID
+     %%H%%.set_buffer_attr_int    (nWriteBufferHandle, `DW_VIP_AXI_AVALID_WVALID_DELAY, 0, 2);
+     
+    //-------------------------------------------------------------------------
+    // Execute write transaction
+    //-------------------------------------------------------------------------
+    $display("      %0t Issuing write command: write_data = %h, write_address = %h  ", 
+                $time, write_data[7:0],  (`%%L_%%_BASE_ADDR + `DW_apb_gpio_OFFSET)); 
+      %%H%%.send_xact(0, nWriteBufferHandle,     nCmdHandle);
+      
+    //-------------------------------------------------------------------------
+    // Get response for write transaction
+    //-------------------------------------------------------------------------
+     %%H%%.get_result(0,   nCmdHandle, ResultBufHandle);
+     %%H%%.get_buffer_attr_bitvec ( ResultBufHandle, `DW_VIP_AXI_RESP, 0, bresp);
+     if (bresp == 2'b00)
+       $display("      %0t The write response from the slave was OK ", $time);
+     else 
+       $display("      %0t Error: The write response from the slave was not OK", $time);
+      
+    //--------------------------------------------------------------------------
+    // Fll up transaction buffer for read transaction 
+    //--------------------------------------------------------------------------
+     // Set write transaction for read
+     %%H%%.set_buffer_attr_int    (nReadBufferHandle, `DW_VIP_AXI_WRITE, 0, `VMT_FALSE);
+     // Set address for read
+     %%H%%.set_buffer_attr_bitvec (nReadBufferHandle, `DW_VIP_AXI_ADDR, 0,
+                                    (`%%L_%%_BASE_ADDR + `DW_apb_gpio_OFFSET));
+     // Set size of read to a 32 bit word 
+     %%H%%.set_buffer_attr_bitvec (nReadBufferHandle, `DW_VIP_AXI_ASIZE,  0, 3'b010); 
+     // Set read expected data
+     %%H%%.set_buffer_attr_bitvec (nReadBufferHandle, `DW_VIP_AXI_READ_EXPECT_DATA,
+                                      0, write_data[7:0]);
+     // Set read expected data
+     %%H%%.set_buffer_attr_bitvec (nReadBufferHandle, `DW_VIP_AXI_READ_EXPECT_RESP, 0, 0);
+     // Enable read expect
+     %%H%%.set_buffer_attr_int    (nReadBufferHandle, `DW_VIP_AXI_READ_EXPECT, 0, `VMT_TRUE);
+     
+    //---------------------------------------------------------------------------
+    // Execute read transaction 
+    //---------------------------------------------------------------------------
+     $display("      %0t Issuing read expect command to address =  %h" , $time,
+                         (`%%L_%%_BASE_ADDR + `DW_apb_gpio_OFFSET)); 
+     %%H%%.send_xact(0, nReadBufferHandle,     nCmdHandle);
+     
+    //---------------------------------------------------------------------------
+    // Get response for read transaction
+    //---------------------------------------------------------------------------
+     %%H%%.get_result(0,   nCmdHandle, ResultBufHandle);
+     %%H%%.get_buffer_attr_bitvec ( ResultBufHandle, `DW_VIP_AXI_DATA, 0, read_data);
+     $display("      %0t The data read from the slave:  read_data = %h" , $time, read_data);
+     
+   $display("=====: Done\n");
+  end
+  
+endtask
+// reuse-pragma endSub ALL</snps:attribute>
+      <snps:attribute name="SimPingTestText[ahb]">// reuse-pragma startSub ALL [::sVer::replace %subText]
+// ---------------------------------------------------------------------
+//
+//    This confidential and proprietary software may be used only
+//    as authorized by a licensing agreement from Synopsys Inc.
+//    In the event of publication, the following notice is applicable:
+//
+//                   (C) COPYRIGHT 2007 SYNOPSYS INC.
+//                          ALL RIGHTS RESERVED
+//
+//  The entire notice above must be reproduced on all authorized copies.
+// ---------------------------------------------------------------------
+
+# reuse-pragma startSub [::sVer::get_slave_base_addr %%C%% APB_Slave 0 %%H%% ]
+
+`define DW_apb_gpio_OFFSET  8'h00
+
+task test_ping_%%L_%%_by_%%M%%;
+ reg [7:0] write_data;
+  begin
+    write_data = 8'h01;
+   $display("\n=====: STARTING %%L%% PING TEST from %%M%%");
+   $display("      %0t Issuing write command: write_data = %h, write_address = %h  ", 
+                $time, write_data[7:0],  (`%%L_%%_BASE_ADDR + `DW_apb_gpio_OFFSET)); 
+   
+   //-: perform write followed by read
+   %%H%%.write      (0, (`%%L_%%_BASE_ADDR + `DW_apb_gpio_OFFSET),
+                     write_data[7:0], `DW_VIP_AMBA_XFER_SIZE_32, handle[0]);
+   //-: block stream needed if testing AHB-&gt;AXI-&gt;APB
+   %%H%%.block_stream (0, 0, status);
+   $display("      %0t Issuing read expect command to address =  %h" , $time,
+                         (`%%L_%%_BASE_ADDR + `DW_apb_gpio_OFFSET)); 
+   %%H%%.read_expect(0, (`%%L_%%_BASE_ADDR + `DW_apb_gpio_OFFSET),
+                     write_data[7:0], `DW_VIP_AMBA_XFER_SIZE_32 );
+   
+   $display("=====: Done\n");
+  end
+  
+endtask
+// reuse-pragma endSub ALL</snps:attribute>
+    </snps:component>
+  </ipxact:vendorExtensions>
+</ipxact:component>
+

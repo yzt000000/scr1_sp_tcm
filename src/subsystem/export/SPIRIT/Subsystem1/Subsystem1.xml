@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ipxact:design xmlns:ipxact="http://www.accellera.org/XMLSchema/IPXACT/1685-2014" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:snps="http://www.synopsys.com/SPIRIT-snps" xsi:schemaLocation="http://www.accellera.org/XMLSchema/IPXACT/1685-2014 http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd">
+  <ipxact:vendor>ThirdParty</ipxact:vendor>
+  <ipxact:library>ThirdParty</ipxact:library>
+  <ipxact:name>design_Subsystem1</ipxact:name>
+  <ipxact:version>1.0</ipxact:version>
+  <ipxact:componentInstances>
+    <ipxact:componentInstance>
+      <ipxact:instanceName>i_ahb</ipxact:instanceName>
+      <ipxact:componentRef vendor="Synopsys" library="DesignWareLibrary" name="i_ahb_DW_ahb" version="2.13a"/>
+      <ipxact:vendorExtensions>
+        <snps:componentInstance>
+          <snps:componentFileName>i_ahb.xml</snps:componentFileName>
+        </snps:componentInstance>
+      </ipxact:vendorExtensions>
+    </ipxact:componentInstance>
+    <ipxact:componentInstance>
+      <ipxact:instanceName>i_apb</ipxact:instanceName>
+      <ipxact:componentRef vendor="Synopsys" library="DesignWareLibrary" name="i_apb_DW_apb" version="3.01a"/>
+      <ipxact:vendorExtensions>
+        <snps:componentInstance>
+          <snps:componentFileName>i_apb.xml</snps:componentFileName>
+        </snps:componentInstance>
+      </ipxact:vendorExtensions>
+    </ipxact:componentInstance>
+    <ipxact:componentInstance>
+      <ipxact:instanceName>i_gpio</ipxact:instanceName>
+      <ipxact:componentRef vendor="Synopsys" library="DesignWareLibrary" name="i_gpio_DW_apb_gpio" version="2.12a"/>
+      <ipxact:vendorExtensions>
+        <snps:componentInstance>
+          <snps:componentFileName>i_gpio.xml</snps:componentFileName>
+        </snps:componentInstance>
+      </ipxact:vendorExtensions>
+    </ipxact:componentInstance>
+    <ipxact:componentInstance>
+      <ipxact:instanceName>i_uart</ipxact:instanceName>
+      <ipxact:componentRef vendor="Synopsys" library="DesignWareLibrary" name="i_uart_DW_apb_uart" version="4.01a"/>
+      <ipxact:vendorExtensions>
+        <snps:componentInstance>
+          <snps:componentFileName>i_uart.xml</snps:componentFileName>
+        </snps:componentInstance>
+      </ipxact:vendorExtensions>
+    </ipxact:componentInstance>
+  </ipxact:componentInstances>
+  <ipxact:interconnections>
+    <ipxact:interconnection>
+      <ipxact:name>HCLK</ipxact:name>
+      <ipxact:activeInterface componentRef="i_ahb" busRef="HCLK"/>
+      <ipxact:activeInterface componentRef="i_apb" busRef="HCLK"/>
+      <ipxact:hierInterface busRef="HCLK"/>
+    </ipxact:interconnection>
+    <ipxact:interconnection>
+      <ipxact:name>HRESETn</ipxact:name>
+      <ipxact:activeInterface componentRef="i_ahb" busRef="HRESETn"/>
+      <ipxact:activeInterface componentRef="i_apb" busRef="HRESETn"/>
+      <ipxact:hierInterface busRef="HRESETn"/>
+    </ipxact:interconnection>
+    <ipxact:interconnection>
+      <ipxact:name>PCLK</ipxact:name>
+      <ipxact:activeInterface componentRef="i_uart" busRef="PCLK"/>
+      <ipxact:activeInterface componentRef="i_gpio" busRef="PCLK"/>
+      <ipxact:hierInterface busRef="PCLK"/>
+    </ipxact:interconnection>
+    <ipxact:interconnection>
+      <ipxact:name>PRESETn</ipxact:name>
+      <ipxact:activeInterface componentRef="i_uart" busRef="PRESETn"/>
+      <ipxact:activeInterface componentRef="i_gpio" busRef="PRESETn"/>
+      <ipxact:hierInterface busRef="PRESETn"/>
+    </ipxact:interconnection>
+    <ipxact:interconnection>
+      <ipxact:name>i_ahb_AHB_Master_0</ipxact:name>
+      <ipxact:activeInterface componentRef="i_ahb" busRef="AHB_Master_0"/>
+      <ipxact:hierInterface busRef="i_port"/>
+      <ipxact:vendorExtensions>
+        <snps:hierConnection>AHB_Master 0 consumer</snps:hierConnection>
+      </ipxact:vendorExtensions>
+    </ipxact:interconnection>
+    <ipxact:interconnection>
+      <ipxact:name>i_ahb_AHB_Master_1</ipxact:name>
+      <ipxact:activeInterface componentRef="i_ahb" busRef="AHB_Master_1"/>
+      <ipxact:hierInterface busRef="d_port"/>
+      <ipxact:vendorExtensions>
+        <snps:hierConnection>AHB_Master 1 consumer</snps:hierConnection>
+      </ipxact:vendorExtensions>
+    </ipxact:interconnection>
+    <ipxact:interconnection>
+      <ipxact:name>i_ahb_AHB_Slave_0</ipxact:name>
+      <ipxact:activeInterface componentRef="i_ahb" busRef="AHB_Slave_0"/>
+      <ipxact:activeInterface componentRef="i_apb" busRef="AHB_Slave"/>
+    </ipxact:interconnection>
+    <ipxact:interconnection>
+      <ipxact:name>i_ahb_AHB_Slave_1</ipxact:name>
+      <ipxact:activeInterface componentRef="i_ahb" busRef="AHB_Slave_1"/>
+      <ipxact:hierInterface busRef="ahb_reg"/>
+      <ipxact:vendorExtensions>
+        <snps:hierConnection>AHB_Slave 1 consumer</snps:hierConnection>
+      </ipxact:vendorExtensions>
+    </ipxact:interconnection>
+    <ipxact:interconnection>
+      <ipxact:name>i_ahb_AHB_Slave_2</ipxact:name>
+      <ipxact:activeInterface componentRef="i_ahb" busRef="AHB_Slave_2"/>
+      <ipxact:hierInterface busRef="ahb_mem"/>
+      <ipxact:vendorExtensions>
+        <snps:hierConnection>AHB_Slave 2 consumer</snps:hierConnection>
+      </ipxact:vendorExtensions>
+    </ipxact:interconnection>
+    <ipxact:interconnection>
+      <ipxact:name>i_apb_APB_Slave_0</ipxact:name>
+      <ipxact:activeInterface componentRef="i_apb" busRef="APB_Slave_0"/>
+      <ipxact:activeInterface componentRef="i_gpio" busRef="APB_Slave"/>
+    </ipxact:interconnection>
+    <ipxact:interconnection>
+      <ipxact:name>i_apb_APB_Slave_1</ipxact:name>
+      <ipxact:activeInterface componentRef="i_apb" busRef="APB_Slave_1"/>
+      <ipxact:activeInterface componentRef="i_uart" busRef="APB_Slave"/>
+    </ipxact:interconnection>
+    <ipxact:interconnection>
+      <ipxact:name>i_uart_SIO</ipxact:name>
+      <ipxact:activeInterface componentRef="i_uart" busRef="SIO"/>
+      <ipxact:hierInterface busRef="SIO"/>
+    </ipxact:interconnection>
+  </ipxact:interconnections>
+  <ipxact:adHocConnections>
+    <ipxact:adHocConnection>
+      <ipxact:name>DW_apb_gpio_API_gpio_ext_porta_7_0</ipxact:name>
+      <ipxact:portReferences>
+        <ipxact:internalPortReference componentRef="i_gpio" portRef="gpio_ext_porta">
+          <ipxact:partSelect>
+            <ipxact:range>
+              <ipxact:left>7</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:range>
+          </ipxact:partSelect>
+        </ipxact:internalPortReference>
+        <ipxact:externalPortReference portRef="DW_apb_gpio_API_gpio_ext_porta">
+          <ipxact:partSelect>
+            <ipxact:range>
+              <ipxact:left>7</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:range>
+          </ipxact:partSelect>
+        </ipxact:externalPortReference>
+      </ipxact:portReferences>
+    </ipxact:adHocConnection>
+    <ipxact:adHocConnection>
+      <ipxact:name>i_ahb_pause</ipxact:name>
+      <ipxact:portReferences>
+        <ipxact:internalPortReference componentRef="i_ahb" portRef="pause"/>
+        <ipxact:externalPortReference portRef="i_ahb_pause"/>
+      </ipxact:portReferences>
+    </ipxact:adHocConnection>
+    <ipxact:adHocConnection>
+      <ipxact:name>i_apb_pclk_en</ipxact:name>
+      <ipxact:portReferences>
+        <ipxact:internalPortReference componentRef="i_apb" portRef="pclk_en"/>
+        <ipxact:externalPortReference portRef="i_apb_pclk_en"/>
+      </ipxact:portReferences>
+    </ipxact:adHocConnection>
+    <ipxact:adHocConnection>
+      <ipxact:name>i_gpio_pclk_intr</ipxact:name>
+      <ipxact:portReferences>
+        <ipxact:internalPortReference componentRef="i_gpio" portRef="pclk_intr"/>
+        <ipxact:externalPortReference portRef="i_gpio_pclk_intr"/>
+      </ipxact:portReferences>
+    </ipxact:adHocConnection>
+    <ipxact:adHocConnection>
+      <ipxact:name>i_uart_dcd_n</ipxact:name>
+      <ipxact:portReferences>
+        <ipxact:internalPortReference componentRef="i_uart" portRef="dcd_n"/>
+        <ipxact:externalPortReference portRef="i_uart_dcd_n"/>
+      </ipxact:portReferences>
+    </ipxact:adHocConnection>
+    <ipxact:adHocConnection>
+      <ipxact:name>i_uart_dsr_n</ipxact:name>
+      <ipxact:portReferences>
+        <ipxact:internalPortReference componentRef="i_uart" portRef="dsr_n"/>
+        <ipxact:externalPortReference portRef="i_uart_dsr_n"/>
+      </ipxact:portReferences>
+    </ipxact:adHocConnection>
+    <ipxact:adHocConnection>
+      <ipxact:name>i_uart_ri_n</ipxact:name>
+      <ipxact:portReferences>
+        <ipxact:internalPortReference componentRef="i_uart" portRef="ri_n"/>
+        <ipxact:externalPortReference portRef="i_uart_ri_n"/>
+      </ipxact:portReferences>
+    </ipxact:adHocConnection>
+    <ipxact:adHocConnection>
+      <ipxact:name>i_uart_scan_mode</ipxact:name>
+      <ipxact:portReferences>
+        <ipxact:internalPortReference componentRef="i_uart" portRef="scan_mode"/>
+        <ipxact:externalPortReference portRef="i_uart_scan_mode"/>
+      </ipxact:portReferences>
+    </ipxact:adHocConnection>
+    <ipxact:adHocConnection>
+      <ipxact:name>i_ahb_hmaster_data_3_0</ipxact:name>
+      <ipxact:portReferences>
+        <ipxact:internalPortReference componentRef="i_ahb" portRef="hmaster_data">
+          <ipxact:partSelect>
+            <ipxact:range>
+              <ipxact:left>3</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:range>
+          </ipxact:partSelect>
+        </ipxact:internalPortReference>
+        <ipxact:externalPortReference portRef="i_ahb_hmaster_data">
+          <ipxact:partSelect>
+            <ipxact:range>
+              <ipxact:left>3</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:range>
+          </ipxact:partSelect>
+        </ipxact:externalPortReference>
+      </ipxact:portReferences>
+    </ipxact:adHocConnection>
+    <ipxact:adHocConnection>
+      <ipxact:name>i_gpio_gpio_intr_n_7_0</ipxact:name>
+      <ipxact:portReferences>
+        <ipxact:internalPortReference componentRef="i_gpio" portRef="gpio_intr_n">
+          <ipxact:partSelect>
+            <ipxact:range>
+              <ipxact:left>7</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:range>
+          </ipxact:partSelect>
+        </ipxact:internalPortReference>
+        <ipxact:externalPortReference portRef="i_gpio_gpio_intr_n">
+          <ipxact:partSelect>
+            <ipxact:range>
+              <ipxact:left>7</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:range>
+          </ipxact:partSelect>
+        </ipxact:externalPortReference>
+      </ipxact:portReferences>
+    </ipxact:adHocConnection>
+    <ipxact:adHocConnection>
+      <ipxact:name>i_gpio_gpio_intrclk_en</ipxact:name>
+      <ipxact:portReferences>
+        <ipxact:internalPortReference componentRef="i_gpio" portRef="gpio_intrclk_en"/>
+        <ipxact:externalPortReference portRef="i_gpio_gpio_intrclk_en"/>
+      </ipxact:portReferences>
+    </ipxact:adHocConnection>
+    <ipxact:adHocConnection>
+      <ipxact:name>i_gpio_gpio_porta_ddr_7_0</ipxact:name>
+      <ipxact:portReferences>
+        <ipxact:internalPortReference componentRef="i_gpio" portRef="gpio_porta_ddr">
+          <ipxact:partSelect>
+            <ipxact:range>
+              <ipxact:left>7</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:range>
+          </ipxact:partSelect>
+        </ipxact:internalPortReference>
+        <ipxact:externalPortReference portRef="DW_apb_gpio_API_gpio_porta_ddr">
+          <ipxact:partSelect>
+            <ipxact:range>
+              <ipxact:left>7</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:range>
+          </ipxact:partSelect>
+        </ipxact:externalPortReference>
+      </ipxact:portReferences>
+    </ipxact:adHocConnection>
+    <ipxact:adHocConnection>
+      <ipxact:name>i_gpio_gpio_porta_dr_7_0</ipxact:name>
+      <ipxact:portReferences>
+        <ipxact:internalPortReference componentRef="i_gpio" portRef="gpio_porta_dr">
+          <ipxact:partSelect>
+            <ipxact:range>
+              <ipxact:left>7</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:range>
+          </ipxact:partSelect>
+        </ipxact:internalPortReference>
+        <ipxact:externalPortReference portRef="DW_apb_gpio_API_gpio_porta_dr">
+          <ipxact:partSelect>
+            <ipxact:range>
+              <ipxact:left>7</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:range>
+          </ipxact:partSelect>
+        </ipxact:externalPortReference>
+      </ipxact:portReferences>
+    </ipxact:adHocConnection>
+    <ipxact:adHocConnection>
+      <ipxact:name>i_uart_dma_rx_req</ipxact:name>
+      <ipxact:portReferences>
+        <ipxact:internalPortReference componentRef="i_uart" portRef="dma_rx_req"/>
+        <ipxact:externalPortReference portRef="i_uart_dma_rx_req"/>
+      </ipxact:portReferences>
+    </ipxact:adHocConnection>
+    <ipxact:adHocConnection>
+      <ipxact:name>i_uart_dma_tx_req</ipxact:name>
+      <ipxact:portReferences>
+        <ipxact:internalPortReference componentRef="i_uart" portRef="dma_tx_req"/>
+        <ipxact:externalPortReference portRef="i_uart_dma_tx_req"/>
+      </ipxact:portReferences>
+    </ipxact:adHocConnection>
+    <ipxact:adHocConnection>
+      <ipxact:name>i_uart_dtr_n</ipxact:name>
+      <ipxact:portReferences>
+        <ipxact:internalPortReference componentRef="i_uart" portRef="dtr_n"/>
+        <ipxact:externalPortReference portRef="i_uart_dtr_n"/>
+      </ipxact:portReferences>
+    </ipxact:adHocConnection>
+    <ipxact:adHocConnection>
+      <ipxact:name>i_uart_intr</ipxact:name>
+      <ipxact:portReferences>
+        <ipxact:internalPortReference componentRef="i_uart" portRef="intr"/>
+        <ipxact:externalPortReference portRef="i_uart_intr"/>
+      </ipxact:portReferences>
+    </ipxact:adHocConnection>
+    <ipxact:adHocConnection>
+      <ipxact:name>i_uart_out1_n</ipxact:name>
+      <ipxact:portReferences>
+        <ipxact:internalPortReference componentRef="i_uart" portRef="out1_n"/>
+        <ipxact:externalPortReference portRef="i_uart_out1_n"/>
+      </ipxact:portReferences>
+    </ipxact:adHocConnection>
+    <ipxact:adHocConnection>
+      <ipxact:name>i_uart_out2_n</ipxact:name>
+      <ipxact:portReferences>
+        <ipxact:internalPortReference componentRef="i_uart" portRef="out2_n"/>
+        <ipxact:externalPortReference portRef="i_uart_out2_n"/>
+      </ipxact:portReferences>
+    </ipxact:adHocConnection>
+    <ipxact:adHocConnection>
+      <ipxact:name>i_uart_rxrdy_n</ipxact:name>
+      <ipxact:portReferences>
+        <ipxact:internalPortReference componentRef="i_uart" portRef="rxrdy_n"/>
+        <ipxact:externalPortReference portRef="i_uart_rxrdy_n"/>
+      </ipxact:portReferences>
+    </ipxact:adHocConnection>
+    <ipxact:adHocConnection>
+      <ipxact:name>i_uart_txrdy_n</ipxact:name>
+      <ipxact:portReferences>
+        <ipxact:internalPortReference componentRef="i_uart" portRef="txrdy_n"/>
+        <ipxact:externalPortReference portRef="i_uart_txrdy_n"/>
+      </ipxact:portReferences>
+    </ipxact:adHocConnection>
+  </ipxact:adHocConnections>
+</ipxact:design>
+

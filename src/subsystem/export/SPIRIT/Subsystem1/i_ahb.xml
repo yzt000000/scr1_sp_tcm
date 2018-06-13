@@ -1,0 +1,4240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ipxact:component xmlns:ipxact="http://www.accellera.org/XMLSchema/IPXACT/1685-2014" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:snps="http://www.synopsys.com/SPIRIT-snps" xsi:schemaLocation="http://www.accellera.org/XMLSchema/IPXACT/1685-2014 http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd">
+  <ipxact:vendor>Synopsys</ipxact:vendor>
+  <ipxact:library>DesignWareLibrary</ipxact:library>
+  <ipxact:name>i_ahb_DW_ahb</ipxact:name>
+  <ipxact:version>2.13a</ipxact:version>
+  <ipxact:busInterfaces>
+    <ipxact:busInterface>
+      <ipxact:name>AHB_Master_0</ipxact:name>
+      <ipxact:busType vendor="amba.com" library="busdef.amba.amba2" name="ahb" version="r1p0"/>
+      <ipxact:abstractionTypes>
+        <ipxact:abstractionType>
+          <ipxact:abstractionRef vendor="amba.com" library="busdef.amba.amba2" name="ahb_rtl" version="r1p0"/>
+          <ipxact:portMaps>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HADDR</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>haddr_m1</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HBURST</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hburst_m1</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HBUSREQx</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hbusreq_m1</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HLOCKx</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hlock_m1</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HPROT</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hprot_m1</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HSIZE</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hsize_m1</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HTRANS</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>htrans_m1</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HWDATA</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hwdata_m1</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HWRITE</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hwrite_m1</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HGRANTx</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hgrant_m1</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HREADYOUT</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hready</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HRESP</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hresp</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HRDATA</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hrdata</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+          </ipxact:portMaps>
+        </ipxact:abstractionType>
+      </ipxact:abstractionTypes>
+      <ipxact:mirroredMaster/>
+      <ipxact:vendorExtensions>
+        <snps:busInterface>
+          <snps:attribute name="MaxConsumers">15</snps:attribute>
+          <snps:attribute name="MinConsumers">1</snps:attribute>
+          <snps:attribute name="SlotNumberOffset">1</snps:attribute>
+          <snps:attribute name="SymbolPinSide">left</snps:attribute>
+          <snps:attribute name="multipleConsumers">1</snps:attribute>
+          <snps:interfaceParameter>
+            <name>AddressWidth</name>
+            <snps:attribute name="InterfaceLink">HADDR_WIDTH</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>BigEndian</name>
+            <snps:attribute name="InterfaceLink">BIG_ENDIAN</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>DataWidth</name>
+            <snps:attribute name="InterfaceLink">AHB_DATA_WIDTH</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>NumConsumers</name>
+            <snps:attribute name="InterfaceLink">NUM_AHB_MASTERS</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfacePort>
+            <name>HADDR</name>
+            <snps:attribute name="InterfaceLink">haddr_m@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HBURST</name>
+            <snps:attribute name="InterfaceLink">hburst_m@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HBUSREQx</name>
+            <snps:attribute name="InterfaceLink">hbusreq_m@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HGRANTx</name>
+            <snps:attribute name="InterfaceLink">hgrant_m@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HLOCKx</name>
+            <snps:attribute name="InterfaceLink">hlock_m@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HPROT</name>
+            <snps:attribute name="InterfaceLink">hprot_m@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HSIZE</name>
+            <snps:attribute name="InterfaceLink">hsize_m@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HTRANS</name>
+            <snps:attribute name="InterfaceLink">htrans_m@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HWDATA</name>
+            <snps:attribute name="InterfaceLink">hwdata_m@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HWRITE</name>
+            <snps:attribute name="InterfaceLink">hwrite_m@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+        </snps:busInterface>
+      </ipxact:vendorExtensions>
+    </ipxact:busInterface>
+    <ipxact:busInterface>
+      <ipxact:name>AHB_Master_1</ipxact:name>
+      <ipxact:busType vendor="amba.com" library="busdef.amba.amba2" name="ahb" version="r1p0"/>
+      <ipxact:abstractionTypes>
+        <ipxact:abstractionType>
+          <ipxact:abstractionRef vendor="amba.com" library="busdef.amba.amba2" name="ahb_rtl" version="r1p0"/>
+          <ipxact:portMaps>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HADDR</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>haddr_m2</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HBURST</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hburst_m2</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HBUSREQx</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hbusreq_m2</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HLOCKx</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hlock_m2</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HPROT</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hprot_m2</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HSIZE</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hsize_m2</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HTRANS</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>htrans_m2</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HWDATA</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hwdata_m2</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HWRITE</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hwrite_m2</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HGRANTx</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hgrant_m2</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HREADYOUT</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hready</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HRESP</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hresp</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HRDATA</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hrdata</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+          </ipxact:portMaps>
+        </ipxact:abstractionType>
+      </ipxact:abstractionTypes>
+      <ipxact:mirroredMaster/>
+      <ipxact:vendorExtensions>
+        <snps:busInterface>
+          <snps:attribute name="MaxConsumers">15</snps:attribute>
+          <snps:attribute name="MinConsumers">1</snps:attribute>
+          <snps:attribute name="SlotNumberOffset">1</snps:attribute>
+          <snps:attribute name="SymbolPinSide">left</snps:attribute>
+          <snps:attribute name="multipleConsumers">2</snps:attribute>
+          <snps:interfaceParameter>
+            <name>AddressWidth</name>
+            <snps:attribute name="InterfaceLink">HADDR_WIDTH</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>BigEndian</name>
+            <snps:attribute name="InterfaceLink">BIG_ENDIAN</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>DataWidth</name>
+            <snps:attribute name="InterfaceLink">AHB_DATA_WIDTH</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>NumConsumers</name>
+            <snps:attribute name="InterfaceLink">NUM_AHB_MASTERS</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfacePort>
+            <name>HADDR</name>
+            <snps:attribute name="InterfaceLink">haddr_m@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HBURST</name>
+            <snps:attribute name="InterfaceLink">hburst_m@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HBUSREQx</name>
+            <snps:attribute name="InterfaceLink">hbusreq_m@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HGRANTx</name>
+            <snps:attribute name="InterfaceLink">hgrant_m@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HLOCKx</name>
+            <snps:attribute name="InterfaceLink">hlock_m@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HPROT</name>
+            <snps:attribute name="InterfaceLink">hprot_m@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HSIZE</name>
+            <snps:attribute name="InterfaceLink">hsize_m@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HTRANS</name>
+            <snps:attribute name="InterfaceLink">htrans_m@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HWDATA</name>
+            <snps:attribute name="InterfaceLink">hwdata_m@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HWRITE</name>
+            <snps:attribute name="InterfaceLink">hwrite_m@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+        </snps:busInterface>
+      </ipxact:vendorExtensions>
+    </ipxact:busInterface>
+    <ipxact:busInterface>
+      <ipxact:name>AHB_Slave_0</ipxact:name>
+      <ipxact:busType vendor="amba.com" library="busdef.amba.amba2" name="ahb" version="r1p0"/>
+      <ipxact:abstractionTypes>
+        <ipxact:abstractionType>
+          <ipxact:abstractionRef vendor="amba.com" library="busdef.amba.amba2" name="ahb_rtl" version="r1p0"/>
+          <ipxact:portMaps>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HREADYOUT</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hready_resp_s1</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HRESP</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hresp_s1</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HRDATA</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hrdata_s1</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HADDR</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>haddr</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HBURST</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hburst</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HPROT</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hprot</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HREADY</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hready</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HSELx</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hsel_s1</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HSIZE</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hsize</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HTRANS</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>htrans</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HWDATA</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hwdata</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HWRITE</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hwrite</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HMASTER</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hmaster</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HMASTLOCK</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hmastlock</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+          </ipxact:portMaps>
+        </ipxact:abstractionType>
+      </ipxact:abstractionTypes>
+      <ipxact:mirroredSlave>
+        <ipxact:baseAddresses>
+          <ipxact:remapAddress state="Normal">'h3000</ipxact:remapAddress>
+          <ipxact:range>'h2000</ipxact:range>
+        </ipxact:baseAddresses>
+      </ipxact:mirroredSlave>
+      <ipxact:vendorExtensions>
+        <snps:busInterface>
+          <snps:attribute name="MaxConsumers">31</snps:attribute>
+          <snps:attribute name="MinConsumers">1</snps:attribute>
+          <snps:attribute name="SlotNumberOffset">1</snps:attribute>
+          <snps:attribute name="multipleConsumers">1</snps:attribute>
+          <snps:interfaceParameter>
+            <name>AddressWidth</name>
+            <snps:attribute name="InterfaceLink">&lt;open&gt;</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>AliasSlot_1</name>
+            <snps:attribute name="InterfaceLink">ALIAS_S{@SlotNumber + 1}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>AliasSlot_2</name>
+            <snps:attribute name="InterfaceLink">ALIAS_S{@SlotNumber + 2}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>AliasSlot_3</name>
+            <snps:attribute name="InterfaceLink">ALIAS_S{@SlotNumber + 3}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>AliasSlot_4</name>
+            <snps:attribute name="InterfaceLink">ALIAS_S{@SlotNumber + 4}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>AliasSlot_5</name>
+            <snps:attribute name="InterfaceLink">ALIAS_S{@SlotNumber + 5}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>AliasSlot_6</name>
+            <snps:attribute name="InterfaceLink">ALIAS_S{@SlotNumber + 6}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>AliasSlot_7</name>
+            <snps:attribute name="InterfaceLink">ALIAS_S{@SlotNumber + 7}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>BigEndian</name>
+            <snps:attribute name="InterfaceLink">&lt;open&gt;</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>DataWidth</name>
+            <snps:attribute name="InterfaceLink">&lt;open&gt;</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>ExternalDecoderSuppliesHselsToAhb</name>
+            <snps:attribute name="InterfaceLink">XDCDR_SUPPLIES_HSELS2AHB</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>HSelOnly_0</name>
+            <snps:attribute name="InterfaceLink">HSEL_ONLY_S{@SlotNumber}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>HSelOnly_1</name>
+            <snps:attribute name="InterfaceLink">HSEL_ONLY_S{@SlotNumber + 1}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>HSelOnly_2</name>
+            <snps:attribute name="InterfaceLink">HSEL_ONLY_S{@SlotNumber + 2}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>HSelOnly_3</name>
+            <snps:attribute name="InterfaceLink">HSEL_ONLY_S{@SlotNumber + 3}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>HSelOnly_4</name>
+            <snps:attribute name="InterfaceLink">HSEL_ONLY_S{@SlotNumber + 4}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>HSelOnly_5</name>
+            <snps:attribute name="InterfaceLink">HSEL_ONLY_S{@SlotNumber + 5}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>HSelOnly_6</name>
+            <snps:attribute name="InterfaceLink">HSEL_ONLY_S{@SlotNumber + 6}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>HSelOnly_7</name>
+            <snps:attribute name="InterfaceLink">HSEL_ONLY_S{@SlotNumber + 7}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>NumConsumers</name>
+            <snps:attribute name="InterfaceLink">NUM_IAHB_SLAVES</snps:attribute>
+            <snps:attribute name="AssociationFormula">=max_value_SlotNumber_of_AHB_Slave</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>NumSelectSlots</name>
+            <snps:attribute name="InterfaceLink">&lt;open&gt;</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>SplitCapable</name>
+            <snps:attribute name="InterfaceLink">SPLIT_CAPABLE_@SlotNumber</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>UsingExternalDecoder</name>
+            <snps:attribute name="InterfaceLink">AHB_HAS_XDCDR</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>UsingInternalArbiter</name>
+            <snps:attribute name="InterfaceLink">AHB_HAS_ARBIF</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfacePort>
+            <name>HRDATA</name>
+            <snps:attribute name="InterfaceLink">hrdata_s@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HREADYOUT</name>
+            <snps:attribute name="InterfaceLink">hready_resp_s@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HRESP</name>
+            <snps:attribute name="InterfaceLink">hresp_s@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HSELx</name>
+            <snps:attribute name="InterfaceLink">{@UsingExternalDecoder==0 &amp;&amp; @ExternalDecoderSuppliesHselsToAhb==0 ? {} : {}}hsel_s@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>hsel_1</name>
+            <snps:attribute name="InterfaceLink">{@UsingExternalDecoder==0 &amp;&amp; @ExternalDecoderSuppliesHselsToAhb==0 ? {} : {}}hsel_s{@SlotNumber + 1}</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>hsel_2</name>
+            <snps:attribute name="InterfaceLink">{@UsingExternalDecoder==0 &amp;&amp; @ExternalDecoderSuppliesHselsToAhb==0 ? {} : {}}hsel_s{@SlotNumber + 2}</snps:attribute>
+          </snps:interfacePort>
+        </snps:busInterface>
+      </ipxact:vendorExtensions>
+    </ipxact:busInterface>
+    <ipxact:busInterface>
+      <ipxact:name>AHB_Slave_1</ipxact:name>
+      <ipxact:busType vendor="amba.com" library="busdef.amba.amba2" name="ahb" version="r1p0"/>
+      <ipxact:abstractionTypes>
+        <ipxact:abstractionType>
+          <ipxact:abstractionRef vendor="amba.com" library="busdef.amba.amba2" name="ahb_rtl" version="r1p0"/>
+          <ipxact:portMaps>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HREADYOUT</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hready_resp_s2</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HRESP</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hresp_s2</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HRDATA</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hrdata_s2</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HADDR</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>haddr</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HBURST</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hburst</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HPROT</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hprot</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HREADY</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hready</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HSELx</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hsel_s2</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HSIZE</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hsize</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HTRANS</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>htrans</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HWDATA</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hwdata</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HWRITE</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hwrite</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HMASTER</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hmaster</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HMASTLOCK</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hmastlock</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+          </ipxact:portMaps>
+        </ipxact:abstractionType>
+      </ipxact:abstractionTypes>
+      <ipxact:mirroredSlave>
+        <ipxact:baseAddresses>
+          <ipxact:remapAddress state="Normal">'h2000</ipxact:remapAddress>
+          <ipxact:range>'h1000</ipxact:range>
+        </ipxact:baseAddresses>
+      </ipxact:mirroredSlave>
+      <ipxact:vendorExtensions>
+        <snps:busInterface>
+          <snps:attribute name="MaxConsumers">31</snps:attribute>
+          <snps:attribute name="MinConsumers">1</snps:attribute>
+          <snps:attribute name="SlotNumberOffset">1</snps:attribute>
+          <snps:attribute name="multipleConsumers">2</snps:attribute>
+          <snps:interfaceParameter>
+            <name>AddressWidth</name>
+            <snps:attribute name="InterfaceLink">&lt;open&gt;</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>AliasSlot_1</name>
+            <snps:attribute name="InterfaceLink">ALIAS_S{@SlotNumber + 1}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>AliasSlot_2</name>
+            <snps:attribute name="InterfaceLink">ALIAS_S{@SlotNumber + 2}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>AliasSlot_3</name>
+            <snps:attribute name="InterfaceLink">ALIAS_S{@SlotNumber + 3}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>AliasSlot_4</name>
+            <snps:attribute name="InterfaceLink">ALIAS_S{@SlotNumber + 4}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>AliasSlot_5</name>
+            <snps:attribute name="InterfaceLink">ALIAS_S{@SlotNumber + 5}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>AliasSlot_6</name>
+            <snps:attribute name="InterfaceLink">ALIAS_S{@SlotNumber + 6}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>AliasSlot_7</name>
+            <snps:attribute name="InterfaceLink">ALIAS_S{@SlotNumber + 7}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>BigEndian</name>
+            <snps:attribute name="InterfaceLink">&lt;open&gt;</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>DataWidth</name>
+            <snps:attribute name="InterfaceLink">&lt;open&gt;</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>ExternalDecoderSuppliesHselsToAhb</name>
+            <snps:attribute name="InterfaceLink">XDCDR_SUPPLIES_HSELS2AHB</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>HSelOnly_0</name>
+            <snps:attribute name="InterfaceLink">HSEL_ONLY_S{@SlotNumber}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>HSelOnly_1</name>
+            <snps:attribute name="InterfaceLink">HSEL_ONLY_S{@SlotNumber + 1}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>HSelOnly_2</name>
+            <snps:attribute name="InterfaceLink">HSEL_ONLY_S{@SlotNumber + 2}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>HSelOnly_3</name>
+            <snps:attribute name="InterfaceLink">HSEL_ONLY_S{@SlotNumber + 3}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>HSelOnly_4</name>
+            <snps:attribute name="InterfaceLink">HSEL_ONLY_S{@SlotNumber + 4}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>HSelOnly_5</name>
+            <snps:attribute name="InterfaceLink">HSEL_ONLY_S{@SlotNumber + 5}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>HSelOnly_6</name>
+            <snps:attribute name="InterfaceLink">HSEL_ONLY_S{@SlotNumber + 6}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>HSelOnly_7</name>
+            <snps:attribute name="InterfaceLink">HSEL_ONLY_S{@SlotNumber + 7}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>NumConsumers</name>
+            <snps:attribute name="InterfaceLink">NUM_IAHB_SLAVES</snps:attribute>
+            <snps:attribute name="AssociationFormula">=max_value_SlotNumber_of_AHB_Slave</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>NumSelectSlots</name>
+            <snps:attribute name="InterfaceLink">&lt;open&gt;</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>SplitCapable</name>
+            <snps:attribute name="InterfaceLink">SPLIT_CAPABLE_@SlotNumber</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>UsingExternalDecoder</name>
+            <snps:attribute name="InterfaceLink">AHB_HAS_XDCDR</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>UsingInternalArbiter</name>
+            <snps:attribute name="InterfaceLink">AHB_HAS_ARBIF</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfacePort>
+            <name>HRDATA</name>
+            <snps:attribute name="InterfaceLink">hrdata_s@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HREADYOUT</name>
+            <snps:attribute name="InterfaceLink">hready_resp_s@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HRESP</name>
+            <snps:attribute name="InterfaceLink">hresp_s@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HSELx</name>
+            <snps:attribute name="InterfaceLink">{@UsingExternalDecoder==0 &amp;&amp; @ExternalDecoderSuppliesHselsToAhb==0 ? {} : {}}hsel_s@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>hsel_1</name>
+            <snps:attribute name="InterfaceLink">{@UsingExternalDecoder==0 &amp;&amp; @ExternalDecoderSuppliesHselsToAhb==0 ? {} : {}}hsel_s{@SlotNumber + 1}</snps:attribute>
+          </snps:interfacePort>
+        </snps:busInterface>
+      </ipxact:vendorExtensions>
+    </ipxact:busInterface>
+    <ipxact:busInterface>
+      <ipxact:name>AHB_Slave_2</ipxact:name>
+      <ipxact:busType vendor="amba.com" library="busdef.amba.amba2" name="ahb" version="r1p0"/>
+      <ipxact:abstractionTypes>
+        <ipxact:abstractionType>
+          <ipxact:abstractionRef vendor="amba.com" library="busdef.amba.amba2" name="ahb_rtl" version="r1p0"/>
+          <ipxact:portMaps>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HREADYOUT</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hready_resp_s3</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HRESP</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hresp_s3</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HRDATA</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hrdata_s3</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HADDR</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>haddr</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HBURST</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hburst</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HPROT</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hprot</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HREADY</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hready</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HSELx</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hsel_s3</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HSIZE</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hsize</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HTRANS</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>htrans</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HWDATA</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hwdata</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HWRITE</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hwrite</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HMASTER</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hmaster</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HMASTLOCK</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hmastlock</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+          </ipxact:portMaps>
+        </ipxact:abstractionType>
+      </ipxact:abstractionTypes>
+      <ipxact:mirroredSlave>
+        <ipxact:baseAddresses>
+          <ipxact:remapAddress state="Normal">'h0</ipxact:remapAddress>
+          <ipxact:range>'h1000</ipxact:range>
+        </ipxact:baseAddresses>
+      </ipxact:mirroredSlave>
+      <ipxact:vendorExtensions>
+        <snps:busInterface>
+          <snps:attribute name="MaxConsumers">31</snps:attribute>
+          <snps:attribute name="MinConsumers">1</snps:attribute>
+          <snps:attribute name="SlotNumberOffset">1</snps:attribute>
+          <snps:attribute name="multipleConsumers">3</snps:attribute>
+          <snps:interfaceParameter>
+            <name>AddressWidth</name>
+            <snps:attribute name="InterfaceLink">&lt;open&gt;</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>AliasSlot_1</name>
+            <snps:attribute name="InterfaceLink">ALIAS_S{@SlotNumber + 1}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>AliasSlot_2</name>
+            <snps:attribute name="InterfaceLink">ALIAS_S{@SlotNumber + 2}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>AliasSlot_3</name>
+            <snps:attribute name="InterfaceLink">ALIAS_S{@SlotNumber + 3}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>AliasSlot_4</name>
+            <snps:attribute name="InterfaceLink">ALIAS_S{@SlotNumber + 4}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>AliasSlot_5</name>
+            <snps:attribute name="InterfaceLink">ALIAS_S{@SlotNumber + 5}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>AliasSlot_6</name>
+            <snps:attribute name="InterfaceLink">ALIAS_S{@SlotNumber + 6}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>AliasSlot_7</name>
+            <snps:attribute name="InterfaceLink">ALIAS_S{@SlotNumber + 7}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>BigEndian</name>
+            <snps:attribute name="InterfaceLink">&lt;open&gt;</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>DataWidth</name>
+            <snps:attribute name="InterfaceLink">&lt;open&gt;</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>ExternalDecoderSuppliesHselsToAhb</name>
+            <snps:attribute name="InterfaceLink">XDCDR_SUPPLIES_HSELS2AHB</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>HSelOnly_0</name>
+            <snps:attribute name="InterfaceLink">HSEL_ONLY_S{@SlotNumber}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>HSelOnly_1</name>
+            <snps:attribute name="InterfaceLink">HSEL_ONLY_S{@SlotNumber + 1}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>HSelOnly_2</name>
+            <snps:attribute name="InterfaceLink">HSEL_ONLY_S{@SlotNumber + 2}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>HSelOnly_3</name>
+            <snps:attribute name="InterfaceLink">HSEL_ONLY_S{@SlotNumber + 3}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>HSelOnly_4</name>
+            <snps:attribute name="InterfaceLink">HSEL_ONLY_S{@SlotNumber + 4}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>HSelOnly_5</name>
+            <snps:attribute name="InterfaceLink">HSEL_ONLY_S{@SlotNumber + 5}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>HSelOnly_6</name>
+            <snps:attribute name="InterfaceLink">HSEL_ONLY_S{@SlotNumber + 6}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>HSelOnly_7</name>
+            <snps:attribute name="InterfaceLink">HSEL_ONLY_S{@SlotNumber + 7}</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>NumConsumers</name>
+            <snps:attribute name="InterfaceLink">NUM_IAHB_SLAVES</snps:attribute>
+            <snps:attribute name="AssociationFormula">=max_value_SlotNumber_of_AHB_Slave</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>NumSelectSlots</name>
+            <snps:attribute name="InterfaceLink">&lt;open&gt;</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>SplitCapable</name>
+            <snps:attribute name="InterfaceLink">SPLIT_CAPABLE_@SlotNumber</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>UsingExternalDecoder</name>
+            <snps:attribute name="InterfaceLink">AHB_HAS_XDCDR</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfaceParameter>
+            <name>UsingInternalArbiter</name>
+            <snps:attribute name="InterfaceLink">AHB_HAS_ARBIF</snps:attribute>
+          </snps:interfaceParameter>
+          <snps:interfacePort>
+            <name>HRDATA</name>
+            <snps:attribute name="InterfaceLink">hrdata_s@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HREADYOUT</name>
+            <snps:attribute name="InterfaceLink">hready_resp_s@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HRESP</name>
+            <snps:attribute name="InterfaceLink">hresp_s@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+          <snps:interfacePort>
+            <name>HSELx</name>
+            <snps:attribute name="InterfaceLink">{@UsingExternalDecoder==0 &amp;&amp; @ExternalDecoderSuppliesHselsToAhb==0 ? {} : {}}hsel_s@SlotNumber</snps:attribute>
+          </snps:interfacePort>
+        </snps:busInterface>
+      </ipxact:vendorExtensions>
+    </ipxact:busInterface>
+    <ipxact:busInterface>
+      <ipxact:name>HCLK</ipxact:name>
+      <ipxact:busType vendor="amba.com" library="busdef.amba.amba2" name="ahb" version="r1p0"/>
+      <ipxact:abstractionTypes>
+        <ipxact:abstractionType>
+          <ipxact:abstractionRef vendor="amba.com" library="busdef.amba.amba2" name="ahb_rtl" version="r1p0"/>
+          <ipxact:portMaps>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HCLK</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hclk</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+          </ipxact:portMaps>
+        </ipxact:abstractionType>
+      </ipxact:abstractionTypes>
+      <ipxact:system>
+        <ipxact:group>AHB_CLK</ipxact:group>
+      </ipxact:system>
+    </ipxact:busInterface>
+    <ipxact:busInterface>
+      <ipxact:name>HRESETn</ipxact:name>
+      <ipxact:busType vendor="amba.com" library="busdef.amba.amba2" name="ahb" version="r1p0"/>
+      <ipxact:abstractionTypes>
+        <ipxact:abstractionType>
+          <ipxact:abstractionRef vendor="amba.com" library="busdef.amba.amba2" name="ahb_rtl" version="r1p0"/>
+          <ipxact:portMaps>
+            <ipxact:portMap>
+              <ipxact:logicalPort>
+                <ipxact:name>HRESETn</ipxact:name>
+              </ipxact:logicalPort>
+              <ipxact:physicalPort>
+                <ipxact:name>hresetn</ipxact:name>
+              </ipxact:physicalPort>
+            </ipxact:portMap>
+          </ipxact:portMaps>
+        </ipxact:abstractionType>
+      </ipxact:abstractionTypes>
+      <ipxact:system>
+        <ipxact:group>AHB_RESET</ipxact:group>
+      </ipxact:system>
+    </ipxact:busInterface>
+  </ipxact:busInterfaces>
+  <ipxact:channels>
+    <ipxact:channel>
+      <ipxact:name>AHB_Master</ipxact:name>
+      <ipxact:busInterfaceRef>
+        <ipxact:localName>AHB_Master_0</ipxact:localName>
+      </ipxact:busInterfaceRef>
+      <ipxact:busInterfaceRef>
+        <ipxact:localName>AHB_Master_1</ipxact:localName>
+      </ipxact:busInterfaceRef>
+      <ipxact:busInterfaceRef>
+        <ipxact:localName>AHB_Slave_0</ipxact:localName>
+      </ipxact:busInterfaceRef>
+      <ipxact:busInterfaceRef>
+        <ipxact:localName>AHB_Slave_1</ipxact:localName>
+      </ipxact:busInterfaceRef>
+      <ipxact:busInterfaceRef>
+        <ipxact:localName>AHB_Slave_2</ipxact:localName>
+      </ipxact:busInterfaceRef>
+    </ipxact:channel>
+  </ipxact:channels>
+  <ipxact:remapStates>
+    <ipxact:remapState>
+      <ipxact:name>Normal</ipxact:name>
+    </ipxact:remapState>
+  </ipxact:remapStates>
+  <ipxact:memoryMaps>
+    <ipxact:memoryMap>
+      <ipxact:name>DW_ahb_mem_map</ipxact:name>
+      <ipxact:addressBlock>
+        <ipxact:name>DW_ahb_addr_block</ipxact:name>
+        <ipxact:baseAddress>'h0</ipxact:baseAddress>
+        <ipxact:range>'h1000</ipxact:range>
+        <ipxact:width>32</ipxact:width>
+        <ipxact:register>
+          <ipxact:name>AHB_PL1</ipxact:name>
+          <ipxact:displayName>Arbitration Priority Master i Register</ipxact:displayName>
+          <ipxact:addressOffset>'h0</ipxact:addressOffset>
+          <ipxact:size>32</ipxact:size>
+          <ipxact:volatile>false</ipxact:volatile>
+          <ipxact:access>read-write</ipxact:access>
+          <ipxact:field>
+            <ipxact:name>AHB_PRIORITY_LEVELi</ipxact:name>
+            <ipxact:description>Arbitration priority for master i register used for programming the AHB master priority. Priority level 1 
+  is having the lowest priority, and 15 is having highest. For more information, refer the section "Master Priority Level Registers".
+</ipxact:description>
+            <ipxact:bitOffset>0</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h2</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>4</ipxact:bitWidth>
+            <ipxact:access>read-write</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>RSVD_AHB_PRIORITY_LEVELi</ipxact:name>
+            <ipxact:description>RSVD_AHB_PRIORITY_LEVELi Reserved bits - Read Only</ipxact:description>
+            <ipxact:bitOffset>4</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>28</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+        </ipxact:register>
+        <ipxact:register>
+          <ipxact:name>AHB_PL2</ipxact:name>
+          <ipxact:displayName>Arbitration Priority Master i Register</ipxact:displayName>
+          <ipxact:addressOffset>'h4</ipxact:addressOffset>
+          <ipxact:size>32</ipxact:size>
+          <ipxact:volatile>false</ipxact:volatile>
+          <ipxact:access>read-write</ipxact:access>
+          <ipxact:field>
+            <ipxact:name>AHB_PRIORITY_LEVELi</ipxact:name>
+            <ipxact:description>Arbitration priority for master i register used for programming the AHB master priority. Priority level 1 
+  is having the lowest priority, and 15 is having highest. For more information, refer the section "Master Priority Level Registers".
+</ipxact:description>
+            <ipxact:bitOffset>0</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h1</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>4</ipxact:bitWidth>
+            <ipxact:access>read-write</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>RSVD_AHB_PRIORITY_LEVELi</ipxact:name>
+            <ipxact:description>RSVD_AHB_PRIORITY_LEVELi Reserved bits - Read Only</ipxact:description>
+            <ipxact:bitOffset>4</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>28</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+        </ipxact:register>
+        <ipxact:register>
+          <ipxact:name>AHB_DFLT_MASTER</ipxact:name>
+          <ipxact:displayName>Default Master ID Number Register</ipxact:displayName>
+          <ipxact:description>Default Master ID Number Register. For more information refer section "Default Master versus Dummy Master".</ipxact:description>
+          <ipxact:addressOffset>'h48</ipxact:addressOffset>
+          <ipxact:size>32</ipxact:size>
+          <ipxact:volatile>false</ipxact:volatile>
+          <ipxact:access>read-write</ipxact:access>
+          <ipxact:field>
+            <ipxact:name>AHB_DFLT_MASTER</ipxact:name>
+            <ipxact:description>Default master ID number register. The default master is the master that is
+granted by the bus when no master has requested ownership.
+
+Dependencies:
+
+- DFT_MST is Read Only if HC_DFLT_MSTR = 1 or AHB_HAS_ARBIF = 1'b0.
+
+- If HC_DFLT_MSTR = 0 and AHB_HAS_ARBIF = 1'b1, this register accepts only writes for valid master numbers.
+
+Any write of a value greater than `NUM_AHB_MASTERS results in the DFT_MST register being set to 0x0.
+</ipxact:description>
+            <ipxact:bitOffset>0</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>4</ipxact:bitWidth>
+            <ipxact:access>read-write</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+          <ipxact:field>
+            <ipxact:name>RSVD_AHB_DFLT_MASTER</ipxact:name>
+            <ipxact:description>RSVD_AHB_DFLT_MASTER Reserved bits - Read Only.</ipxact:description>
+            <ipxact:bitOffset>4</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h0</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>28</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+        </ipxact:register>
+        <ipxact:register>
+          <ipxact:name>AHB_VERSION_ID</ipxact:name>
+          <ipxact:displayName>Component Version ID Register</ipxact:displayName>
+          <ipxact:description>Component Version ID Register. This register provides the component version ID.</ipxact:description>
+          <ipxact:addressOffset>'h90</ipxact:addressOffset>
+          <ipxact:size>32</ipxact:size>
+          <ipxact:volatile>false</ipxact:volatile>
+          <ipxact:access>read-only</ipxact:access>
+          <ipxact:field>
+            <ipxact:name>AHB_VERSION_ID</ipxact:name>
+            <ipxact:description>ASCII value for each number in the version, followed by *. For example 32_30_31_2A represents the version 2.01*.</ipxact:description>
+            <ipxact:bitOffset>0</ipxact:bitOffset>
+            <ipxact:resets>
+              <ipxact:reset>
+                <ipxact:value>'h3231332a</ipxact:value>
+              </ipxact:reset>
+            </ipxact:resets>
+            <ipxact:bitWidth>32</ipxact:bitWidth>
+            <ipxact:access>read-only</ipxact:access>
+            <ipxact:reserved>0</ipxact:reserved>
+          </ipxact:field>
+        </ipxact:register>
+      </ipxact:addressBlock>
+      <ipxact:addressUnitBits>8</ipxact:addressUnitBits>
+    </ipxact:memoryMap>
+  </ipxact:memoryMaps>
+  <ipxact:model>
+    <ipxact:views>
+      <ipxact:view>
+        <ipxact:name>RTL</ipxact:name>
+        <ipxact:envIdentifier>:*Synthesis:</ipxact:envIdentifier>
+        <ipxact:componentInstantiationRef>RTL</ipxact:componentInstantiationRef>
+      </ipxact:view>
+    </ipxact:views>
+    <ipxact:instantiations>
+      <ipxact:componentInstantiation>
+        <ipxact:name>RTL</ipxact:name>
+        <ipxact:description>No description available.</ipxact:description>
+        <ipxact:language strict="true">verilog</ipxact:language>
+        <ipxact:moduleName>i_ahb_DW_ahb</ipxact:moduleName>
+        <ipxact:fileSetRef>
+          <ipxact:localName>Hdl</ipxact:localName>
+        </ipxact:fileSetRef>
+      </ipxact:componentInstantiation>
+    </ipxact:instantiations>
+    <ipxact:ports>
+      <ipxact:port>
+        <ipxact:name>hclk</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+          <ipxact:drivers>
+            <ipxact:driver>
+              <ipxact:clockDriver>
+                <ipxact:clockPeriod>6</ipxact:clockPeriod>
+                <ipxact:clockPulseOffset>0</ipxact:clockPulseOffset>
+                <ipxact:clockPulseValue>1</ipxact:clockPulseValue>
+                <ipxact:clockPulseDuration>3</ipxact:clockPulseDuration>
+              </ipxact:clockDriver>
+            </ipxact:driver>
+          </ipxact:drivers>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hresetn</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>pause</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>haddr_m1</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>31</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>haddr_m2</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>31</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hburst_m1</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>2</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hburst_m2</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>2</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hbusreq_m1</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hbusreq_m2</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hlock_m1</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hlock_m2</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hprot_m1</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>3</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hprot_m2</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>3</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hsize_m1</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>2</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hsize_m2</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>2</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>htrans_m1</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>1</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>htrans_m2</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>1</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hwdata_m1</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>31</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hwdata_m2</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>31</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hwrite_m1</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hwrite_m2</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hgrant_m1</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>out</ipxact:direction>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hgrant_m2</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>out</ipxact:direction>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hrdata</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>out</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>31</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hready</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>out</ipxact:direction>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hresp</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>out</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>1</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hmaster</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>out</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>3</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hmaster_data</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>out</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>3</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hrdata_s1</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>31</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hrdata_s2</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>31</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hrdata_s3</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>31</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hready_resp_s1</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hready_resp_s2</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hready_resp_s3</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hresp_s1</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>1</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hresp_s2</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>1</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hresp_s3</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>in</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>1</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>haddr</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>out</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>31</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hburst</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>out</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>2</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hmastlock</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>out</ipxact:direction>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hprot</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>out</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>3</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hsel_s1</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>out</ipxact:direction>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hsel_s2</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>out</ipxact:direction>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hsel_s3</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>out</ipxact:direction>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hsize</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>out</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>2</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>htrans</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>out</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>1</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hwdata</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>out</ipxact:direction>
+          <ipxact:vectors>
+            <ipxact:vector>
+              <ipxact:left>31</ipxact:left>
+              <ipxact:right>0</ipxact:right>
+            </ipxact:vector>
+          </ipxact:vectors>
+        </ipxact:wire>
+      </ipxact:port>
+      <ipxact:port>
+        <ipxact:name>hwrite</ipxact:name>
+        <ipxact:wire>
+          <ipxact:direction>out</ipxact:direction>
+        </ipxact:wire>
+      </ipxact:port>
+    </ipxact:ports>
+  </ipxact:model>
+  <ipxact:fileSets>
+    <ipxact:fileSet>
+      <ipxact:name>Hdl</ipxact:name>
+      <ipxact:file>
+        <ipxact:name>i_ahb/src/DW_amba_constants.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_ahb/src/DW_ahb_cc_constants.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_ahb/src/DW_ahb_constants.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_ahb/src/DW_ahb_bcm_params.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_ahb/src/DW_ahb_bcm02.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_ahb/src/DW_ahb_bcm01.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_ahb/src/DW_ahb_bcm53.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_ahb/src/DW_ahb_arbif.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_ahb/src/DW_ahb_dcdr.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_ahb/src/DW_ahb_dfltslv.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_ahb/src/DW_ahb_ebt.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_ahb/src/DW_ahb_gctrl.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_ahb/src/DW_ahb_mask.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_ahb/src/DW_ahb_mux.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_ahb/src/DW_ahb_cntc.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_ahb/src/DW_ahb_gating.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_ahb/src/DW_ahb_wtps.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_ahb/src/DW_ahb_arb.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_ahb/src/DW_ahb.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+      <ipxact:file>
+        <ipxact:name>i_ahb/src/DW_ahb-undef.v</ipxact:name>
+        <ipxact:fileType>verilogSource</ipxact:fileType>
+        <ipxact:logicalName>work</ipxact:logicalName>
+      </ipxact:file>
+    </ipxact:fileSet>
+  </ipxact:fileSets>
+  <ipxact:parameters>
+    <ipxact:parameter parameterId="USE_FOUNDATION" resolve="immediate" type="longint">
+      <ipxact:name>USE_FOUNDATION</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_LITE" resolve="immediate" type="longint">
+      <ipxact:name>AHB_LITE</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="NUM_AHB_MASTERS" resolve="immediate" type="longint">
+      <ipxact:name>NUM_AHB_MASTERS</ipxact:name>
+      <ipxact:value>2</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HADDR_WIDTH" resolve="immediate" type="longint">
+      <ipxact:name>HADDR_WIDTH</ipxact:name>
+      <ipxact:value>32</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_DATA_WIDTH" resolve="immediate" type="longint">
+      <ipxact:name>AHB_DATA_WIDTH</ipxact:name>
+      <ipxact:value>32</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_XENDIAN" resolve="immediate" type="longint">
+      <ipxact:name>AHB_XENDIAN</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="BIG_ENDIAN" resolve="immediate" type="longint">
+      <ipxact:name>BIG_ENDIAN</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_HAS_XDCDR" resolve="immediate" type="longint">
+      <ipxact:name>AHB_HAS_XDCDR</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="REMAP" resolve="immediate" type="longint">
+      <ipxact:name>REMAP</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="PAUSE" resolve="immediate" type="longint">
+      <ipxact:name>PAUSE</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_DELAYED_PAUSE" resolve="immediate" type="longint">
+      <ipxact:name>AHB_DELAYED_PAUSE</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_HAS_ARBIF" resolve="immediate" type="longint">
+      <ipxact:name>AHB_HAS_ARBIF</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_WTEN" resolve="immediate" type="longint">
+      <ipxact:name>AHB_WTEN</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_WTEN_DEBUG" resolve="immediate" type="longint">
+      <ipxact:name>AHB_WTEN_DEBUG</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MID_WIDTH" resolve="immediate" type="longint">
+      <ipxact:name>MID_WIDTH</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_FULL_INCR" resolve="immediate" type="longint">
+      <ipxact:name>AHB_FULL_INCR</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="NUM_IAHB_SLAVES" resolve="immediate" type="longint">
+      <ipxact:name>NUM_IAHB_SLAVES</ipxact:name>
+      <ipxact:value>3</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="NUM_NAHB_SLAVES" resolve="immediate" type="longint">
+      <ipxact:name>NUM_NAHB_SLAVES</ipxact:name>
+      <ipxact:value>3</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="NUM_BAHB_SLAVES" resolve="immediate" type="longint">
+      <ipxact:name>NUM_BAHB_SLAVES</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_0" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_0</ipxact:name>
+      <ipxact:value>'h1000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_0" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_0</ipxact:name>
+      <ipxact:value>'h10003ff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_0" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_0</ipxact:name>
+      <ipxact:value>'h26000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_0" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_0</ipxact:name>
+      <ipxact:value>'h260003ff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HC_PRIORITIES" resolve="immediate" type="longint">
+      <ipxact:name>HC_PRIORITIES</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="DFLT_MSTR_NUM" resolve="immediate" type="bit">
+      <ipxact:name>DFLT_MSTR_NUM</ipxact:name>
+      <ipxact:value>'h0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HC_DFLT_MSTR" resolve="immediate" type="longint">
+      <ipxact:name>HC_DFLT_MSTR</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="EBTEN" resolve="immediate" type="longint">
+      <ipxact:name>EBTEN</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="GEN_HSEL0" resolve="immediate" type="longint">
+      <ipxact:name>GEN_HSEL0</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="PRIORITY_1" resolve="immediate" type="bit">
+      <ipxact:name>PRIORITY_1</ipxact:name>
+      <ipxact:value>'h2</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="PRIORITY_2" resolve="immediate" type="bit">
+      <ipxact:name>PRIORITY_2</ipxact:name>
+      <ipxact:value>'h1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="PRIORITY_3" resolve="immediate" type="bit">
+      <ipxact:name>PRIORITY_3</ipxact:name>
+      <ipxact:value>'h3</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="PRIORITY_4" resolve="immediate" type="bit">
+      <ipxact:name>PRIORITY_4</ipxact:name>
+      <ipxact:value>'h4</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="PRIORITY_5" resolve="immediate" type="bit">
+      <ipxact:name>PRIORITY_5</ipxact:name>
+      <ipxact:value>'h5</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="PRIORITY_6" resolve="immediate" type="bit">
+      <ipxact:name>PRIORITY_6</ipxact:name>
+      <ipxact:value>'h6</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="PRIORITY_7" resolve="immediate" type="bit">
+      <ipxact:name>PRIORITY_7</ipxact:name>
+      <ipxact:value>'h7</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="PRIORITY_8" resolve="immediate" type="bit">
+      <ipxact:name>PRIORITY_8</ipxact:name>
+      <ipxact:value>'h8</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="PRIORITY_9" resolve="immediate" type="bit">
+      <ipxact:name>PRIORITY_9</ipxact:name>
+      <ipxact:value>'h9</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="PRIORITY_10" resolve="immediate" type="bit">
+      <ipxact:name>PRIORITY_10</ipxact:name>
+      <ipxact:value>'ha</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="PRIORITY_11" resolve="immediate" type="bit">
+      <ipxact:name>PRIORITY_11</ipxact:name>
+      <ipxact:value>'hb</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="PRIORITY_12" resolve="immediate" type="bit">
+      <ipxact:name>PRIORITY_12</ipxact:name>
+      <ipxact:value>'hc</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="PRIORITY_13" resolve="immediate" type="bit">
+      <ipxact:name>PRIORITY_13</ipxact:name>
+      <ipxact:value>'hd</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="PRIORITY_14" resolve="immediate" type="bit">
+      <ipxact:name>PRIORITY_14</ipxact:name>
+      <ipxact:value>'he</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="PRIORITY_15" resolve="immediate" type="bit">
+      <ipxact:name>PRIORITY_15</ipxact:name>
+      <ipxact:value>'hf</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_1" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_1</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N1" resolve="immediate" type="longint">
+      <ipxact:name>MR_N1</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B1" resolve="immediate" type="longint">
+      <ipxact:name>MR_B1</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S1" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S1</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S1" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S1</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_1" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_1</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_1" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_1</ipxact:name>
+      <ipxact:value>'h3000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_1" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_1</ipxact:name>
+      <ipxact:value>'h4fff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_1" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_1</ipxact:name>
+      <ipxact:value>'h3000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_1" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_1</ipxact:name>
+      <ipxact:value>'h300ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R3_N_SA_1" resolve="immediate" type="bit">
+      <ipxact:name>R3_N_SA_1</ipxact:name>
+      <ipxact:value>'h4000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R3_N_EA_1" resolve="immediate" type="bit">
+      <ipxact:name>R3_N_EA_1</ipxact:name>
+      <ipxact:value>'h400ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R4_N_SA_1" resolve="immediate" type="bit">
+      <ipxact:name>R4_N_SA_1</ipxact:name>
+      <ipxact:value>'h5000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R4_N_EA_1" resolve="immediate" type="bit">
+      <ipxact:name>R4_N_EA_1</ipxact:name>
+      <ipxact:value>'h500ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R5_N_SA_1" resolve="immediate" type="bit">
+      <ipxact:name>R5_N_SA_1</ipxact:name>
+      <ipxact:value>'h6000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R5_N_EA_1" resolve="immediate" type="bit">
+      <ipxact:name>R5_N_EA_1</ipxact:name>
+      <ipxact:value>'h600ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R6_N_SA_1" resolve="immediate" type="bit">
+      <ipxact:name>R6_N_SA_1</ipxact:name>
+      <ipxact:value>'h7000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R6_N_EA_1" resolve="immediate" type="bit">
+      <ipxact:name>R6_N_EA_1</ipxact:name>
+      <ipxact:value>'h700ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R7_N_SA_1" resolve="immediate" type="bit">
+      <ipxact:name>R7_N_SA_1</ipxact:name>
+      <ipxact:value>'h8000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R7_N_EA_1" resolve="immediate" type="bit">
+      <ipxact:name>R7_N_EA_1</ipxact:name>
+      <ipxact:value>'h800ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R8_N_SA_1" resolve="immediate" type="bit">
+      <ipxact:name>R8_N_SA_1</ipxact:name>
+      <ipxact:value>'h9000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R8_N_EA_1" resolve="immediate" type="bit">
+      <ipxact:name>R8_N_EA_1</ipxact:name>
+      <ipxact:value>'h900ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_1" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_1</ipxact:name>
+      <ipxact:value>'h27000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_1" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_1</ipxact:name>
+      <ipxact:value>'h2700ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_1" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_1</ipxact:name>
+      <ipxact:value>'h28000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_1" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_1</ipxact:name>
+      <ipxact:value>'h2800ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R3_B_SA_1" resolve="immediate" type="bit">
+      <ipxact:name>R3_B_SA_1</ipxact:name>
+      <ipxact:value>'h29000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R3_B_EA_1" resolve="immediate" type="bit">
+      <ipxact:name>R3_B_EA_1</ipxact:name>
+      <ipxact:value>'h2900ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R4_B_SA_1" resolve="immediate" type="bit">
+      <ipxact:name>R4_B_SA_1</ipxact:name>
+      <ipxact:value>'h2a000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R4_B_EA_1" resolve="immediate" type="bit">
+      <ipxact:name>R4_B_EA_1</ipxact:name>
+      <ipxact:value>'h2a00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R5_B_SA_1" resolve="immediate" type="bit">
+      <ipxact:name>R5_B_SA_1</ipxact:name>
+      <ipxact:value>'h2b000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R5_B_EA_1" resolve="immediate" type="bit">
+      <ipxact:name>R5_B_EA_1</ipxact:name>
+      <ipxact:value>'h2b00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R6_B_SA_1" resolve="immediate" type="bit">
+      <ipxact:name>R6_B_SA_1</ipxact:name>
+      <ipxact:value>'h2c000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R6_B_EA_1" resolve="immediate" type="bit">
+      <ipxact:name>R6_B_EA_1</ipxact:name>
+      <ipxact:value>'h2c00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R7_B_SA_1" resolve="immediate" type="bit">
+      <ipxact:name>R7_B_SA_1</ipxact:name>
+      <ipxact:value>'h2d000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R7_B_EA_1" resolve="immediate" type="bit">
+      <ipxact:name>R7_B_EA_1</ipxact:name>
+      <ipxact:value>'h2d00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R8_B_SA_1" resolve="immediate" type="bit">
+      <ipxact:name>R8_B_SA_1</ipxact:name>
+      <ipxact:value>'h2e000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R8_B_EA_1" resolve="immediate" type="bit">
+      <ipxact:name>R8_B_EA_1</ipxact:name>
+      <ipxact:value>'h2e00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_2" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_2</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N2" resolve="immediate" type="longint">
+      <ipxact:name>MR_N2</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_2" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_2</ipxact:name>
+      <ipxact:value>'h2000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_2" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_2</ipxact:name>
+      <ipxact:value>'h2fff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_2" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_2</ipxact:name>
+      <ipxact:value>'hb000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_2" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_2</ipxact:name>
+      <ipxact:value>'hb00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B2" resolve="immediate" type="longint">
+      <ipxact:name>MR_B2</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_2" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_2</ipxact:name>
+      <ipxact:value>'h2f000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_2" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_2</ipxact:name>
+      <ipxact:value>'h2f00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_2" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_2</ipxact:name>
+      <ipxact:value>'h30000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_2" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_2</ipxact:name>
+      <ipxact:value>'h3000ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S2" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S2</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S2" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S2</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_2" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_2</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_3" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_3</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N3" resolve="immediate" type="longint">
+      <ipxact:name>MR_N3</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_3" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_3</ipxact:name>
+      <ipxact:value>'h0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_3" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_3</ipxact:name>
+      <ipxact:value>'hfff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_3" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_3</ipxact:name>
+      <ipxact:value>'hd000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_3" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_3</ipxact:name>
+      <ipxact:value>'hd00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B3" resolve="immediate" type="longint">
+      <ipxact:name>MR_B3</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_3" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_3</ipxact:name>
+      <ipxact:value>'h31000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_3" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_3</ipxact:name>
+      <ipxact:value>'h3100ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_3" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_3</ipxact:name>
+      <ipxact:value>'h32000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_3" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_3</ipxact:name>
+      <ipxact:value>'h3200ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S3" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S3</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S3" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S3</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_3" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_3</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_4" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_4</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N4" resolve="immediate" type="longint">
+      <ipxact:name>MR_N4</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_4" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_4</ipxact:name>
+      <ipxact:value>'he000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_4" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_4</ipxact:name>
+      <ipxact:value>'he00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_4" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_4</ipxact:name>
+      <ipxact:value>'hf000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_4" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_4</ipxact:name>
+      <ipxact:value>'hf00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B4" resolve="immediate" type="longint">
+      <ipxact:name>MR_B4</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_4" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_4</ipxact:name>
+      <ipxact:value>'h33000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_4" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_4</ipxact:name>
+      <ipxact:value>'h3300ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_4" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_4</ipxact:name>
+      <ipxact:value>'h34000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_4" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_4</ipxact:name>
+      <ipxact:value>'h3400ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S4" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S4</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S4" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S4</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_4" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_4</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_5" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_5</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N5" resolve="immediate" type="longint">
+      <ipxact:name>MR_N5</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_5" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_5</ipxact:name>
+      <ipxact:value>'h10000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_5" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_5</ipxact:name>
+      <ipxact:value>'h1000ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_5" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_5</ipxact:name>
+      <ipxact:value>'h11000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_5" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_5</ipxact:name>
+      <ipxact:value>'h1100ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B5" resolve="immediate" type="longint">
+      <ipxact:name>MR_B5</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_5" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_5</ipxact:name>
+      <ipxact:value>'h35000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_5" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_5</ipxact:name>
+      <ipxact:value>'h3500ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_5" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_5</ipxact:name>
+      <ipxact:value>'h36000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_5" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_5</ipxact:name>
+      <ipxact:value>'h3600ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S5" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S5</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S5" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S5</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_5" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_5</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_6" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_6</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N6" resolve="immediate" type="longint">
+      <ipxact:name>MR_N6</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_6" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_6</ipxact:name>
+      <ipxact:value>'h12000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_6" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_6</ipxact:name>
+      <ipxact:value>'h1200ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_6" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_6</ipxact:name>
+      <ipxact:value>'h13000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_6" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_6</ipxact:name>
+      <ipxact:value>'h1300ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B6" resolve="immediate" type="longint">
+      <ipxact:name>MR_B6</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_6" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_6</ipxact:name>
+      <ipxact:value>'h37000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_6" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_6</ipxact:name>
+      <ipxact:value>'h3700ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_6" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_6</ipxact:name>
+      <ipxact:value>'h38000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_6" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_6</ipxact:name>
+      <ipxact:value>'h3800ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S6" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S6</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S6" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S6</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_6" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_6</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_7" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_7</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N7" resolve="immediate" type="longint">
+      <ipxact:name>MR_N7</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_7" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_7</ipxact:name>
+      <ipxact:value>'h14000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_7" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_7</ipxact:name>
+      <ipxact:value>'h1400ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_7" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_7</ipxact:name>
+      <ipxact:value>'h15000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_7" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_7</ipxact:name>
+      <ipxact:value>'h1500ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B7" resolve="immediate" type="longint">
+      <ipxact:name>MR_B7</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_7" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_7</ipxact:name>
+      <ipxact:value>'h39000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_7" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_7</ipxact:name>
+      <ipxact:value>'h3900ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_7" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_7</ipxact:name>
+      <ipxact:value>'h3a000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_7" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_7</ipxact:name>
+      <ipxact:value>'h3a00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S7" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S7</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S7" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S7</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_7" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_7</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_8" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_8</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N8" resolve="immediate" type="longint">
+      <ipxact:name>MR_N8</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_8" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_8</ipxact:name>
+      <ipxact:value>'h16000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_8" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_8</ipxact:name>
+      <ipxact:value>'h1600ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_8" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_8</ipxact:name>
+      <ipxact:value>'h17000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_8" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_8</ipxact:name>
+      <ipxact:value>'h1700ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B8" resolve="immediate" type="longint">
+      <ipxact:name>MR_B8</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_8" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_8</ipxact:name>
+      <ipxact:value>'h3b000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_8" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_8</ipxact:name>
+      <ipxact:value>'h3b00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_8" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_8</ipxact:name>
+      <ipxact:value>'h3c000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_8" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_8</ipxact:name>
+      <ipxact:value>'h3c00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S8" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S8</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S8" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S8</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_8" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_8</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_9" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_9</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N9" resolve="immediate" type="longint">
+      <ipxact:name>MR_N9</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_9" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_9</ipxact:name>
+      <ipxact:value>'h18000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_9" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_9</ipxact:name>
+      <ipxact:value>'h1800ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_9" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_9</ipxact:name>
+      <ipxact:value>'h19000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_9" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_9</ipxact:name>
+      <ipxact:value>'h1900ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B9" resolve="immediate" type="longint">
+      <ipxact:name>MR_B9</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_9" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_9</ipxact:name>
+      <ipxact:value>'h3d000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_9" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_9</ipxact:name>
+      <ipxact:value>'h3d00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_9" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_9</ipxact:name>
+      <ipxact:value>'h3e000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_9" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_9</ipxact:name>
+      <ipxact:value>'h3e00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S9" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S9</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S9" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S9</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_9" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_9</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_10" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_10</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N10" resolve="immediate" type="longint">
+      <ipxact:name>MR_N10</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_10" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_10</ipxact:name>
+      <ipxact:value>'h1a000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_10" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_10</ipxact:name>
+      <ipxact:value>'h1a00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_10" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_10</ipxact:name>
+      <ipxact:value>'h1b000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_10" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_10</ipxact:name>
+      <ipxact:value>'h1b00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B10" resolve="immediate" type="longint">
+      <ipxact:name>MR_B10</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_10" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_10</ipxact:name>
+      <ipxact:value>'h3f000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_10" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_10</ipxact:name>
+      <ipxact:value>'h3f00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_10" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_10</ipxact:name>
+      <ipxact:value>'h40000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_10" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_10</ipxact:name>
+      <ipxact:value>'h4000ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S10" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S10</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S10" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S10</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_10" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_10</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_11" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_11</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N11" resolve="immediate" type="longint">
+      <ipxact:name>MR_N11</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_11" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_11</ipxact:name>
+      <ipxact:value>'h1c000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_11" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_11</ipxact:name>
+      <ipxact:value>'h1c00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_11" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_11</ipxact:name>
+      <ipxact:value>'h1d000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_11" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_11</ipxact:name>
+      <ipxact:value>'h1d00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B11" resolve="immediate" type="longint">
+      <ipxact:name>MR_B11</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_11" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_11</ipxact:name>
+      <ipxact:value>'h41000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_11" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_11</ipxact:name>
+      <ipxact:value>'h4100ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_11" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_11</ipxact:name>
+      <ipxact:value>'h42000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_11" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_11</ipxact:name>
+      <ipxact:value>'h4200ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S11" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S11</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S11" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S11</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_11" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_11</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_12" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_12</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N12" resolve="immediate" type="longint">
+      <ipxact:name>MR_N12</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_12" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_12</ipxact:name>
+      <ipxact:value>'h1e000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_12" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_12</ipxact:name>
+      <ipxact:value>'h1e00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_12" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_12</ipxact:name>
+      <ipxact:value>'h1f000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_12" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_12</ipxact:name>
+      <ipxact:value>'h1f00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B12" resolve="immediate" type="longint">
+      <ipxact:name>MR_B12</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_12" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_12</ipxact:name>
+      <ipxact:value>'h43000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_12" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_12</ipxact:name>
+      <ipxact:value>'h4300ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_12" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_12</ipxact:name>
+      <ipxact:value>'h44000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_12" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_12</ipxact:name>
+      <ipxact:value>'h4400ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S12" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S12</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S12" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S12</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_12" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_12</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_13" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_13</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N13" resolve="immediate" type="longint">
+      <ipxact:name>MR_N13</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_13" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_13</ipxact:name>
+      <ipxact:value>'h20000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_13" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_13</ipxact:name>
+      <ipxact:value>'h2000ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_13" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_13</ipxact:name>
+      <ipxact:value>'h21000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_13" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_13</ipxact:name>
+      <ipxact:value>'h2100ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B13" resolve="immediate" type="longint">
+      <ipxact:name>MR_B13</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_13" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_13</ipxact:name>
+      <ipxact:value>'h45000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_13" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_13</ipxact:name>
+      <ipxact:value>'h4500ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_13" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_13</ipxact:name>
+      <ipxact:value>'h46000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_13" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_13</ipxact:name>
+      <ipxact:value>'h4600ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S13" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S13</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S13" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S13</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_13" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_13</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_14" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_14</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N14" resolve="immediate" type="longint">
+      <ipxact:name>MR_N14</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_14" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_14</ipxact:name>
+      <ipxact:value>'h22000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_14" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_14</ipxact:name>
+      <ipxact:value>'h2200ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_14" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_14</ipxact:name>
+      <ipxact:value>'h23000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_14" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_14</ipxact:name>
+      <ipxact:value>'h2300ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B14" resolve="immediate" type="longint">
+      <ipxact:name>MR_B14</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_14" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_14</ipxact:name>
+      <ipxact:value>'h47000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_14" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_14</ipxact:name>
+      <ipxact:value>'h4700ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_14" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_14</ipxact:name>
+      <ipxact:value>'h48000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_14" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_14</ipxact:name>
+      <ipxact:value>'h4800ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S14" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S14</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S14" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S14</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_14" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_14</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_15" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_15</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N15" resolve="immediate" type="longint">
+      <ipxact:name>MR_N15</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_15" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_15</ipxact:name>
+      <ipxact:value>'h24000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_15" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_15</ipxact:name>
+      <ipxact:value>'h2400ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_15" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_15</ipxact:name>
+      <ipxact:value>'h25000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_15" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_15</ipxact:name>
+      <ipxact:value>'h2500ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B15" resolve="immediate" type="longint">
+      <ipxact:name>MR_B15</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_15" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_15</ipxact:name>
+      <ipxact:value>'h49000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_15" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_15</ipxact:name>
+      <ipxact:value>'h4900ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_15" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_15</ipxact:name>
+      <ipxact:value>'h4a000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_15" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_15</ipxact:name>
+      <ipxact:value>'h4a00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S15" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S15</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S15" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S15</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_15" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_15</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_16" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_16</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N16" resolve="immediate" type="longint">
+      <ipxact:name>MR_N16</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_16" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_16</ipxact:name>
+      <ipxact:value>'h4b000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_16" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_16</ipxact:name>
+      <ipxact:value>'h4b00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_16" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_16</ipxact:name>
+      <ipxact:value>'h4c000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_16" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_16</ipxact:name>
+      <ipxact:value>'h4c00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B16" resolve="immediate" type="longint">
+      <ipxact:name>MR_B16</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_16" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_16</ipxact:name>
+      <ipxact:value>'h6b000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_16" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_16</ipxact:name>
+      <ipxact:value>'h6b00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_16" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_16</ipxact:name>
+      <ipxact:value>'h6c000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_16" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_16</ipxact:name>
+      <ipxact:value>'h6c00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S16" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S16</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S16" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S16</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_16" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_16</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_17" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_17</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N17" resolve="immediate" type="longint">
+      <ipxact:name>MR_N17</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_17" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_17</ipxact:name>
+      <ipxact:value>'h4d000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_17" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_17</ipxact:name>
+      <ipxact:value>'h4d00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_17" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_17</ipxact:name>
+      <ipxact:value>'h4e000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_17" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_17</ipxact:name>
+      <ipxact:value>'h4e00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B17" resolve="immediate" type="longint">
+      <ipxact:name>MR_B17</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_17" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_17</ipxact:name>
+      <ipxact:value>'h6d000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_17" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_17</ipxact:name>
+      <ipxact:value>'h6d00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_17" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_17</ipxact:name>
+      <ipxact:value>'h6e000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_17" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_17</ipxact:name>
+      <ipxact:value>'h6e00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S17" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S17</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S17" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S17</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_17" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_17</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_18" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_18</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N18" resolve="immediate" type="longint">
+      <ipxact:name>MR_N18</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_18" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_18</ipxact:name>
+      <ipxact:value>'h4f000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_18" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_18</ipxact:name>
+      <ipxact:value>'h4f00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_18" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_18</ipxact:name>
+      <ipxact:value>'h50000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_18" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_18</ipxact:name>
+      <ipxact:value>'h5000ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B18" resolve="immediate" type="longint">
+      <ipxact:name>MR_B18</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_18" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_18</ipxact:name>
+      <ipxact:value>'h6f000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_18" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_18</ipxact:name>
+      <ipxact:value>'h6f00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_18" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_18</ipxact:name>
+      <ipxact:value>'h70000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_18" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_18</ipxact:name>
+      <ipxact:value>'h7000ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S18" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S18</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S18" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S18</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_18" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_18</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_19" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_19</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N19" resolve="immediate" type="longint">
+      <ipxact:name>MR_N19</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_19" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_19</ipxact:name>
+      <ipxact:value>'h51000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_19" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_19</ipxact:name>
+      <ipxact:value>'h5100ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_19" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_19</ipxact:name>
+      <ipxact:value>'h52000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_19" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_19</ipxact:name>
+      <ipxact:value>'h5200ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B19" resolve="immediate" type="longint">
+      <ipxact:name>MR_B19</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_19" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_19</ipxact:name>
+      <ipxact:value>'h71000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_19" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_19</ipxact:name>
+      <ipxact:value>'h7100ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_19" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_19</ipxact:name>
+      <ipxact:value>'h72000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_19" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_19</ipxact:name>
+      <ipxact:value>'h7200ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S19" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S19</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S19" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S19</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_19" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_19</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_20" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_20</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N20" resolve="immediate" type="longint">
+      <ipxact:name>MR_N20</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_20" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_20</ipxact:name>
+      <ipxact:value>'h53000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_20" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_20</ipxact:name>
+      <ipxact:value>'h5300ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_20" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_20</ipxact:name>
+      <ipxact:value>'h54000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_20" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_20</ipxact:name>
+      <ipxact:value>'h5400ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B20" resolve="immediate" type="longint">
+      <ipxact:name>MR_B20</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_20" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_20</ipxact:name>
+      <ipxact:value>'h73000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_20" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_20</ipxact:name>
+      <ipxact:value>'h7300ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_20" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_20</ipxact:name>
+      <ipxact:value>'h74000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_20" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_20</ipxact:name>
+      <ipxact:value>'h7400ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S20" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S20</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S20" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S20</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_20" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_20</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_21" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_21</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N21" resolve="immediate" type="longint">
+      <ipxact:name>MR_N21</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_21" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_21</ipxact:name>
+      <ipxact:value>'h55000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_21" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_21</ipxact:name>
+      <ipxact:value>'h5500ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_21" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_21</ipxact:name>
+      <ipxact:value>'h56000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_21" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_21</ipxact:name>
+      <ipxact:value>'h5600ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B21" resolve="immediate" type="longint">
+      <ipxact:name>MR_B21</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_21" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_21</ipxact:name>
+      <ipxact:value>'h75000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_21" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_21</ipxact:name>
+      <ipxact:value>'h7500ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_21" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_21</ipxact:name>
+      <ipxact:value>'h76000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_21" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_21</ipxact:name>
+      <ipxact:value>'h7600ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S21" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S21</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S21" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S21</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_21" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_21</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_22" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_22</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N22" resolve="immediate" type="longint">
+      <ipxact:name>MR_N22</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_22" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_22</ipxact:name>
+      <ipxact:value>'h57000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_22" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_22</ipxact:name>
+      <ipxact:value>'h5700ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_22" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_22</ipxact:name>
+      <ipxact:value>'h58000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_22" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_22</ipxact:name>
+      <ipxact:value>'h5800ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B22" resolve="immediate" type="longint">
+      <ipxact:name>MR_B22</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_22" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_22</ipxact:name>
+      <ipxact:value>'h77000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_22" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_22</ipxact:name>
+      <ipxact:value>'h7700ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_22" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_22</ipxact:name>
+      <ipxact:value>'h78000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_22" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_22</ipxact:name>
+      <ipxact:value>'h7800ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S22" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S22</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S22" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S22</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_22" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_22</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_23" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_23</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N23" resolve="immediate" type="longint">
+      <ipxact:name>MR_N23</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_23" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_23</ipxact:name>
+      <ipxact:value>'h59000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_23" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_23</ipxact:name>
+      <ipxact:value>'h5900ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_23" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_23</ipxact:name>
+      <ipxact:value>'h5a000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_23" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_23</ipxact:name>
+      <ipxact:value>'h5a00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B23" resolve="immediate" type="longint">
+      <ipxact:name>MR_B23</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_23" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_23</ipxact:name>
+      <ipxact:value>'h79000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_23" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_23</ipxact:name>
+      <ipxact:value>'h7900ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_23" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_23</ipxact:name>
+      <ipxact:value>'h7a000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_23" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_23</ipxact:name>
+      <ipxact:value>'h7a00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S23" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S23</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S23" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S23</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_23" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_23</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_24" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_24</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N24" resolve="immediate" type="longint">
+      <ipxact:name>MR_N24</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_24" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_24</ipxact:name>
+      <ipxact:value>'h5b000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_24" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_24</ipxact:name>
+      <ipxact:value>'h5b00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_24" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_24</ipxact:name>
+      <ipxact:value>'h5c000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_24" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_24</ipxact:name>
+      <ipxact:value>'h5c00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B24" resolve="immediate" type="longint">
+      <ipxact:name>MR_B24</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_24" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_24</ipxact:name>
+      <ipxact:value>'h7b000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_24" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_24</ipxact:name>
+      <ipxact:value>'h7b00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_24" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_24</ipxact:name>
+      <ipxact:value>'h7c000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_24" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_24</ipxact:name>
+      <ipxact:value>'h7c00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S24" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S24</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S24" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S24</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_24" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_24</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_25" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_25</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N25" resolve="immediate" type="longint">
+      <ipxact:name>MR_N25</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_25" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_25</ipxact:name>
+      <ipxact:value>'h5d000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_25" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_25</ipxact:name>
+      <ipxact:value>'h5d00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_25" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_25</ipxact:name>
+      <ipxact:value>'h5e000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_25" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_25</ipxact:name>
+      <ipxact:value>'h5e00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B25" resolve="immediate" type="longint">
+      <ipxact:name>MR_B25</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_25" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_25</ipxact:name>
+      <ipxact:value>'h7d000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_25" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_25</ipxact:name>
+      <ipxact:value>'h7d00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_25" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_25</ipxact:name>
+      <ipxact:value>'h7e000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_25" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_25</ipxact:name>
+      <ipxact:value>'h7e00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S25" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S25</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S25" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S25</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_25" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_25</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_26" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_26</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N26" resolve="immediate" type="longint">
+      <ipxact:name>MR_N26</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_26" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_26</ipxact:name>
+      <ipxact:value>'h5f000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_26" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_26</ipxact:name>
+      <ipxact:value>'h5f00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_26" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_26</ipxact:name>
+      <ipxact:value>'h60000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_26" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_26</ipxact:name>
+      <ipxact:value>'h6000ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B26" resolve="immediate" type="longint">
+      <ipxact:name>MR_B26</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_26" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_26</ipxact:name>
+      <ipxact:value>'h7f000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_26" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_26</ipxact:name>
+      <ipxact:value>'h7f00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_26" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_26</ipxact:name>
+      <ipxact:value>'h80000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_26" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_26</ipxact:name>
+      <ipxact:value>'h8000ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S26" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S26</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S26" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S26</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_26" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_26</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_27" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_27</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N27" resolve="immediate" type="longint">
+      <ipxact:name>MR_N27</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_27" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_27</ipxact:name>
+      <ipxact:value>'h61000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_27" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_27</ipxact:name>
+      <ipxact:value>'h6100ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_27" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_27</ipxact:name>
+      <ipxact:value>'h62000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_27" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_27</ipxact:name>
+      <ipxact:value>'h6200ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B27" resolve="immediate" type="longint">
+      <ipxact:name>MR_B27</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_27" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_27</ipxact:name>
+      <ipxact:value>'h81000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_27" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_27</ipxact:name>
+      <ipxact:value>'h8100ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_27" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_27</ipxact:name>
+      <ipxact:value>'h82000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_27" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_27</ipxact:name>
+      <ipxact:value>'h8200ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S27" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S27</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S27" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S27</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_27" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_27</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_28" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_28</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N28" resolve="immediate" type="longint">
+      <ipxact:name>MR_N28</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_28" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_28</ipxact:name>
+      <ipxact:value>'h63000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_28" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_28</ipxact:name>
+      <ipxact:value>'h6300ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_28" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_28</ipxact:name>
+      <ipxact:value>'h64000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_28" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_28</ipxact:name>
+      <ipxact:value>'h6400ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B28" resolve="immediate" type="longint">
+      <ipxact:name>MR_B28</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_28" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_28</ipxact:name>
+      <ipxact:value>'h83000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_28" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_28</ipxact:name>
+      <ipxact:value>'h8300ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_28" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_28</ipxact:name>
+      <ipxact:value>'h84000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_28" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_28</ipxact:name>
+      <ipxact:value>'h8400ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S28" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S28</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S28" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S28</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_28" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_28</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_29" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_29</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N29" resolve="immediate" type="longint">
+      <ipxact:name>MR_N29</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_29" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_29</ipxact:name>
+      <ipxact:value>'h65000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_29" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_29</ipxact:name>
+      <ipxact:value>'h6500ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_29" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_29</ipxact:name>
+      <ipxact:value>'h66000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_29" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_29</ipxact:name>
+      <ipxact:value>'h6600ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B29" resolve="immediate" type="longint">
+      <ipxact:name>MR_B29</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_29" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_29</ipxact:name>
+      <ipxact:value>'h85000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_29" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_29</ipxact:name>
+      <ipxact:value>'h8500ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_29" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_29</ipxact:name>
+      <ipxact:value>'h86000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_29" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_29</ipxact:name>
+      <ipxact:value>'h8600ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S29" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S29</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S29" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S29</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_29" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_29</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_30" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_30</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N30" resolve="immediate" type="longint">
+      <ipxact:name>MR_N30</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_30" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_30</ipxact:name>
+      <ipxact:value>'h67000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_30" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_30</ipxact:name>
+      <ipxact:value>'h6700ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_30" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_30</ipxact:name>
+      <ipxact:value>'h68000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_30" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_30</ipxact:name>
+      <ipxact:value>'h6800ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B30" resolve="immediate" type="longint">
+      <ipxact:name>MR_B30</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_30" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_30</ipxact:name>
+      <ipxact:value>'h87000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_30" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_30</ipxact:name>
+      <ipxact:value>'h8700ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_30" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_30</ipxact:name>
+      <ipxact:value>'h88000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_30" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_30</ipxact:name>
+      <ipxact:value>'h8800ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S30" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S30</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S30" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S30</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_30" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_30</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="VISIBLE_31" resolve="immediate" type="longint">
+      <ipxact:name>VISIBLE_31</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_N31" resolve="immediate" type="longint">
+      <ipxact:name>MR_N31</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_SA_31" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_SA_31</ipxact:name>
+      <ipxact:value>'h69000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_N_EA_31" resolve="immediate" type="bit">
+      <ipxact:name>R1_N_EA_31</ipxact:name>
+      <ipxact:value>'h6900ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_SA_31" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_SA_31</ipxact:name>
+      <ipxact:value>'h6a000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_N_EA_31" resolve="immediate" type="bit">
+      <ipxact:name>R2_N_EA_31</ipxact:name>
+      <ipxact:value>'h6a00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="MR_B31" resolve="immediate" type="longint">
+      <ipxact:name>MR_B31</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_SA_31" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_SA_31</ipxact:name>
+      <ipxact:value>'h89000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R1_B_EA_31" resolve="immediate" type="bit">
+      <ipxact:name>R1_B_EA_31</ipxact:name>
+      <ipxact:value>'h8900ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_SA_31" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_SA_31</ipxact:name>
+      <ipxact:value>'h8a000000</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="R2_B_EA_31" resolve="immediate" type="bit">
+      <ipxact:name>R2_B_EA_31</ipxact:name>
+      <ipxact:value>'h8a00ffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="HSEL_ONLY_S31" resolve="immediate" type="longint">
+      <ipxact:name>HSEL_ONLY_S31</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="ALIAS_S31" resolve="immediate" type="longint">
+      <ipxact:name>ALIAS_S31</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="SPLIT_CAPABLE_31" resolve="immediate" type="longint">
+      <ipxact:name>SPLIT_CAPABLE_31</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_TPS_MODE" resolve="immediate" type="longint">
+      <ipxact:name>AHB_TPS_MODE</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_TCL_WIDTH" resolve="immediate" type="longint">
+      <ipxact:name>AHB_TCL_WIDTH</ipxact:name>
+      <ipxact:value>32</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_CCL_WIDTH" resolve="immediate" type="longint">
+      <ipxact:name>AHB_CCL_WIDTH</ipxact:name>
+      <ipxact:value>32</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_HC_TOKENS" resolve="immediate" type="longint">
+      <ipxact:name>AHB_HC_TOKENS</ipxact:name>
+      <ipxact:value>1</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_TCL" resolve="immediate" type="bit">
+      <ipxact:name>AHB_TCL</ipxact:name>
+      <ipxact:value>'hffff</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_CL_M1" resolve="immediate" type="bit">
+      <ipxact:name>AHB_CL_M1</ipxact:name>
+      <ipxact:value>'hf</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_CL_M2" resolve="immediate" type="bit">
+      <ipxact:name>AHB_CL_M2</ipxact:name>
+      <ipxact:value>'hf</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_CL_M3" resolve="immediate" type="bit">
+      <ipxact:name>AHB_CL_M3</ipxact:name>
+      <ipxact:value>'hf</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_CL_M4" resolve="immediate" type="bit">
+      <ipxact:name>AHB_CL_M4</ipxact:name>
+      <ipxact:value>'hf</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_CL_M5" resolve="immediate" type="bit">
+      <ipxact:name>AHB_CL_M5</ipxact:name>
+      <ipxact:value>'hf</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_CL_M6" resolve="immediate" type="bit">
+      <ipxact:name>AHB_CL_M6</ipxact:name>
+      <ipxact:value>'hf</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_CL_M7" resolve="immediate" type="bit">
+      <ipxact:name>AHB_CL_M7</ipxact:name>
+      <ipxact:value>'hf</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_CL_M8" resolve="immediate" type="bit">
+      <ipxact:name>AHB_CL_M8</ipxact:name>
+      <ipxact:value>'hf</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_CL_M9" resolve="immediate" type="bit">
+      <ipxact:name>AHB_CL_M9</ipxact:name>
+      <ipxact:value>'hf</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_CL_M10" resolve="immediate" type="bit">
+      <ipxact:name>AHB_CL_M10</ipxact:name>
+      <ipxact:value>'hf</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_CL_M11" resolve="immediate" type="bit">
+      <ipxact:name>AHB_CL_M11</ipxact:name>
+      <ipxact:value>'hf</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_CL_M12" resolve="immediate" type="bit">
+      <ipxact:name>AHB_CL_M12</ipxact:name>
+      <ipxact:value>'hf</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_CL_M13" resolve="immediate" type="bit">
+      <ipxact:name>AHB_CL_M13</ipxact:name>
+      <ipxact:value>'hf</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_CL_M14" resolve="immediate" type="bit">
+      <ipxact:name>AHB_CL_M14</ipxact:name>
+      <ipxact:value>'hf</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="AHB_CL_M15" resolve="immediate" type="bit">
+      <ipxact:name>AHB_CL_M15</ipxact:name>
+      <ipxact:value>'hf</ipxact:value>
+    </ipxact:parameter>
+    <ipxact:parameter parameterId="XDCDR_SUPPLIES_HSELS2AHB" resolve="immediate" type="longint">
+      <ipxact:name>XDCDR_SUPPLIES_HSELS2AHB</ipxact:name>
+      <ipxact:value>0</ipxact:value>
+    </ipxact:parameter>
+  </ipxact:parameters>
+  <ipxact:vendorExtensions>
+    <snps:component>
+      <snps:checksum>hkDTdRDSEzlq7ihF/5DmAw==</snps:checksum>
+      <snps:attribute instance="true" name="SymbolLibraryPath">=file join $synopsys_root auxx/dware/designware/dw_symbols.xml</snps:attribute>
+      <snps:attribute instance="true" name="SymbolName">DW_ahb</snps:attribute>
+      <snps:attribute name="OriginalUnelabName">DW_ahb</snps:attribute>
+      <snps:attribute name="SymbolType">bus</snps:attribute>
+      <snps:postInstanceText>set intf  [find_interface_instance -name AHB_Slave]
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 0 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 1 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 2 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 3 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 4 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 5 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 6 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 7 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 8 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 9 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 10 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 11 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 12 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 13 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 14 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 15 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 16 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 17 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 18 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 19 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 20 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 21 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 22 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 23 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 24 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 25 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 26 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 27 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 28 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 29 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 30 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Master]
+set_attribute $intf -attr Channel -subscript 31 -value $value
+set intf  [find_interface_instance -name AHB_Master]
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 0 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 1 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 2 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 3 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 4 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 5 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 6 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 7 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 8 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 9 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 10 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 11 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 12 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 13 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 14 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 15 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 16 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 17 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 18 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 19 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 20 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 21 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 22 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 23 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 24 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 25 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 26 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 27 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 28 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 29 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 30 -value $value
+set value {}
+append_to_collection value [find_interface_instance -name AHB_Slave]
+set_attribute $intf -attr Channel -subscript 31 -value $value</snps:postInstanceText>
+    </snps:component>
+  </ipxact:vendorExtensions>
+</ipxact:component>
+

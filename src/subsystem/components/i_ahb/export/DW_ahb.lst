@@ -1,0 +1,24 @@
+// component: /i_ahb
+// library: work
+// files:
+/root/Subsystem1/components/i_ahb/src/DW_amba_constants.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_cc_constants.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_constants.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_bcm_params.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_bcm02.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_bcm01.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_bcm53.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_arbif.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_dcdr.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_dfltslv.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_ebt.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_gctrl.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_mask.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_mux.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_cntc.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_gating.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_wtps.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb_arb.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb.v
+/root/Subsystem1/components/i_ahb/src/DW_ahb-undef.v
+
