@@ -36,21 +36,27 @@ char	*argv[];
 {
     unsigned int a;
     unsigned int i;
+    unsigned int limit;
+    limit = 5000;
 
-    for (i=0; i <100; i=i+4) {
+    for (i=0; i <limit; i=i+4) {
         WRITE_REG(BASE_ADRS +i, i);
     }
 
-    for (i=0; i <100; i=i+4) {
+
+    printf("finish wirte test\n");
+
+    for (i=0; i <limit; i=i+4) {
         READ_REG(BASE_ADRS +i, a);
         if (a != i) { 
-            printf(" mismatch \n");
-            printf("%d != %d  \n",a,i);
+            //printf(" mismatch \n");
+            //printf("%d != %d  \n",a,i);
         }else{ 
-            printf("%d\n",a);
+            //printf("%d\n",a);
         }
     }
 
+    printf("finish test\n");
 
   //din = a;
 

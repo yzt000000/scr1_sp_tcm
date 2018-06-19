@@ -35,114 +35,150 @@ module scr1_tcm
     output  type_scr1_mem_resp_e            dmem_resp
 );
 
-string stuff_file; 
-//-------------------------------------------------------------------------------
-// Local signal declaration
-//-------------------------------------------------------------------------------
-logic                               imem_req_en;
-logic                               dmem_req_en;
-logic                               imem_rd;
-logic                               dmem_rd;
-logic                               dmem_wr;
-logic [`SCR1_DMEM_DWIDTH-1:0]       dmem_writedata;
-logic [`SCR1_DMEM_DWIDTH-1:0]       dmem_rdata_local;
-logic [3:0]                         dmem_byteen;
-logic [1:0]                         dmem_rdata_shift_reg;
-//-------------------------------------------------------------------------------
-// Core interface
-//-------------------------------------------------------------------------------
-assign imem_req_en = (imem_resp == SCR1_MEM_RESP_RDY_OK) ^ imem_req;
-assign dmem_req_en = (dmem_resp == SCR1_MEM_RESP_RDY_OK) ^ dmem_req;
+logic                           i_imem_req_ack         ;
+logic                           i_imem_req             ;
+type_scr1_mem_cmd_e             i_imem_cmd             ;
+logic [`SCR1_IMEM_AWIDTH-1:0]   i_imem_addr            ;
+logic [`SCR1_IMEM_DWIDTH-1:0]   i_imem_rdata           ;
+type_scr1_mem_resp_e            i_imem_resp            ;
 
-always_ff @(posedge clk, negedge rst_n) begin
-    if (~rst_n) begin
-        imem_resp <= SCR1_MEM_RESP_NOTRDY;
-    end else if (imem_req_en) begin
-        imem_resp <= imem_req ? SCR1_MEM_RESP_RDY_OK : SCR1_MEM_RESP_NOTRDY;
-    end
-end
+// Core data interface
+logic                           i_dmem_req_ack         ;
+logic                           i_dmem_req             ;
+type_scr1_mem_cmd_e             i_dmem_cmd             ;
+type_scr1_mem_width_e           i_dmem_width           ;
+logic [`SCR1_DMEM_AWIDTH-1:0]   i_dmem_addr            ;
+logic [`SCR1_DMEM_DWIDTH-1:0]   i_dmem_wdata           ;
+logic [`SCR1_DMEM_DWIDTH-1:0]   i_dmem_rdata           ;
+type_scr1_mem_resp_e            i_dmem_resp            ;
 
-always_ff @(posedge clk, negedge rst_n) begin
-    if (~rst_n) begin
-        dmem_resp <= SCR1_MEM_RESP_NOTRDY;
-    end else if (dmem_req_en) begin
-        dmem_resp <= dmem_req ? SCR1_MEM_RESP_RDY_OK : SCR1_MEM_RESP_NOTRDY;
-    end
-end
+logic                           d_imem_req_ack         ;
+logic                           d_imem_req             ;
+type_scr1_mem_cmd_e             d_imem_cmd             ;
+logic [`SCR1_IMEM_AWIDTH-1:0]   d_imem_addr            ;
+logic [`SCR1_IMEM_DWIDTH-1:0]   d_imem_rdata           ;
+type_scr1_mem_resp_e            d_imem_resp            ;
 
-assign imem_req_ack = 1'b1;
-assign dmem_req_ack = 1'b1;
-//-------------------------------------------------------------------------------
-// Memory data composing
-//-------------------------------------------------------------------------------
-assign imem_rd  = 1'b1;
-assign dmem_rd  = 1'b1;
-assign dmem_wr  = dmem_req & (dmem_cmd == SCR1_MEM_CMD_WR);
+// Core data interface
+logic                           d_dmem_req_ack         ;
+logic                           d_dmem_req             ;
+type_scr1_mem_cmd_e             d_dmem_cmd             ;
+type_scr1_mem_width_e           d_dmem_width           ;
+logic [`SCR1_DMEM_AWIDTH-1:0]   d_dmem_addr            ;
+logic [`SCR1_DMEM_DWIDTH-1:0]   d_dmem_wdata           ;
+logic [`SCR1_DMEM_DWIDTH-1:0]   d_dmem_rdata           ;
+type_scr1_mem_resp_e            d_dmem_resp            ;
 
-always_comb begin
-    dmem_writedata = dmem_wdata;
-    dmem_byteen    = 4'b1111;
-    case ( dmem_width )
-        SCR1_MEM_WIDTH_BYTE : begin
-            dmem_writedata  = {(`SCR1_DMEM_DWIDTH /  8){dmem_wdata[7:0]}};
-            dmem_byteen     = 1'b1 << dmem_addr[1:0];
-        end
-        SCR1_MEM_WIDTH_HWORD : begin
-            dmem_writedata  = {(`SCR1_DMEM_DWIDTH / 16){dmem_wdata[15:0]}};
-            dmem_byteen     = 2'b11 << {dmem_addr[1], 1'b0};
-        end
-        default : begin
-        end
-    endcase
-end
+logic  itcm_addr_match ;
 
+assign itcm_addr_match = imem_addr[31:16] == 16'h0048 ; 
+assign dtcm_addr_match = dmem_addr[31:16] == 16'h0048 ;
 
-always @(negedge rst_n) begin
-    if (stuff_file.len() > 0) begin                                                                                                        
-        $display(stuff_file);
-        $display("#######################################################\n");
-        $readmemh(stuff_file,i_dp_memory.ram_block);
-    end else begin
-     //   i_dp_memory.memory_array = '{2**24{'0}};
-    end
-end
+assign i_imem_req    = imem_req   && itcm_addr_match  ;
+assign i_imem_cmd    = imem_cmd    ;
+assign i_imem_addr   = imem_addr   ;
+
+assign i_dmem_req    = dmem_req   && dtcm_addr_match  ;
+assign i_dmem_cmd    = dmem_cmd    ;
+assign i_dmem_width  = dmem_width  ;
+assign i_dmem_addr   = dmem_addr   ;
+assign i_dmem_wdata  = dmem_wdata  ;
+
+assign d_imem_req    = imem_req   && ~itcm_addr_match ;
+assign d_imem_cmd    = imem_cmd    ;
+assign d_imem_addr   = imem_addr   ;
+
+assign d_dmem_req    = dmem_req   && ~dtcm_addr_match ;
+assign d_dmem_cmd    = dmem_cmd    ;
+assign d_dmem_width  = dmem_width  ;
+assign d_dmem_addr   = dmem_addr   ;
+assign d_dmem_wdata  = dmem_wdata  ;
+
+//assign imem_req_ack  = i_imem_req_ack | d_imem_req_ack                      ;
+assign imem_req_ack  = 1'b1;
+assign imem_rdata    = i_imem_req_ack ? i_imem_rdata   : d_imem_rdata       ;
+assign imem_resp     = i_imem_req_ack ? i_imem_resp    : d_imem_resp;
+
+//assign dmem_req_ack  = i_dmem_req_ack | d_dmem_req_ack ;
+assign dmem_req_ack  = 1'b1; 
+assign dmem_rdata    = i_dmem_req_ack ? i_dmem_rdata   : d_dmem_rdata       ;
+assign dmem_resp     = i_dmem_req_ack ? i_dmem_resp    : d_dmem_resp        ;
 
 
 
+scr1_itcm #(
+        .SCR1_TCM_SIZE  (SCR1_TCM_SIZE)
+)
+scr1_itcm (/*autoinst*/
+       // Interfaces
+       .imem_cmd            (i_imem_cmd                          ),
+       .imem_resp           (i_imem_resp                         ),
+       .dmem_cmd            (i_dmem_cmd                          ),
+       .dmem_width          (i_dmem_width                        ),
+       .dmem_resp           (i_dmem_resp                         ),
+       // Outputs
+       .imem_req_ack        (i_imem_req_ack                      ),
+       .imem_rdata          (i_imem_rdata[`SCR1_IMEM_DWIDTH-1:0] ),
+       .dmem_req_ack        (i_dmem_req_ack),
+       .dmem_rdata          (i_dmem_rdata[`SCR1_DMEM_DWIDTH-1:0] ),
+       // Inputs
+       .clk                 (clk                                 ),
+       .rst_n               (rst_n                               ),
+       .imem_req            (i_imem_req),
+       .imem_addr           (i_imem_addr[`SCR1_IMEM_AWIDTH-1:0]  ),
+       .dmem_req            (i_dmem_req),
+       .dmem_addr           (i_dmem_addr[`SCR1_DMEM_AWIDTH-1:0]  ),
+       .dmem_wdata          (i_dmem_wdata[`SCR1_DMEM_DWIDTH-1:0] )
+ );
 
 
-//-------------------------------------------------------------------------------
-// Memory instantiation
-//-------------------------------------------------------------------------------
-scr1_dp_memory #(
-    .SCR1_WIDTH ( 32            ),
-    .SCR1_SIZE  ( SCR1_TCM_SIZE )
-) i_dp_memory (
-    .clk    ( clk                                   ),
-    // Instruction port
-    // Port A
-    .rena   ( imem_rd                               ),
-    .addra  ( imem_addr[$clog2(SCR1_TCM_SIZE)-1:2]  ),
-    .qa     ( imem_rdata                            ),
-    // Data port
-    // Port B
-    .renb   ( dmem_rd                               ),
-    .wenb   ( dmem_wr                               ),
-    .webb   ( dmem_byteen                           ),
-    .addrb  ( dmem_addr[$clog2(SCR1_TCM_SIZE)-1:2]  ),
-    .qb     ( dmem_rdata_local                      ),
-    .datab  ( dmem_writedata                        )
-);
-//-------------------------------------------------------------------------------
-// Data memory output generation
-//-------------------------------------------------------------------------------
-always_ff @(posedge clk) begin
-    if (dmem_rd) begin
-        dmem_rdata_shift_reg <= dmem_addr[1:0];
-    end
-end
+scr1_dtcm #(
+        .SCR1_TCM_SIZE  (SCR1_TCM_SIZE)
+)
+scr1_dtcm (/*autoinst*/
+       // Interfaces
+       .imem_cmd            (d_imem_cmd                          ),
+       .imem_resp           (d_imem_resp                         ),
+       .dmem_cmd            (d_dmem_cmd                          ),
+       .dmem_width          (d_dmem_width                        ),
+       .dmem_resp           (d_dmem_resp                         ),
+       // Outputs
+       .imem_req_ack        (d_imem_req_ack                      ),
+       .imem_rdata          (d_imem_rdata[`SCR1_IMEM_DWIDTH-1:0] ),
+       .dmem_req_ack        (d_dmem_req_ack),
+       .dmem_rdata          (d_dmem_rdata[`SCR1_DMEM_DWIDTH-1:0] ),
+       // Inputs
+       .clk                 (clk                                 ),
+       .rst_n               (rst_n                               ),
+       .imem_req            (d_imem_req),
+       .imem_addr           (d_imem_addr[`SCR1_IMEM_AWIDTH-1:0]  ),
+       .dmem_req            (d_dmem_req),
+       .dmem_addr           (d_dmem_addr[`SCR1_DMEM_AWIDTH-1:0]  ),
+       .dmem_wdata          (d_dmem_wdata[`SCR1_DMEM_DWIDTH-1:0] )
+ );
 
-assign dmem_rdata = dmem_rdata_local >> ( 8 * dmem_rdata_shift_reg );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 endmodule : scr1_tcm
 

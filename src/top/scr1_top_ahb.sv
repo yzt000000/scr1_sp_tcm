@@ -193,9 +193,9 @@ scr1_core_top i_core_top (
 //-------------------------------------------------------------------------------
 // TCM instance
 //-------------------------------------------------------------------------------
-scr1_itcm #(
+scr1_tcm #(
     .SCR1_TCM_SIZE  (`SCR1_DMEM_AWIDTH'(~SCR1_TCM_ADDR_MASK + 1'b1))
-) i_itcm (
+) i_tcm (
     .clk            (clk                ),
     .rst_n          (rst_n_out          ),
     // Instruction interface to TCM
@@ -246,8 +246,8 @@ scr1_timer i_timer (
 // Instruction memory router
 //-------------------------------------------------------------------------------
 scr1_imem_router #(
-    .SCR1_ADDR_MASK     (SCR1_TCM_ADDR_MASK),
-    .SCR1_ADDR_PATTERN  (SCR1_TCM_ADDR_PATTERN)
+    .SCR1_ADDR_MASK     (SCR1_R_ITCM_ADDR_MASK),
+    .SCR1_ADDR_PATTERN  (SCR1_R_ITCM_ADDR_PATTERN)
 ) i_imem_router (
     .rst_n          (rst_n_out          ),
     .clk            (clk                ),
@@ -292,8 +292,8 @@ assign core_imem_rdata      = ahb_imem_rdata;
 scr1_dmem_router #(
 
 `ifdef SCR1_TCM_EN
-    .SCR1_PORT1_ADDR_MASK       (SCR1_TCM_ADDR_MASK),
-    .SCR1_PORT1_ADDR_PATTERN    (SCR1_TCM_ADDR_PATTERN),
+    .SCR1_PORT1_ADDR_MASK       (SCR1_R_DTCM_ADDR_MASK),
+    .SCR1_PORT1_ADDR_PATTERN    (SCR1_R_DTCM_ADDR_PATTERN),
 `else // SCR1_TCM_EN
     .SCR1_PORT1_ADDR_MASK       (32'h00000000),
     .SCR1_PORT1_ADDR_PATTERN    (32'hFFFFFFFF),

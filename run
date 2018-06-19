@@ -1,3 +1,12 @@
+make run_vcs BUS=AHB TS=dhrystone21 TB=tcm FSDB=dhrystone21_tcm RVE=0 RVM=1 | tee 1
 make clean
-make run_vcs BUS=AHB TS=sram_test TB=tcm  FSDB=sram_test_fsdb RVE=0 RVM=1 
+make run_vcs BUS=AHB TS=dhrystone21 TB=sram FSDB=dhrystone21_sram RVE=0 RVM=1 | tee 11
+make clean
+make run_vcs BUS=AHB TS=test1 TB=tcm  FSDB=test1_tcm RVE=0 RVM=1 | tee 2
+make clean
+make run_vcs BUS=AHB TS=test1 TB=sram FSDB=test1_sram RVE=0 RVM=1 | tee 22 
+make clean
+make run_vcs BUS=AHB TS=riscv_isa TB=tcm FSDB=riscv_isa_sram RVE=0 RVM=1 | tee 3 
+make clean
+make run_vcs BUS=AHB TS=riscv_isa TB=sram FSDB=riscv_isa_sram RVE=0 RVM=1 | tee 33 
 

@@ -71,11 +71,22 @@ logic   [SCR1_AHB_WIDTH-1:0]            dmem_hrdata;
 logic                                   dmem_hresp;
 
 int unsigned                            f_results;
-int unsigned                            f_info;
-int unsigned                            ft_info;
 string                                  s_results;
+int unsigned                            f_info;
 string                                  s_info;
+
+int unsigned                            imem_req_f;
+int unsigned                            dmem_req_f;
+
+
+int unsigned                            ft_info;
 string                                  tcm_info;
+
+int unsigned                            fit_info;
+string                                  itcm_info;
+
+int unsigned                            fdt_info;
+string                                  dtcm_info;
 
 int unsigned                            tests_passed;
 int unsigned                            tests_total;
@@ -111,25 +122,37 @@ end
 //  end
 //  
 
+
 initial begin
     $value$plusargs("imem_pattern=%h", imem_req_ack_stall);
     $value$plusargs("dmem_pattern=%h", dmem_req_ack_stall);
     $value$plusargs("test_info=%s", s_info);
     $value$plusargs("tcm_info=%s", tcm_info);
+    $value$plusargs("itcm_info=%s", itcm_info);
+    $value$plusargs("dtcm_info=%s", dtcm_info);
     $value$plusargs("test_results=%s", s_results);
 
     fuse_mhartid        = 0;
     rst_n               = 1;
 
     f_info      = $fopen(s_info, "r");
-    ft_info     = $fopen(tcm_info,"r");
     f_results   = $fopen(s_results, "a");
-
+    ft_info     = $fopen(tcm_info,"r");
+    fit_info     = $fopen(itcm_info,"r");
+    fdt_info     = $fopen(dtcm_info,"r");
+    imem_req_f   = $fopen("imem_req.txt","w");
+    dmem_req_f   = $fopen("dmem_req.txt","w");
+  
     forever begin
         if ($feof(f_info)) break;
         $fscanf(f_info, "%s\n", i_memory_tb.stuff_file);
         if ($feof(ft_info)) break;
-        $fscanf(ft_info, "%s\n", i_top.i_itcm.stuff_file);
+        //$fscanf(ft_info, "%s\n", i_top.i_tcm.scr1_itcm.stuff_file);
+        if ($feof(fit_info)) break;
+        $fscanf(fit_info, "%s\n", i_top.i_tcm.scr1_itcm.stuff_file);
+        if ($feof(fdt_info)) break;
+        $fscanf(fdt_info, "%s\n", i_top.i_tcm.scr1_dtcm.stuff_file);
+
         i_top.i_core_top.i_pipe_top.i_tracelog.test_name = i_memory_tb.stuff_file;
         $write("\033[0;34m---Test: %s\033[0m\n", i_memory_tb.stuff_file);
         reset();
@@ -145,6 +168,9 @@ initial begin
                 else $write("\033[0;31mTest failed\033[0m\n");
                 break;
             end
+            $fwrite (imem_req_f, "%h ,%h ,%h ,%h ,%h\n",i_top.i_tcm.imem_req, i_top.i_tcm.imem_cmd, i_top.i_tcm.imem_addr, i_top.i_tcm.imem_rdata, i_top.i_tcm.imem_rdata);
+            $fwrite (dmem_req_f, "%h ,%h ,%h ,%h ,%h\n",i_top.i_tcm.dmem_req, i_top.i_tcm.dmem_cmd, i_top.i_tcm.dmem_addr, i_top.i_tcm.dmem_wdata, i_top.i_tcm.dmem_rdata);
+
         end
     end
     $display("\n#--------------------------------------");

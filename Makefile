@@ -30,6 +30,8 @@ export bld_dir := $(root_dir)/build
 test_results := $(bld_dir)/test_results.txt
 test_info := $(bld_dir)/test_info
 tcm_info  := $(bld_dir)/tcm_info
+itcm_info  := $(bld_dir)/itcm_info
+dtcm_info  := $(bld_dir)/dtcm_info
 
 ifndef TB
 	TB=sram
@@ -104,11 +106,23 @@ $(test_info): clean_hex clean_tcm tests
 	cd $(bld_dir); \
 	rm test_info; \
 	rm tcm_info; \
+	rm itcm_info; \
+	rm dtcm_info; \
 	ls -tr *.hex > $@
 $(tcm_info): 
 	cd $(bld_dir); \
 	cp test_info tcm_info; \
 	sed -i 's/hex/tcm/' tcm_info ;
+
+$(itcm_info): 
+	cd $(bld_dir); \
+	cp test_info itcm_info; \
+	sed -i 's/hex/itcm/' itcm_info ;
+
+$(dtcm_info): 
+	cd $(bld_dir); \
+	cp test_info dtcm_info; \
+	sed -i 's/hex/dtcm/' dtcm_info ;
 
 
 
@@ -140,6 +154,12 @@ coremark: | $(bld_dir)
 sram_test: | $(bld_dir)
 	$(MAKE) -C $(root_dir)/tests/sram_test  EXT_CFLAGS="$(EXT_CFLAGS)"  $(TCM_EN)
 
+dtcm_test: | $(bld_dir)
+	$(MAKE) -C $(root_dir)/tests/dtcm_test  EXT_CFLAGS="$(EXT_CFLAGS)"  $(TCM_EN)
+
+itcm_test: | $(bld_dir)
+	$(MAKE) -C $(root_dir)/tests/itcm_test  EXT_CFLAGS="$(EXT_CFLAGS)"  $(TCM_EN)
+
 demo_iasm: | $(bld_dir)
 	$(MAKE) -C $(root_dir)/tests/demo_iasm  EXT_CFLAGS="$(EXT_CFLAGS)"  $(TCM_EN)
 
@@ -163,13 +183,15 @@ clean_tcm: | $(bld_dir)
 $(bld_dir):
 	mkdir -p $(bld_dir)
 
-run_vcs: build_define $(test_info) $(tcm_info) 
+run_vcs: build_define $(test_info) $(tcm_info) $(itcm_info) $(dtcm_info) 
 	$(MAKE) -C $(root_dir)/src build_vcs;
 	printf "" > $(test_results);
 	cd $(bld_dir); \
 	$(bld_dir)/simv +fsdb+all=on +fsdb+mda=on -ucli -i ../src/dump.ucli \
 	+test_info=$(test_info) \
 	+tcm_info=$(tcm_info) \
+	+itcm_info=$(itcm_info) \
+	+dtcm_info=$(dtcm_info) \
 	+test_results=$(test_results) \
 	+imem_pattern=$(imem_pattern) \
 	+dmem_pattern=$(dmem_pattern) \
@@ -214,3 +236,5 @@ clean: clean_tcm
 	$(RM) -rf $(bld_dir)/simv* 
 	$(RM) -rf $(bld_dir)/csrc
 
+clean_all: clean
+	$(RM)  -rf $(bld_dir)/*

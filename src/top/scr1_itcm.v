@@ -90,11 +90,12 @@ logic [1:0]                         mem_rdata_shift_reg;
 //assign imem_req_ack = 1'b1;
 //assign dmem_req_ack = 1'b1;
 
-typedef enum logic[1:0] {
-    SCR1_TCM_ST_IDLE       = 2'b00,
-    SCR1_TCM_ST_IREQ       = 2'b01,
-    SCR1_TCM_ST_DREQ       = 2'b10,
-    SCR1_TCM_ST_ERROR      = 'x
+typedef enum logic[2:0] {
+    SCR1_TCM_ST_IDLE       = 3'b000,
+    SCR1_TCM_ST_IREQ       = 3'b001,
+    SCR1_TCM_ST_DREQ       = 3'b010,
+    SCR1_TCM_ST_ITRAN      = 3'b011,
+    SCR1_TCM_ST_DTRAN      = 3'b100
 } scr1_tcm_state_e;
 
 
@@ -116,15 +117,26 @@ always_comb begin
 
         SCR1_TCM_ST_IREQ  : begin
                                 if (imem_req)       tcm_n_state = SCR1_TCM_ST_IREQ ;
-                                else if (dmem_req)  tcm_n_state = SCR1_TCM_ST_DREQ ;
-                                else                tcm_n_state = SCR1_TCM_ST_IDLE ;
+                                else                tcm_n_state = SCR1_TCM_ST_ITRAN ;
                             end
 
         SCR1_TCM_ST_DREQ  : begin
                                 if (dmem_req)       tcm_n_state = SCR1_TCM_ST_DREQ ;
+                                else                tcm_n_state = SCR1_TCM_ST_DTRAN ;
+                            end
+
+        SCR1_TCM_ST_ITRAN : begin
+                                if (dmem_req)       tcm_n_state = SCR1_TCM_ST_DREQ ;
                                 else if (imem_req)  tcm_n_state = SCR1_TCM_ST_IREQ ;
                                 else                tcm_n_state = SCR1_TCM_ST_IDLE ;
                             end
+
+        SCR1_TCM_ST_DTRAN : begin
+                                if (dmem_req)       tcm_n_state = SCR1_TCM_ST_DREQ ;
+                                else if (imem_req)  tcm_n_state = SCR1_TCM_ST_IREQ ;
+                                else                tcm_n_state = SCR1_TCM_ST_IDLE ;
+                            end
+
     endcase
 end
 
@@ -155,6 +167,21 @@ always_comb begin
                                 imem_req_ack  = 1'b0                 ;
                                 dmem_req_ack  = 1'b1                 ;
                             end
+
+        SCR1_TCM_ST_ITRAN : begin
+                                imem_resp     = SCR1_MEM_RESP_NOTRDY ;
+                                dmem_resp     = SCR1_MEM_RESP_NOTRDY ;
+                                imem_req_ack  = 1'b0                 ;
+                                dmem_req_ack  = 1'b0                 ;
+                            end
+
+        SCR1_TCM_ST_DTRAN : begin
+                                imem_resp     = SCR1_MEM_RESP_RDY_OK ;
+                                dmem_resp     = SCR1_MEM_RESP_NOTRDY ;
+                                imem_req_ack  = 1'b1                 ;
+                                dmem_req_ack  = 1'b0                 ;
+                            end
+
     endcase
 end
 
@@ -170,8 +197,7 @@ end
 //assign dmem_wr  = dmem_req & (dmem_cmd == SCR1_MEM_CMD_WR) ;
 //
 //
-assign dmem_wr = (!imem_req) && (dmem_req & (dmem_cmd == SCR1_MEM_CMD_WR)) ;
-
+assign dmem_wr = (!imem_req) && (dmem_req & (dmem_cmd == SCR1_MEM_CMD_WR)) && ((tcm_state == SCR1_TCM_ST_IDLE) || (tcm_state == SCR1_TCM_ST_ITRAN) || (tcm_state == SCR1_TCM_ST_DREQ)) ;
 assign dmem_rd = ~dmem_wr;
 
 always_comb begin

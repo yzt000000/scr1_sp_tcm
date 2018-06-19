@@ -1,4 +1,4 @@
-
+`define SCR1_IDTCM_EN
 `ifndef SCR1_ARCH_DESCRIPTION_SVH
 `define SCR1_ARCH_DESCRIPTION_SVH
 /// Copyright by Syntacore LLC © 2016-2018. See LICENSE for details
@@ -74,6 +74,14 @@ parameter bit [`SCR1_DMEM_AWIDTH-1:0]   SCR1_ITCM_ADDR_MASK          = 'hFFFF000
 parameter bit [`SCR1_DMEM_AWIDTH-1:0]   SCR1_ITCM_ADDR_PATTERN       = 'h00480000;
 parameter bit [`SCR1_DMEM_AWIDTH-1:0]   SCR1_DTCM_ADDR_MASK          = 'hFFFF0000;
 parameter bit [`SCR1_DMEM_AWIDTH-1:0]   SCR1_DTCM_ADDR_PATTERN       = 'h00490000;
+
+parameter bit [`SCR1_DMEM_AWIDTH-1:0]   SCR1_R_ITCM_ADDR_MASK          = 'hFFFE0000;
+parameter bit [`SCR1_DMEM_AWIDTH-1:0]   SCR1_R_ITCM_ADDR_PATTERN       = 'h00480000;
+parameter bit [`SCR1_DMEM_AWIDTH-1:0]   SCR1_R_DTCM_ADDR_MASK          = 'hFFFE0000;
+parameter bit [`SCR1_DMEM_AWIDTH-1:0]   SCR1_R_DTCM_ADDR_PATTERN       = 'h00480000;
+
+parameter bit [`SCR1_DMEM_AWIDTH-1:0]   SCR1_TCM_ADDR_MASK          = 'hFFFF0000;
+parameter bit [`SCR1_DMEM_AWIDTH-1:0]   SCR1_TCM_ADDR_PATTERN       = 'h00480000;
 
 `else
 parameter bit [`SCR1_DMEM_AWIDTH-1:0]   SCR1_TCM_ADDR_MASK          = 'hFFFF0000;

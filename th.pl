@@ -53,7 +53,21 @@ my $idx;
 my $tail;
 my $i;
 
+my $dtcm_file;
+
+my $test_name;
+
+$test_name = $out_file;
+
+$test_name =~ s/\..*$//g;
+
+my $itcm_file = "$test_name"."\.itcm" ;
+my $dtcm_file = "$test_name"."\.dtcm" ;
+
+
 open (OUT_FILE,">$out_file") || die "Error: Can not open $out_file";
+open (OUT_FILE1,">$itcm_file") || die "Error: Can not open $itcm_file";
+open (OUT_FILE2,">$dtcm_file") || die "Error: Can not open $dtcm_file";
 my $current_addr = 0;
 
 $current_addr = &hex2dec($base_addr);
@@ -95,6 +109,22 @@ foreach $line (@in_array) {
         }
 
     }
+}
+
+close (OUT_FILE);
+
+open (OUT_FILE,"$out_file") || die "Error: Can not open $out_file";
+
+my @out_array = <OUT_FILE>;
+my $i =0;
+foreach $line (@out_array) {
+    chomp $line;
+    if ($i < 16384) {
+        print  OUT_FILE1 "$line\n";
+    } else {
+        print  OUT_FILE2 "$line\n";
+    }
+    $i = $i +1;
 }
 
 

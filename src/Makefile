@@ -52,12 +52,10 @@ build_ncsim: $(rtl_list)
 	-top $(top_module)
 
 run_verdi: $(rtl_list)
-	cd $(bld_dir); \
+	cd fsdb; \
 	verdi \
-	-full64 \
 	-lca \
 	-sverilog \
-	-notice \
 	-timescale=1ns/1ps \
 	+incdir+$(rtl_dir)includes \
 	+define+SCR1_SIM_ENV \
