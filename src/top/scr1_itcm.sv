@@ -1,7 +1,24 @@
-/// Copyright by Syntacore LLC © 2016-2018. See LICENSE for details
-/// @file       <scr1_tcm.sv>
-/// @brief      Tightly-Coupled Memory (TCM)
+/// Copyright by Syntacore LLC © 2016-2021. See LICENSE for details
+/// @file       <scr1_itcm.sv>
+/// @brief      Instruction Tightly-Coupled Memory (ITCM)
 ///
+/// @details    One bank of the TCM: a SINGLE-PORT synchronous RAM that owns
+///             its own address window (SCR1_ITCM_ADDR_PATTERN), exactly like
+///             the ITCM of a classic MCU.
+///
+///             The single port is shared between the instruction interface and
+///             the data interface, so accesses are arbitrated:
+///               * instruction fetches have priority (this is an ITCM)
+///               * a data access that has been pending for
+///                 SCR1_MAX_WAIT clocks becomes "urgent" and takes over
+///               * if both sides are urgent the grant strictly alternates
+///             The last point is what prevents the LSU from being starved by
+///             a continuous instruction-fetch stream.
+///
+///             Protocol is fully pipelined: the address is driven in the
+///             grant cycle, the RAM delivers the data on the next clock, and
+///             the response is raised in that same next clock together with
+///             the data. A new access may be granted every clock.
 
 `include "scr1_memif.svh"
 `include "scr1_arch_description.svh"
@@ -9,7 +26,10 @@
 `ifdef SCR1_TCM_EN
 module scr1_itcm
 #(
-    parameter SCR1_TCM_SIZE = `SCR1_IMEM_AWIDTH'h00010000
+    parameter SCR1_TCM_SIZE  = `SCR1_IMEM_AWIDTH'h00010000,
+    // Number of clocks a request may lose arbitration before it is treated
+    // as urgent. 0 disables the anti-starvation boost (strict priority).
+    parameter int unsigned SCR1_MAX_WAIT = 2
 )
 (
     // Control signals
@@ -35,220 +55,164 @@ module scr1_itcm
     output  type_scr1_mem_resp_e            dmem_resp
 );
 
-string stuff_file; 
+//-------------------------------------------------------------------------------
+// Local parameters
+//-------------------------------------------------------------------------------
+localparam int unsigned SCR1_AWIDTH  = $clog2(SCR1_TCM_SIZE);
+// This bank grants instruction fetches by default
+localparam bit          SCR1_IMEM_PRIO = 1'b1;
+
 //-------------------------------------------------------------------------------
 // Local signal declaration
 //-------------------------------------------------------------------------------
-logic                               imem_req_en;
-logic                               dmem_req_en;
-logic                               imem_rd;
-logic                               dmem_rd;
-logic                               dmem_wr;
-logic [`SCR1_DMEM_DWIDTH-1:0]       dmem_writedata;
-logic [`SCR1_DMEM_DWIDTH-1:0]       dmem_rdata_local;
-logic [3:0]                         dmem_byteen;
-logic [1:0]                         dmem_rdata_shift_reg;
+logic                                   imem_grant;
+logic                                   dmem_grant;
+logic                                   imem_grant_r;
+logic                                   dmem_grant_r;
+logic                                   last_served_d;
 
+logic [1:0]                             imem_wait_cnt;
+logic [1:0]                             dmem_wait_cnt;
+logic                                   imem_urgent;
+logic                                   dmem_urgent;
 
-type_scr1_mem_width_e               mem_width;
-logic [`SCR1_DMEM_AWIDTH-1:0]       mem_addr;
-logic [`SCR1_DMEM_DWIDTH-1:0]       mem_wdata;
-logic [`SCR1_DMEM_DWIDTH-1:0]       mem_rdata;
+logic                                   mem_wen;
+logic                                   mem_ren;
+logic [SCR1_AWIDTH-1:2]                 mem_addr;
+logic [3:0]                             mem_byteen;
+logic [`SCR1_DMEM_DWIDTH-1:0]           mem_writedata;
+logic [`SCR1_DMEM_DWIDTH-1:0]           mem_rdata;
 
-logic                               mem_wr;
-logic [`SCR1_DMEM_DWIDTH-1:0]       mem_writedata;
-logic [`SCR1_DMEM_DWIDTH-1:0]       mem_rdata_local;
-logic [3:0]                         mem_byteen;
-logic [1:0]                         mem_rdata_shift_reg;
-//-------------------------------------------------------------------------------
-//
-//logic                               mem_req_en;
-
+logic [3:0]                             dmem_byteen;
+logic [`SCR1_DMEM_DWIDTH-1:0]           dmem_writedata;
+logic [1:0]                             dmem_rdata_shift_reg;
 
 //-------------------------------------------------------------------------------
-// Core interface
+// Arbitration
 //-------------------------------------------------------------------------------
-//assign imem_req_en = (imem_resp == SCR1_MEM_RESP_RDY_OK) ^ imem_req;
-//assign dmem_req_en = ((dmem_resp == SCR1_MEM_RESP_RDY_OK) ^ dmem_req) && (~imem_req_en);
-//
-//always_ff @(posedge clk, negedge rst_n) begin
-//    if (~rst_n) begin
-//        imem_resp <= SCR1_MEM_RESP_NOTRDY;
-//    end else if (imem_req_en) begin
-//        imem_resp <= imem_req ? SCR1_MEM_RESP_RDY_OK : SCR1_MEM_RESP_NOTRDY;
-//    end
-//end
-//
-//always_ff @(posedge clk, negedge rst_n) begin
-//    if (~rst_n) begin
-//        dmem_resp <= SCR1_MEM_RESP_NOTRDY;
-//    end else if (dmem_req_en) begin
-//        dmem_resp <= dmem_req ? SCR1_MEM_RESP_RDY_OK : SCR1_MEM_RESP_NOTRDY;
-//    end
-//end
-//
-//assign imem_req_ack = 1'b1;
-//assign dmem_req_ack = 1'b1;
+// Pending counters: how long a request has been losing arbitration
+always_ff @(posedge clk, negedge rst_n) begin
+    if (~rst_n) begin
+        imem_wait_cnt <= '0;
+        dmem_wait_cnt <= '0;
+    end else begin
+        imem_wait_cnt <= (~imem_req)      ? '0
+                       : (imem_grant)     ? '0
+                       : (&imem_wait_cnt) ? imem_wait_cnt
+                       : imem_wait_cnt + 1'b1;
+        dmem_wait_cnt <= (~dmem_req)      ? '0
+                       : (dmem_grant)     ? '0
+                       : (&dmem_wait_cnt) ? dmem_wait_cnt
+                       : dmem_wait_cnt + 1'b1;
+    end
+end
 
-typedef enum logic[1:0] {
-    SCR1_TCM_ST_IDLE       = 2'b00,
-    SCR1_TCM_ST_IREQ       = 2'b01,
-    SCR1_TCM_ST_DREQ       = 2'b10,
-    SCR1_TCM_ST_ERROR      = 'x
-} scr1_tcm_state_e;
+assign imem_urgent = imem_req & (imem_wait_cnt >= SCR1_MAX_WAIT[1:0]);
+assign dmem_urgent = dmem_req & (dmem_wait_cnt >= SCR1_MAX_WAIT[1:0]);
 
-
-scr1_tcm_state_e  tcm_state, tcm_n_state;
+always_comb begin
+    if (imem_req && dmem_req) begin
+        if (imem_urgent ^ dmem_urgent) begin
+            // Exactly one side is starving: serve it
+            imem_grant = imem_urgent;
+            dmem_grant = dmem_urgent;
+        end else if (imem_urgent && dmem_urgent) begin
+            // Both are starving: strictly alternate to stay fair
+            imem_grant =  last_served_d;
+            dmem_grant = ~last_served_d;
+        end else begin
+            // Nobody is starving: configured priority applies
+            imem_grant =  SCR1_IMEM_PRIO;
+            dmem_grant = ~SCR1_IMEM_PRIO;
+        end
+    end else begin
+        imem_grant = imem_req;
+        dmem_grant = dmem_req;
+    end
+end
 
 always_ff @(posedge clk, negedge rst_n) begin
-    if (~rst_n)  tcm_state <= SCR1_TCM_ST_IDLE ;
-    else         tcm_state <= tcm_n_state;
+    if (~rst_n) begin
+        imem_grant_r  <= 1'b0;
+        dmem_grant_r  <= 1'b0;
+        last_served_d <= 1'b0;
+    end else begin
+        imem_grant_r  <= imem_grant;
+        dmem_grant_r  <= dmem_grant;
+        if (dmem_grant) last_served_d <= 1'b1;
+        if (imem_grant) last_served_d <= 1'b0;
+    end
 end
-
-
-always_comb begin
-    tcm_n_state = SCR1_TCM_ST_IDLE;
-    case(tcm_state) 
-        SCR1_TCM_ST_IDLE  : begin
-                                if (imem_req)       tcm_n_state = SCR1_TCM_ST_IREQ ;
-                                else if (dmem_req)  tcm_n_state = SCR1_TCM_ST_DREQ ; 
-                            end
-
-        SCR1_TCM_ST_IREQ  : begin
-                                if (imem_req)       tcm_n_state = SCR1_TCM_ST_IREQ ;
-                                else if (dmem_req)  tcm_n_state = SCR1_TCM_ST_DREQ ;
-                                else                tcm_n_state = SCR1_TCM_ST_IDLE ;
-                            end
-
-        SCR1_TCM_ST_DREQ  : begin
-                                if (dmem_req)       tcm_n_state = SCR1_TCM_ST_DREQ ;
-                                else if (imem_req)  tcm_n_state = SCR1_TCM_ST_IREQ ;
-                                else                tcm_n_state = SCR1_TCM_ST_IDLE ;
-                            end
-    endcase
-end
-
-
-always_comb begin
-    imem_resp     = SCR1_MEM_RESP_NOTRDY; 
-    dmem_resp     = SCR1_MEM_RESP_NOTRDY;
-    imem_req_ack  = 1'b1                ; 
-    dmem_req_ack  = 1'b1                ; 
-    case(tcm_state) 
-        SCR1_TCM_ST_IDLE  : begin
-                                imem_resp     = SCR1_MEM_RESP_NOTRDY ;
-                                dmem_resp     = SCR1_MEM_RESP_NOTRDY ;
-                                imem_req_ack  = 1'b0                 ;
-                                dmem_req_ack  = 1'b0                 ;
-                            end
-
-        SCR1_TCM_ST_IREQ  : begin
-                                imem_resp     = SCR1_MEM_RESP_RDY_OK ;
-                                dmem_resp     = SCR1_MEM_RESP_NOTRDY ;   
-                                imem_req_ack  = 1'b1                 ;
-                                dmem_req_ack  = 1'b0                 ;
-                            end
-
-        SCR1_TCM_ST_DREQ  : begin
-                                imem_resp     = SCR1_MEM_RESP_NOTRDY ;
-                                dmem_resp     = SCR1_MEM_RESP_RDY_OK ;
-                                imem_req_ack  = 1'b0                 ;
-                                dmem_req_ack  = 1'b1                 ;
-                            end
-    endcase
-end
-
-
-
-
 
 //-------------------------------------------------------------------------------
-// Memory data composing
+// Core interface handshakes and responses
 //-------------------------------------------------------------------------------
-//assign imem_rd  = 1'b1;
-//assign dmem_rd  = 1'b1;
-//assign dmem_wr  = dmem_req & (dmem_cmd == SCR1_MEM_CMD_WR) ;
-//
-//
-assign dmem_wr = (!imem_req) && (dmem_req & (dmem_cmd == SCR1_MEM_CMD_WR)) ;
+// req_ack is the back-pressure: a request is accepted only when it is granted
+assign imem_req_ack = imem_grant;
+assign dmem_req_ack = dmem_grant;
 
-assign dmem_rd = ~dmem_wr;
+// The RAM has one register stage: data of a granted access appears on the next
+// clock, and the response is raised together with that data.
+assign imem_resp = imem_grant_r ? SCR1_MEM_RESP_RDY_OK : SCR1_MEM_RESP_NOTRDY;
+assign dmem_resp = dmem_grant_r ? SCR1_MEM_RESP_RDY_OK : SCR1_MEM_RESP_NOTRDY;
 
+//-------------------------------------------------------------------------------
+// Access composing
+//-------------------------------------------------------------------------------
 always_comb begin
     dmem_writedata = dmem_wdata;
     dmem_byteen    = 4'b1111;
-    case ( dmem_width )
+    case (dmem_width)
         SCR1_MEM_WIDTH_BYTE : begin
-            dmem_writedata  = {(`SCR1_DMEM_DWIDTH /  8){dmem_wdata[7:0]}};
-            dmem_byteen     = 1'b1 << dmem_addr[1:0];
+            dmem_writedata = {(`SCR1_DMEM_DWIDTH /  8){dmem_wdata[7:0]}};
+            dmem_byteen    = 4'b0001 << dmem_addr[1:0];
         end
         SCR1_MEM_WIDTH_HWORD : begin
-            dmem_writedata  = {(`SCR1_DMEM_DWIDTH / 16){dmem_wdata[15:0]}};
-            dmem_byteen     = 2'b11 << {dmem_addr[1], 1'b0};
+            dmem_writedata = {(`SCR1_DMEM_DWIDTH / 16){dmem_wdata[15:0]}};
+            dmem_byteen    = 4'b0011 << {dmem_addr[1], 1'b0};
         end
         default : begin
         end
     endcase
 end
 
-
-always @(negedge rst_n) begin
-    if (stuff_file.len() > 0) begin                                                                                                        
-        $display(stuff_file);
-        $display("#######################################################\n");
-        $readmemh(stuff_file,i_sp_memory.ram_block);
-    end else begin
-     //   i_dp_memory.memory_array = '{2**24{'0}};
-    end
-end
-
-assign mem_rd = ~dmem_wr ;
-assign mem_wr = dmem_wr;
-assign mem_byteen = dmem_byteen;
+assign mem_addr     = dmem_grant ? dmem_addr[SCR1_AWIDTH-1:2]
+                                 : imem_addr[SCR1_AWIDTH-1:2];
+assign mem_wen      = dmem_grant & (dmem_cmd == SCR1_MEM_CMD_WR);
+assign mem_ren      = ~mem_wen;
+assign mem_byteen   = dmem_byteen;
 assign mem_writedata = dmem_writedata;
-assign imem_rdata = mem_rdata_local;
-assign mem_addr = imem_req ? imem_addr: dmem_addr;
-assign dmem_rdata_local = mem_rdata_local;
-
-
 
 //-------------------------------------------------------------------------------
 // Memory instantiation
 //-------------------------------------------------------------------------------
 scr1_sp_memory #(
-    .SCR1_WIDTH ( 32            ),
-    .SCR1_SIZE  ( SCR1_TCM_SIZE )
-) i_sp_memory (
-    .clk    ( clk                                   ),
-    // Instruction port
-    // Port A
-    //.rena   ( imem_rd                               ),
-    //.addra  ( imem_addr[$clog2(SCR1_TCM_SIZE)-1:2]  ),
-    //.qa     ( imem_rdata                            ),
-    // Data port
-    // Port B
-    .rena   ( mem_rd                               ),
-    .wena   ( mem_wr                               ),
-    .weba   ( mem_byteen                           ),
-    .addra  ( mem_addr[$clog2(SCR1_TCM_SIZE)-1:2]  ),
-    .qa     ( mem_rdata_local                      ),
-    .dataa  ( mem_writedata                        )
+    .SCR1_WIDTH ( `SCR1_DMEM_DWIDTH ),
+    .SCR1_SIZE  ( SCR1_TCM_SIZE     )
+) i_itcm_mem (
+    .clk    ( clk           ),
+    .wen    ( mem_wen       ),
+    .webb   ( mem_byteen    ),
+    .ren    ( mem_ren       ),
+    .addr   ( mem_addr      ),
+    .datain ( mem_writedata ),
+    .q      ( mem_rdata     )
 );
 
-
-
-
-
 //-------------------------------------------------------------------------------
-// Data memory output generation
+// Read data output
 //-------------------------------------------------------------------------------
-always_ff @(posedge clk) begin
-    if (dmem_rd) begin
+assign imem_rdata = mem_rdata;
+
+always_ff @(posedge clk, negedge rst_n) begin
+    if (~rst_n) begin
+        dmem_rdata_shift_reg <= '0;
+    end else if (dmem_grant) begin
         dmem_rdata_shift_reg <= dmem_addr[1:0];
     end
 end
 
-assign dmem_rdata = dmem_rdata_local >> ( 8 * dmem_rdata_shift_reg );
+assign dmem_rdata = mem_rdata >> (8 * dmem_rdata_shift_reg);
 
 endmodule : scr1_itcm
 

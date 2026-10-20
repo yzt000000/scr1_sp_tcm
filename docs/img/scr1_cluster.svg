@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="800" viewBox="0 0 960 800" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#6c8ca0"/>
+    </marker>
+    <marker id="arrf" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2a9d54"/>
+    </marker>
+    <filter id="sh" x="-8%" y="-8%" width="116%" height="120%">
+      <feDropShadow dx="1" dy="2" stdDeviation="1.8" flood-opacity="0.13"/>
+    </filter>
+  </defs>
+
+  <!-- Title -->
+  <text x="480" y="26" text-anchor="middle" font-size="19" font-weight="bold" fill="#1f3a5f">SCR1 Cluster Architecture</text>
+  <text x="480" y="46" text-anchor="middle" font-size="12" fill="#5a7a96">ITCM/DTCM independent single-port + RISC-V B-extension (Zba+Zbb+Zbc+Zbs, 31 insns)</text>
+
+  <!-- Top-level cluster box -->
+  <rect x="20" y="62" width="920" height="720" rx="10" fill="#f7f9fc" stroke="#243740" stroke-width="1.6" filter="url(#sh)"/>
+  <text x="34" y="82" font-size="13" font-weight="bold" fill="#243740">scr1_top_ahb / scr1_top_axi</text>
+
+  <!-- ============ Core subsystem ============ -->
+  <rect x="36" y="100" width="556" height="668" rx="8" fill="#ffffff" stroke="#243740" stroke-width="1.1" filter="url(#sh)"/>
+  <text x="48" y="120" font-size="12" font-weight="bold" fill="#243740">scr1_core_top</text>
+
+  <!-- pipe_top container -->
+  <rect x="54" y="138" width="520" height="382" rx="7" fill="#fbfdff" stroke="#3b6b8c" stroke-width="0.9" stroke-dasharray="4 3"/>
+  <text x="66" y="156" font-size="11" font-weight="bold" fill="#3b6b8c">scr1_pipe_top  (2–4 stage pipeline)</text>
+
+  <!-- Pipeline stages row -->
+  <rect x="70" y="172" width="104" height="46" rx="5" fill="#eef4fb" stroke="#3b6b8c" stroke-width="1"/>
+  <text x="122" y="193" text-anchor="middle" font-size="11" font-weight="bold" fill="#1f3a5f">scr1_pipe_ifu</text>
+  <text x="122" y="207" text-anchor="middle" font-size="9" fill="#5a7a96">Fetch</text>
+
+  <rect x="194" y="172" width="104" height="46" rx="5" fill="#eef4fb" stroke="#3b6b8c" stroke-width="1"/>
+  <text x="246" y="193" text-anchor="middle" font-size="11" font-weight="bold" fill="#1f3a5f">scr1_pipe_idu</text>
+  <text x="246" y="207" text-anchor="middle" font-size="9" fill="#5a7a96">Decode</text>
+
+  <rect x="318" y="172" width="124" height="46" rx="5" fill="#eef4fb" stroke="#3b6b8c" stroke-width="1"/>
+  <text x="380" y="193" text-anchor="middle" font-size="11" font-weight="bold" fill="#1f3a5f">scr1_pipe_exu</text>
+  <text x="380" y="207" text-anchor="middle" font-size="9" fill="#5a7a96">Execute</text>
+
+  <rect x="458" y="172" width="104" height="46" rx="5" fill="#eef4fb" stroke="#3b6b8c" stroke-width="1"/>
+  <text x="510" y="193" text-anchor="middle" font-size="11" font-weight="bold" fill="#1f3a5f">scr1_pipe_lsu</text>
+  <text x="510" y="207" text-anchor="middle" font-size="9" fill="#5a7a96">Load/Store</text>
+
+  <!-- Pipeline flow arrows (horizontal) -->
+  <line x1="174" y1="195" x2="190" y2="195" stroke="#6c8ca0" stroke-width="1.3" marker-end="url(#arr)"/>
+  <line x1="298" y1="195" x2="314" y2="195" stroke="#6c8ca0" stroke-width="1.3" marker-end="url(#arr)"/>
+  <line x1="442" y1="195" x2="454" y2="195" stroke="#6c8ca0" stroke-width="1.3" marker-end="url(#arr)"/>
+
+  <!-- EXU internals: IALU + BALU(NEW) -->
+  <rect x="328" y="240" width="50" height="44" rx="4" fill="#eef4fb" stroke="#3b6b8c" stroke-width="1"/>
+  <text x="353" y="260" text-anchor="middle" font-size="10" font-weight="bold" fill="#1f3a5f">IALU</text>
+  <text x="353" y="273" text-anchor="middle" font-size="8" fill="#5a7a96">base ALU</text>
+
+  <rect x="384" y="240" width="50" height="44" rx="4" fill="#e6f7ea" stroke="#2a9d54" stroke-width="1.3"/>
+  <text x="409" y="259" text-anchor="middle" font-size="10" font-weight="bold" fill="#1a6b3a">BALU</text>
+  <text x="409" y="272" text-anchor="middle" font-size="8" fill="#2a9d54">B-ext</text>
+  <rect x="436" y="238" width="30" height="13" rx="6" fill="#2a9d54"/>
+  <text x="451" y="248" text-anchor="middle" font-size="8" font-weight="bold" fill="#ffffff">NEW</text>
+
+  <line x1="380" y1="218" x2="353" y2="238" stroke="#6c8ca0" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="380" y1="218" x2="409" y2="238" stroke="#2a9d54" stroke-width="1.1" marker-end="url(#arrf)"/>
+
+  <!-- Auxiliary units row -->
+  <rect x="70" y="310" width="104" height="42" rx="5" fill="#eef4fb" stroke="#3b6b8c" stroke-width="1"/>
+  <text x="122" y="330" text-anchor="middle" font-size="10" font-weight="bold" fill="#1f3a5f">scr1_pipe_mprf</text>
+  <text x="122" y="343" text-anchor="middle" font-size="8" fill="#5a7a96">Reg File</text>
+
+  <rect x="194" y="310" width="104" height="42" rx="5" fill="#eef4fb" stroke="#3b6b8c" stroke-width="1"/>
+  <text x="246" y="330" text-anchor="middle" font-size="10" font-weight="bold" fill="#1f3a5f">scr1_pipe_csr</text>
+  <text x="246" y="343" text-anchor="middle" font-size="8" fill="#5a7a96">CSR / misa.B=1</text>
+
+  <rect x="318" y="310" width="104" height="42" rx="5" fill="#eef4fb" stroke="#3b6b8c" stroke-width="1"/>
+  <text x="370" y="330" text-anchor="middle" font-size="10" font-weight="bold" fill="#1f3a5f">scr1_ipic</text>
+  <text x="370" y="343" text-anchor="middle" font-size="8" fill="#5a7a96">PIC 16 IRQ</text>
+
+  <rect x="442" y="310" width="104" height="42" rx="5" fill="#eef4fb" stroke="#3b6b8c" stroke-width="1"/>
+  <text x="494" y="330" text-anchor="middle" font-size="10" font-weight="bold" fill="#1f3a5f">scr1_tracelog</text>
+  <text x="494" y="343" text-anchor="middle" font-size="8" fill="#5a7a96">Trace</text>
+
+  <!-- Debug units row -->
+  <rect x="120" y="378" width="104" height="42" rx="5" fill="#eef4fb" stroke="#3b6b8c" stroke-width="1"/>
+  <text x="172" y="398" text-anchor="middle" font-size="10" font-weight="bold" fill="#1f3a5f">scr1_pipe_hdu</text>
+  <text x="172" y="411" text-anchor="middle" font-size="8" fill="#5a7a96">Halt/Debug</text>
+
+  <rect x="246" y="378" width="104" height="42" rx="5" fill="#eef4fb" stroke="#3b6b8c" stroke-width="1"/>
+  <text x="298" y="398" text-anchor="middle" font-size="10" font-weight="bold" fill="#1f3a5f">scr1_pipe_tdu</text>
+  <text x="298" y="411" text-anchor="middle" font-size="8" fill="#5a7a96">Trigger/Watch</text>
+
+  <!-- imem/dmem ports label (right edge of core) -->
+  <text x="565" y="455" text-anchor="middle" font-size="9" fill="#5a7a96" transform="rotate(-90 565 455)">imem/dmem memif</text>
+
+  <!-- Debug subsystem -->
+  <rect x="70" y="540" width="104" height="46" rx="5" fill="#eef4fb" stroke="#3b6b8c" stroke-width="1"/>
+  <text x="122" y="560" text-anchor="middle" font-size="10" font-weight="bold" fill="#1f3a5f">scr1_tapc</text>
+  <text x="122" y="574" text-anchor="middle" font-size="8" fill="#5a7a96">JTAG TAP</text>
+
+  <rect x="194" y="540" width="104" height="46" rx="5" fill="#eef4fb" stroke="#3b6b8c" stroke-width="1"/>
+  <text x="246" y="560" text-anchor="middle" font-size="10" font-weight="bold" fill="#1f3a5f">scr1_dm</text>
+  <text x="246" y="574" text-anchor="middle" font-size="8" fill="#5a7a96">Debug Mod</text>
+
+  <rect x="318" y="540" width="104" height="46" rx="5" fill="#eef4fb" stroke="#3b6b8c" stroke-width="1"/>
+  <text x="370" y="560" text-anchor="middle" font-size="10" font-weight="bold" fill="#1f3a5f">scr1_dmi</text>
+  <text x="370" y="574" text-anchor="middle" font-size="8" fill="#5a7a96">DMI</text>
+
+  <rect x="442" y="540" width="104" height="46" rx="5" fill="#eef4fb" stroke="#3b6b8c" stroke-width="1"/>
+  <text x="494" y="560" text-anchor="middle" font-size="10" font-weight="bold" fill="#1f3a5f">scr1_scu</text>
+  <text x="494" y="574" text-anchor="middle" font-size="8" fill="#5a7a96">Clk/Cg</text>
+
+  <text x="314" y="528" text-anchor="middle" font-size="10" font-style="italic" fill="#3b6b8c">Debug &amp; clock subsystem</text>
+
+  <!-- ============ TCM subsystem ============ -->
+  <rect x="612" y="100" width="312" height="340" rx="8" fill="#ffffff" stroke="#243740" stroke-width="1.1" filter="url(#sh)"/>
+  <text x="624" y="120" font-size="12" font-weight="bold" fill="#243740">TCM Subsystem</text>
+
+  <rect x="632" y="138" width="272" height="36" rx="5" fill="#eef4fb" stroke="#3b6b8c" stroke-width="1"/>
+  <text x="768" y="155" text-anchor="middle" font-size="11" font-weight="bold" fill="#1f3a5f">scr1_tcm</text>
+  <text x="768" y="168" text-anchor="middle" font-size="8" fill="#5a7a96">addr-window decode · mask=FFFE_0000 (128KB)</text>
+
+  <!-- ITCM (NEW) -->
+  <rect x="632" y="190" width="272" height="108" rx="6" fill="#e6f7ea" stroke="#2a9d54" stroke-width="1.4"/>
+  <rect x="876" y="188" width="30" height="13" rx="6" fill="#2a9d54"/>
+  <text x="891" y="198" text-anchor="middle" font-size="8" font-weight="bold" fill="#ffffff">NEW</text>
+  <text x="768" y="210" text-anchor="middle" font-size="11" font-weight="bold" fill="#1a6b3a">scr1_itcm</text>
+  <text x="768" y="226" text-anchor="middle" font-size="9" fill="#2a9d54">scr1_sp_memory · 64KB · single-port</text>
+  <text x="768" y="241" text-anchor="middle" font-size="9" fill="#1f3a5f">@ 0x0048_0000  (mask FFFF_0000)</text>
+  <text x="768" y="258" text-anchor="middle" font-size="9" fill="#1f3a5f">arbiter: fetch-priority + anti-starve</text>
+  <text x="768" y="273" text-anchor="middle" font-size="8" fill="#5a7a96">holds .text / .rodata</text>
+  <line x1="768" y1="174" x2="768" y2="188" stroke="#2a9d54" stroke-width="1.2" marker-end="url(#arrf)"/>
+
+  <!-- DTCM (NEW) -->
+  <rect x="632" y="312" width="272" height="108" rx="6" fill="#e6f7ea" stroke="#2a9d54" stroke-width="1.4"/>
+  <rect x="876" y="310" width="30" height="13" rx="6" fill="#2a9d54"/>
+  <text x="891" y="320" text-anchor="middle" font-size="8" font-weight="bold" fill="#ffffff">NEW</text>
+  <text x="768" y="332" text-anchor="middle" font-size="11" font-weight="bold" fill="#1a6b3a">scr1_dtcm</text>
+  <text x="768" y="348" text-anchor="middle" font-size="9" fill="#2a9d54">scr1_sp_memory · 64KB · single-port</text>
+  <text x="768" y="363" text-anchor="middle" font-size="9" fill="#1f3a5f">@ 0x0049_0000  (mask FFFF_0000)</text>
+  <text x="768" y="380" text-anchor="middle" font-size="9" fill="#1f3a5f">arbiter: data-priority + anti-starve</text>
+  <text x="768" y="395" text-anchor="middle" font-size="8" fill="#5a7a96">holds .data/.bss/.stack</text>
+  <line x1="768" y1="174" x2="768" y2="310" stroke="#2a9d54" stroke-width="1.2" stroke-dasharray="3 2"/>
+
+  <text x="768" y="425" text-anchor="middle" font-size="8" font-style="italic" fill="#2a9d54">replaces upstream scr1_dp_memory (dual-port)</text>
+
+  <!-- ============ Memory & I/O interface ============ -->
+  <rect x="612" y="460" width="312" height="308" rx="8" fill="#ffffff" stroke="#243740" stroke-width="1.1" filter="url(#sh)"/>
+  <text x="624" y="480" font-size="12" font-weight="bold" fill="#243740">Memory &amp; I/O Interface</text>
+
+  <rect x="632" y="498" width="128" height="42" rx="5" fill="#eef4fb" stroke="#3b6b8c" stroke-width="1"/>
+  <text x="696" y="518" text-anchor="middle" font-size="10" font-weight="bold" fill="#1f3a5f">scr1_imem_router</text>
+  <text x="696" y="531" text-anchor="middle" font-size="8" fill="#5a7a96">fetch route</text>
+
+  <rect x="776" y="498" width="128" height="42" rx="5" fill="#eef4fb" stroke="#3b6b8c" stroke-width="1"/>
+  <text x="840" y="518" text-anchor="middle" font-size="10" font-weight="bold" fill="#1f3a5f">scr1_dmem_router</text>
+  <text x="840" y="531" text-anchor="middle" font-size="8" fill="#5a7a96">data route</text>
+
+  <rect x="632" y="556" width="128" height="42" rx="5" fill="#eef4fb" stroke="#3b6b8c" stroke-width="1"/>
+  <text x="696" y="576" text-anchor="middle" font-size="10" font-weight="bold" fill="#1f3a5f">scr1_imem_ahb</text>
+  <text x="696" y="589" text-anchor="middle" font-size="8" fill="#5a7a96">AHB-Lite</text>
+
+  <rect x="776" y="556" width="128" height="42" rx="5" fill="#eef4fb" stroke="#3b6b8c" stroke-width="1"/>
+  <text x="840" y="576" text-anchor="middle" font-size="10" font-weight="bold" fill="#1f3a5f">scr1_dmem_ahb</text>
+  <text x="840" y="589" text-anchor="middle" font-size="8" fill="#5a7a96">AHB-Lite</text>
+
+  <rect x="632" y="614" width="272" height="42" rx="5" fill="#eef4fb" stroke="#3b6b8c" stroke-width="1"/>
+  <text x="768" y="634" text-anchor="middle" font-size="10" font-weight="bold" fill="#1f3a5f">scr1_timer</text>
+  <text x="768" y="647" text-anchor="middle" font-size="8" fill="#5a7a96">@ 0x0050_0000  (moved from 0x0049_0000 to avoid DTCM window)</text>
+
+  <rect x="632" y="672" width="272" height="46" rx="5" fill="#f0f3f7" stroke="#243740" stroke-width="1.2"/>
+  <text x="768" y="693" text-anchor="middle" font-size="11" font-weight="bold" fill="#243740">External Bus</text>
+  <text x="768" y="708" text-anchor="middle" font-size="9" fill="#5a7a96">AHB-Lite / AXI4 (32-bit)</text>
+
+  <!-- ============ Connections (orthogonal, no straight long lines) ============ -->
+  <!-- Core imem -> TCM (L-shaped) -->
+  <polyline points="590,200 600,200 600,230 624,230" fill="none" stroke="#6c8ca0" stroke-width="1.2" marker-end="url(#arr)"/>
+  <text x="608" y="222" font-size="8" fill="#5a7a96">imem</text>
+  <!-- Core dmem -> TCM (L-shaped) -->
+  <polyline points="590,330 604,330 604,360 624,360" fill="none" stroke="#6c8ca0" stroke-width="1.2" marker-end="url(#arr)"/>
+  <text x="610" y="352" font-size="8" fill="#5a7a96">dmem</text>
+
+  <!-- TCM -> routers (L-shaped) -->
+  <polyline points="768,420 768,470 696,470 696,496" fill="none" stroke="#6c8ca0" stroke-width="1.2" marker-end="url(#arr)"/>
+  <polyline points="768,420 768,470 840,470 840,496" fill="none" stroke="#6c8ca0" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- routers -> ahb -->
+  <line x1="696" y1="540" x2="696" y2="554" stroke="#6c8ca0" stroke-width="1.2" marker-end="url(#arr)"/>
+  <line x1="840" y1="540" x2="840" y2="554" stroke="#6c8ca0" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- ahb -> external bus (merged) -->
+  <polyline points="696,598 696,640 632,640 632,672" fill="none" stroke="#6c8ca0" stroke-width="1.2" marker-end="url(#arr)"/>
+  <polyline points="840,598 840,640 904,640 904,672" fill="none" stroke="#6c8ca0" stroke-width="1.2" marker-end="url(#arr)"/>
+
+  <!-- Debug: TAPC -> DM -> DMI chain -->
+  <line x1="174" y1="563" x2="192" y2="563" stroke="#6c8ca0" stroke-width="1" marker-end="url(#arr)"/>
+  <line x1="298" y1="563" x2="316" y2="563" stroke="#6c8ca0" stroke-width="1" marker-end="url(#arr)"/>
+
+  <!-- Legend -->
+  <rect x="36" y="734" width="556" height="34" rx="5" fill="#fbfdff" stroke="#3b6b8c" stroke-width="0.8"/>
+  <rect x="50" y="744" width="16" height="12" rx="2" fill="#eef4fb" stroke="#3b6b8c"/>
+  <text x="72" y="754" font-size="9" fill="#1f3a5f">upstream module</text>
+  <rect x="180" y="744" width="16" height="12" rx="2" fill="#e6f7ea" stroke="#2a9d54"/>
+  <text x="202" y="754" font-size="9" fill="#1f3a5f">new / redesigned in this fork</text>
+  <line x1="360" y1="750" x2="386" y2="750" stroke="#6c8ca0" stroke-width="1.2" marker-end="url(#arr)"/>
+  <text x="392" y="754" font-size="9" fill="#1f3a5f">data/control flow (orthogonal)</text>
+
+</svg>

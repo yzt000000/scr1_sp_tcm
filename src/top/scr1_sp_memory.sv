@@ -1,6 +1,10 @@
-/// Copyright by Syntacore LLC © 2016-2018. See LICENSE for details
-/// @file       <scr1_dp_memory.sv>
-/// @brief      Dual-port synchronous memory with byte enable inputs
+/// Copyright by Syntacore LLC © 2016-2021. See LICENSE for details
+/// @file       <scr1_sp_memory.sv>
+/// @brief      Single-port synchronous memory with byte enable inputs
+///
+/// @details    Generic single-port RAM primitive used to build the TCM
+///             sub-memories (ITCM/DTCM). One access (read or write) per clock.
+///             Byte write enables are supported; read data is registered.
 ///
 
 `include "scr1_arch_description.svh"
@@ -14,74 +18,80 @@ module scr1_sp_memory
 )
 (
     input   logic                           clk,
-    // Port A
-    input   logic                           rena,
-    input   logic                           wena,
-    input   logic [SCR1_NBYTES-1:0]         weba,
-    input   logic [$clog2(SCR1_SIZE)-1:2]   addra,
-    input   logic [SCR1_WIDTH-1:0]          dataa,
-    output  logic [SCR1_WIDTH-1:0]          qa
+    // Port
+    input   logic                           wen,
+    input   logic [SCR1_NBYTES-1:0]         webb,
+    input   logic                           ren,
+    input   logic [$clog2(SCR1_SIZE)-1:2]   addr,
+    input   logic [SCR1_WIDTH-1:0]          datain,
+    output  logic [SCR1_WIDTH-1:0]          q
 );
 
-`ifdef SCR1_TARGET_FPGA_INTEL
+`ifdef SCR1_TRGT_FPGA_INTEL
 //-------------------------------------------------------------------------------
 // Local signal declaration
 //-------------------------------------------------------------------------------
-logic [SCR1_NBYTES-1:0][7:0] memory_array [0:(SCR1_SIZE/SCR1_NBYTES)-1];
-logic [3:0] wenab;
+ `ifdef SCR1_TRGT_FPGA_INTEL_MAX10
+(* ramstyle = "M9K" *)    logic [SCR1_NBYTES-1:0][7:0]  memory_array  [0:(SCR1_SIZE/SCR1_NBYTES)-1];
+ `elsif SCR1_TRGT_FPGA_INTEL_ARRIAV
+(* ramstyle = "M10K" *)   logic [SCR1_NBYTES-1:0][7:0]  memory_array  [0:(SCR1_SIZE/SCR1_NBYTES)-1];
+ `endif
+logic [3:0] wenb;
 //-------------------------------------------------------------------------------
-// Port B memory behavioral description
+// Memory behavioral description
 //-------------------------------------------------------------------------------
-assign wenab = {4{wena}} & weba;
+assign wenb = {4{wen}} & webb;
 always_ff @(posedge clk) begin
-    if (wena) begin
-        if (wenab[0]) begin
-            memory_array[addra][0] <= dataa[0+:8];
+    if (wen) begin
+        if (wenb[0]) begin
+            memory_array[addr][0] <= datain[0+:8];
         end
-        if (wenab[1]) begin
-            memory_array[addra][1] <= dataa[8+:8];
+        if (wenb[1]) begin
+            memory_array[addr][1] <= datain[8+:8];
         end
-        if (wenab[2]) begin
-            memory_array[addra][2] <= dataa[16+:8];
+        if (wenb[2]) begin
+            memory_array[addr][2] <= datain[16+:8];
         end
-        if (wenab[3]) begin
-            memory_array[addra][3] <= dataa[24+:8];
+        if (wenb[3]) begin
+            memory_array[addr][3] <= datain[24+:8];
         end
     end
-    if (rena) begin
-        qa <= memory_array[addra];
+    if (ren) begin
+        q <= memory_array[addr];
     end
 end
 
-`else // SCR1_TARGET_FPGA_INTEL
+`else // SCR1_TRGT_FPGA_INTEL
 
-// CASE: OTHERS - SCR1_TARGET_FPGA_XILINX, SIMULATION, ASIC etc
+// CASE: OTHERS - SCR1_TRGT_FPGA_XILINX, SIMULATION, ASIC etc
 
 localparam int unsigned RAM_SIZE_WORDS = SCR1_SIZE/SCR1_NBYTES;
 
 //-------------------------------------------------------------------------------
 // Local signal declaration
 //-------------------------------------------------------------------------------
-logic [SCR1_WIDTH-1:0]                  ram_block [RAM_SIZE_WORDS-1:0];
-
-
+ `ifdef SCR1_TRGT_FPGA_XILINX
+(* ram_style = "block" *)  logic  [SCR1_WIDTH-1:0]  ram_block  [RAM_SIZE_WORDS-1:0];
+ `else  // ASIC or SIMULATION
+logic  [SCR1_WIDTH-1:0]  ram_block  [RAM_SIZE_WORDS-1:0];
+ `endif
 //-------------------------------------------------------------------------------
-// Port A memory behavioral description
+// Memory behavioral description
 //-------------------------------------------------------------------------------
-always @(posedge clk) begin
-    if (wena) begin
+always_ff @(posedge clk) begin
+    if (wen) begin
         for (int i=0; i<SCR1_NBYTES; i++) begin
-            if (weba[i]) begin
-                ram_block[addra][i*8 +: 8] <= dataa[i*8 +: 8];
+            if (webb[i]) begin
+                ram_block[addr][i*8 +: 8] <= datain[i*8 +: 8];
             end
         end
     end
-    if (rena) begin
-        qa <= ram_block[addra];
+    if (ren) begin
+        q <= ram_block[addr];
     end
 end
 
-`endif // SCR1_TARGET_FPGA_INTEL
+`endif // SCR1_TRGT_FPGA_INTEL
 
 endmodule : scr1_sp_memory
 

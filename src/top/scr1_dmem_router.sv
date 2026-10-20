@@ -1,4 +1,4 @@
-/// Copyright by Syntacore LLC © 2016-2018. See LICENSE for details
+/// Copyright by Syntacore LLC © 2016-2021. See LICENSE for details
 /// @file       <scr1_dmem_router.sv>
 /// @brief      Data memory router
 ///
@@ -120,6 +120,13 @@ always_ff @(negedge rst_n, posedge clk) begin
                         fsm <= SCR1_FSM_ADDR;
                     end
                     default : begin
+                        // The outstanding access is still not answered and the
+                        // core has moved to a different port. Waiting for the
+                        // stale transaction would dead-lock the router, so
+                        // restart it; see scr1_imem_router for the rationale.
+                        if (dmem_req & (port_sel != port_sel_r)) begin
+                            fsm <= SCR1_FSM_ADDR;
+                        end
                     end
                 endcase
             end
@@ -182,6 +189,10 @@ always_comb begin
         SCR1_FSM_DATA : begin
             if (sel_resp == SCR1_MEM_RESP_RDY_OK) begin
                 port0_req = dmem_req & (port_sel == SCR1_SEL_PORT0);
+            end else if ((sel_resp == SCR1_MEM_RESP_NOTRDY) && (port_sel == port_sel_r)) begin
+                // Keep driving the port that owns the outstanding access; see
+                // scr1_imem_router for the full rationale.
+                port0_req = dmem_req & (port_sel_r == SCR1_SEL_PORT0);
             end
         end
         default : begin
@@ -189,10 +200,17 @@ always_comb begin
     endcase
 end
 
+`ifdef SCR1_XPROP_EN
 assign port0_cmd    = (port_sel == SCR1_SEL_PORT0) ? dmem_cmd   : SCR1_MEM_CMD_ERROR;
 assign port0_width  = (port_sel == SCR1_SEL_PORT0) ? dmem_width : SCR1_MEM_WIDTH_ERROR;
 assign port0_addr   = (port_sel == SCR1_SEL_PORT0) ? dmem_addr  : 'x;
 assign port0_wdata  = (port_sel == SCR1_SEL_PORT0) ? dmem_wdata : 'x;
+`else // SCR1_XPROP_EN
+assign port0_cmd    = dmem_cmd  ;
+assign port0_width  = dmem_width;
+assign port0_addr   = dmem_addr ;
+assign port0_wdata  = dmem_wdata;
+`endif // SCR1_XPROP_EN
 
 //-------------------------------------------------------------------------------
 // Interface to PORT1
@@ -206,6 +224,10 @@ always_comb begin
         SCR1_FSM_DATA : begin
             if (sel_resp == SCR1_MEM_RESP_RDY_OK) begin
                 port1_req = dmem_req & (port_sel == SCR1_SEL_PORT1);
+            end else if ((sel_resp == SCR1_MEM_RESP_NOTRDY) && (port_sel == port_sel_r)) begin
+                // Keep driving the port that owns the outstanding access; see
+                // scr1_imem_router for the full rationale.
+                port1_req = dmem_req & (port_sel_r == SCR1_SEL_PORT1);
             end
         end
         default : begin
@@ -213,10 +235,17 @@ always_comb begin
     endcase
 end
 
+`ifdef SCR1_XPROP_EN
 assign port1_cmd    = (port_sel == SCR1_SEL_PORT1) ? dmem_cmd   : SCR1_MEM_CMD_ERROR;
 assign port1_width  = (port_sel == SCR1_SEL_PORT1) ? dmem_width : SCR1_MEM_WIDTH_ERROR;
 assign port1_addr   = (port_sel == SCR1_SEL_PORT1) ? dmem_addr  : 'x;
 assign port1_wdata  = (port_sel == SCR1_SEL_PORT1) ? dmem_wdata : 'x;
+`else // SCR1_XPROP_EN
+assign port1_cmd    = dmem_cmd  ;
+assign port1_width  = dmem_width;
+assign port1_addr   = dmem_addr ;
+assign port1_wdata  = dmem_wdata;
+`endif // SCR1_XPROP_EN
 
 //-------------------------------------------------------------------------------
 // Interface to PORT2
@@ -230,6 +259,10 @@ always_comb begin
         SCR1_FSM_DATA : begin
             if (sel_resp == SCR1_MEM_RESP_RDY_OK) begin
                 port2_req = dmem_req & (port_sel == SCR1_SEL_PORT2);
+            end else if ((sel_resp == SCR1_MEM_RESP_NOTRDY) && (port_sel == port_sel_r)) begin
+                // Keep driving the port that owns the outstanding access; see
+                // scr1_imem_router for the full rationale.
+                port2_req = dmem_req & (port_sel_r == SCR1_SEL_PORT2);
             end
         end
         default : begin
@@ -237,12 +270,19 @@ always_comb begin
     endcase
 end
 
+`ifdef SCR1_XPROP_EN
 assign port2_cmd    = (port_sel == SCR1_SEL_PORT2) ? dmem_cmd   : SCR1_MEM_CMD_ERROR;
 assign port2_width  = (port_sel == SCR1_SEL_PORT2) ? dmem_width : SCR1_MEM_WIDTH_ERROR;
 assign port2_addr   = (port_sel == SCR1_SEL_PORT2) ? dmem_addr  : 'x;
 assign port2_wdata  = (port_sel == SCR1_SEL_PORT2) ? dmem_wdata : 'x;
+`else // SCR1_XPROP_EN
+assign port2_cmd    = dmem_cmd  ;
+assign port2_width  = dmem_width;
+assign port2_addr   = dmem_addr ;
+assign port2_wdata  = dmem_wdata;
+`endif // SCR1_XPROP_EN
 
-`ifdef SCR1_SIM_ENV
+`ifdef SCR1_TRGT_SIMULATION
 //-------------------------------------------------------------------------------
 // Assertion
 //-------------------------------------------------------------------------------
@@ -252,6 +292,6 @@ SCR1_SVA_DMEM_RT_XCHECK : assert property (
     dmem_req |-> !$isunknown({port_sel, dmem_cmd, dmem_width})
     ) else $error("DMEM router Error: unknown values");
 
-`endif // SCR1_SIM_ENV
+`endif // SCR1_TRGT_SIMULATION
 
 endmodule : scr1_dmem_router
