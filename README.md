@@ -1,207 +1,156 @@
-# SCR1 RISC-V Core
+# SCR1-SP-TCM
 
-SCR1 is an open-source and free to use RISC-V compatible MCU-class core, designed and maintained by Syntacore. It is industry-grade and silicon-proven (including full-wafer production), works out of the box in all major EDA flows and Verilator, and comes with extensive collateral and documentation.
+基于 [Syntacore SCR1](https://github.com/syntacore/scr1) RISC-V 内核的个人增强 fork。
 
-![SCR1 cluster](./docs/img/scr1_cluster.svg)
+上游原始 README 见 [README_upstream_scr1.md](./README_upstream_scr1.md)。
 
-> **This fork modifies upstream SCR1 in two ways** (see report files at repo root):
-> - **ITCM/DTCM single-port redesign** — the original dual-port shared TCM is split into two physically independent single-port SRAMs (ITCM for code, DTCM for data) with separate address windows, matching mainstream MCU (Cortex-M style) practice. Details: [ITCM_DTCM_REPORT.md](./ITCM_DTCM_REPORT.md).
-> - **RISC-V Bit-Manipulation B extension** — Zba + Zbb + Zbc + Zbs (31 instructions) added via a new single-cycle `scr1_pipe_balu.sv` unit, enabled by `SCR1_RVB_EXT` in the MAX config. Details: [BITMANIP_EXTENSION_REPORT.md](./BITMANIP_EXTENSION_REPORT.md).
->
-> Benchmark scores before/after the TCM redesign: [BENCHMARK_RESULTS.md](./BENCHMARK_RESULTS.md).
+---
 
-## Key features
+# 本 Fork 的更新内容
 
-* Open sourced under SHL-license (see LICENSE file) - unrestricted commercial use allowed
-* RV32I or RV32E ISA base + optional RVM, RVC and RVB (Zba+Zbb+Zbc+Zbs) standard extensions
-* Machine privilege mode only
-* 2 to 4 stage pipeline
-* Optional Integrated Programmable Interrupt Controller with 16 IRQ lines
-* Optional RISC-V Debug subsystem with JTAG interface
-* Optional on-chip Tightly-Coupled Memory — independent single-port ITCM (code) + DTCM (data) with separate address windows
-* 32-bit AXI4/AHB-Lite external interface
-* Written in SystemVerilog
-* Optimized for area and power
-* 3 predefined recommended configurations
-* A number of fine-tuning options for custom configuration
-* Verification suite provided
-* Extensive documentation
+## 更新总览
 
-For more information on core architecture, see [SCR1 External Architecture Specification](https://github.com/syntacore/scr1/blob/master/docs/scr1_eas.pdf).
+| # | 更新 | 类型 | 详细文档 |
+|---|------|------|---------|
+| 1 | ITCM/DTCM 单口 SRAM 重构 | 微架构 | [ITCM_DTCM_REPORT.md](./ITCM_DTCM_REPORT.md) |
+| 2 | 取指流水线 bug 修复（dhrystone21 挂死） | Bug 修复 | 本 README §2 |
+| 3 | RISC-V B 扩展（Zba/Zbb/Zbc/Zbs，31 条指令） | ISA 扩展 | [BITMANIP_EXTENSION_REPORT.md](./BITMANIP_EXTENSION_REPORT.md) |
+| 4 | CV-X-IF 自定义指令扩展接口 | 总线接口 | [docs/cvxif_cfu_isa.md](./docs/cvxif_cfu_isa.md) |
+| 5 | MTX 4×4 块矩阵乘加速器（CFU + DMA） | 加速器 | [docs/cvxif_cfu_isa.md](./docs/cvxif_cfu_isa.md) §Custom-1 |
+| 6 | 工具链适配（GCC 15.x / newlib-nano） | 构建 | 本 README §6 |
 
-For more information on project usage, see [SCR1 User Manual](https://github.com/syntacore/scr1/blob/master/docs/scr1_um.pdf).
+各项均可独立开关，默认配置下与上游行为完全一致（零回归）。
 
-## Repository contents
+---
 
-|Folder | Description
-|------ | -----------
-|**dependencies**                  | **Dependent submodules**
-|├─ riscv-tests                    | Common source files for RISC-V ISA tests
-|├─ riscv_arch                     | Common source files for RISC-V Architectural tests
-|├─ riscv-compliance               | Common source files for RISC-V Compliance tests
-|└─ coremark                       | Common source files for EEMBC's CoreMark® benchmark
-|**docs**                          | **SCR1 documentation**
-|├─ scr1_eas.pdf                   | SCR1 External Architecture Specification
-|└─ scr1_um.pdf                    | SCR1 User Manual
-|**sim**                           | **Tests and scripts for simulation**
-|├─ tests/common                   | Common source files for tests
-|├─ tests/riscv_isa               | RISC-V ISA tests platform specific source files
-|├─ tests/riscv_arch              | RISC-V Architectural tests platform specific source files
-|├─ tests/riscv_compliance         | RISC-V Compliance platform specific source files
-|├─ tests/benchmarks/dhrystone21   | Dhrystone 2.1 benchmark source files
-|├─ tests/benchmarks/coremark      | EEMBC's CoreMark® benchmark platform specific source files
-|├─ tests/bitmanip                 | Bit-Manipulation B-extension self-check tests
-|├─ tests/isr_sample               | Sample program "Interrupt Service Routine"
-|├─ tests/hello                    | Sample program "Hello"
-|└─ verilator_wrap                 | Wrappers for Verilator simulation
-|**src**                           | **SCR1 RTL source and testbench files**
-|├─ includes                       | Header files
-|├─ core                           | Core top source files
-|├─ top                            | Cluster source files
-|└─ tb                             | Testbench files
+## 1. ITCM/DTCM 单口重构
 
-## SCR1 source file lists
+原版 ITCM/DTCM 共享一个双口 TCM。本 fork 拆分为两块物理独立的**单口 SRAM**：
 
-SCR1 source file lists of SCR1 can be found in [./src](https://github.com/syntacore/scr1/tree/master/src):
+- `src/top/scr1_itcm.sv` / `src/top/scr1_dtcm.sv` — 独立单口 RAM 模块
+- `src/top/scr1_sp_memory.sv` — 单口存储原语（替代 `scr1_dp_memory.sv`）
+- 独立地址窗口，符合主流 MCU（Cortex-M 风格）实践
+- `src/top/scr1_imem_router.sv` — 新增取指路由器（锁存 outstanding 地址 + 持续驱动旧端口直至响应返回）
 
-* **core.files**    - all synthesized file sources of the SCR1 core
-* **ahb_top.files** - synthesized file sources of AHB cluster
-* **axi_top.files** - synthesized file sources of AXI cluster
-* **ahb_tb.files**  - testbench file sources for AHB cluster (for simulation only)
-* **axi_tb.files**  - testbench file sources for AXI cluster (for simulation only)
+**收益**：单口 SRAM 面积/功耗约省 30-40%（同容量双口对比），便于 ASIC/FPGA 映射。
+基准测试对比见 [BENCHMARK_RESULTS.md](./BENCHMARK_RESULTS.md)。
 
-Library with header files to include is [./src/includes/](https://github.com/syntacore/scr1/tree/master/src/includes)
+## 2. 取指流水线 Bug 修复
 
-## Simulation quick start guide
+修复两个上游 bug（dhrystone21 在 TCM/RAM 跨界取指时挂死）：
 
-The project contains testbenches, test sources and scripts to quickly start the SCR1 simulation. Before starting the simulation, make sure you have:
+1. **IFU discard 计数错误**（`scr1_pipe_ifu.sv`）：`SCR1_NEW_PC_REG` 分支的 `discard_cnt` 多计 1，新取指响应被误丢弃 → auipc 被跳过
+2. **imem_router 端口撤回死锁**：`fsm=DATA && port_sel != port_sel_r` 时路由器停止驱动旧端口，outstanding 响应永远不返回
 
-* installed RISC-V GCC toolchain,
-* installed one of the supported simulators,
-* initialized submodules with test sources.
+修复后全回归 **140/141 通过**（唯一失败 shamt.hex 为预存问题，与本次修改无关）。
 
-### Requirements
+## 3. B 扩展（SCR1_RVB_EXT）
 
-#### Operating system
+新增单周期位操作单元 `src/core/pipeline/scr1_pipe_balu.sv`：
 
-GCC toolchain and make-scripts are supported by most popular Linux-like operating systems.
+- **Zba**：sh1add/sh2add/sh3add
+- **Zbb**：andn/orn/xnor/clz/ctz/cpop/max/min/rol/ror/rev8 等
+- **Zbc**：clmul/clmulh/clmulr（复用 MDU radix-2 迭代数据通路）
+- **Zbs**：bset/bclr/binv/bext 及立即数变体
 
-To run from Windows you can use an additional compatibility layer, such as WSL or Cygwin.
+MAX 配置默认开启。测试：`sim/tests/bitmanip/`。
 
-#### RISC-V GCC toolchain
+## 4. CV-X-IF 自定义指令接口（SCR1_RVX_EXT）
 
-RISC-V GCC toolchain is required to compile the software. You can use pre-built binaries or build the toolchain from scratch.
+按 [CORE-V eXtension Interface v1.0.0](https://github.com/openhwgroup/cv-x-if) 规范外接 CFU（Custom Function Unit）：
 
-##### Using pre-built binary tools
-
-Pre-built RISC-V GCC toolchain with support for all SCR1 architectural configurations is available for download from https://syntacore.com/tools/development-tools.
-
-1. Download the archive for your platform.
-2. Extract the archive to preferred directory `<GCC_INSTALL_PATH>`.
-3. Add the `<GCC_INSTALL_PATH>/bin` folder to the $PATH environment variable:
 ```
-    export PATH=<GCC_INSTALL_PATH>/bin:$PATH
+IDU 译码 custom-0..3 opcode ──▶ CV-X-IF 请求通道 ──▶ 外部 CFU
+                              ◀── CV-X-IF 响应通道 ──┘
 ```
 
-##### Building tools from source
+- 核心侧改造全部由 `SCR1_RVX_EXT` 宏包裹，IALU/MDU/LSU **零修改**
+- 支持单周期/多周期 CFU，带超时保护（`SCR1_CVXIF_CFU_MAX_LAT`）
+- `misa.X` 位自动置位
+- 参考 CFU（`scr1_pipe_cfu.sv`）：custom-0 空间 8 条 ALU 指令（add/xor/sub/and/or/sll/srl/mul）
+- 协议监控器 `scr1_cvxif_monitor.sv`
+- 测试 `sim/tests/cvxif/`：14 用例全 PASS（GAS `.insn` 伪指令编码，无需改 GCC）
 
-You can build the RISC-V GCC toolchain from sources, stored in official repo https://github.com/riscv/riscv-gnu-toolchain
+## 5. MTX 矩阵乘加速器（SCR1_MTX_EXT，需同时开 RVX）
 
-Instructions on how to prepare and build the toolchain can be found on https://github.com/riscv/riscv-gnu-toolchain/blob/master/README.md
+在 CV-X-IF 基础上增加 **4×4 块矩阵乘加速**，CFU 具备独立 dmem master，可自主访问 DTCM 与外部存储：
 
-We recommend using the multilib compiler. Please note that RV32IC, RV32E, RV32EM, RV32EMC, RV32EC architectural configurations are not included in the compiler by default. If you plan to use them, you will need to include the appropriate libraries by yourself before building.
-
-After the building, be sure to add the `<GCC_INSTALL_PATH>/bin` folder to the $PATH environment variable
-
-
-#### HDL simulators
-
-Currently supported simulators:
-
-* Verilator (last verified version: v5.x)
-* Mentor Graphics ModelSim / QuestaSim (last verified version: QuestaSim 2024.1)
-* Synopsys VCS (last verified version: S-2021.09-1)
-* Cadence NCSim (last verified version: 22.09-s004)
-
-Please note that RTL simulator executables should be in your $PATH variable.
-
-#### Tests preparation
-
-The simulation package includes the following tests:
-
-* **hello** - "Hello" sample program
-* **isr_sample** - "Interrupt Service Routine" sample program
-* **riscv_isa** - RISC-V ISA tests (submodule)
-* **riscv_arch** - RISC-V Architectural tests (submodule)
-* **riscv_compliance** - RISC-V Compliance tests (submodule)
-* **dhrystone21** - Dhrystone 2.1 benchmark
-* **coremark** - EEMBC's CoreMark® benchmark (submodule)
-* **bitmanip** - Bit-Manipulation B-extension self-check tests
-
-After the main SCR1 repository has been cloned execute the following command:
 ```
-    git submodule update --init --recursive
+LSU ──┐
+      ├── scr1_dmem_arbiter（轮转仲裁+事务锁）──▶ dmem_router ──▶ DTCM / AXI/AHB
+CFU ──┘
 ```
 
-This command will initialized submodules with test sources.
+- **指令集**（custom-1，opcode=0x2b）：
+  - `cfu.matmul4/4h/4b` — 4×4 int32/int16/int8 块乘 C=A×B（rs1/rs2=A/B 基地址）
+  - `cfu.mcfg_stride/msk/cbase` — 行步长/符号模式/C 基地址配置
+  - `cfu.stc` — **posted write**：结果整块入队后台写回，核不阻塞
+  - `cfu.xwait` — **fence**：排空写队列，返回状态字（错误计数+粘滞位）
+- **CFU 内部**：DMA 引擎（地址生成按 stride）+ MAC 阵列 + FSM（IDLE→LD_A→LD_B→COMP→DONE）
+- **错误契约**：访存错误置粘滞标志，后续指令拒绝执行直至 xwait 清除
+- 测试 `sim/tests/mtx/`：AHB/AXI 双总线 PASS，与 LSU 混合访问验证仲裁公平性
 
-### Running simulation
+## 6. 工具链适配
 
-To build RTL, compile and run tests from the repo root folder you have to call Makefile.
-By default, you may simply call Makefile without any parameters:
-``` sh
-    make
+- `sim/tests/common/common.mk`：链接顺序修复（`-lgcc` 先于 `-lc`，加 `-lnosys`）适配 GCC 15.x + newlib-nano
+- `tools/`：WSL xpack 工具链 shim（路径转换、`_zicsr_zifencei` 注入、symlink 脚本）
+- 测试 Makefile 对齐现代工具链
+
+---
+
+# 快速上手
+
+## 环境
+
+- 仿真器：QuestaSim / ModelSim（Verilator v5 未在本 fork 验证）
+- 工具链：xpack riscv-none-elf-gcc ≥ 14（Windows 侧经 WSL shim，见 `tools/`）
+- make + Git bash（Windows）
+
+## 编译与仿真
+
+```bash
+# 默认配置回归（零侵入验证）
+make run_modelsim TARGETS=hello BUS=AHB CFG=MAX
+
+# B 扩展测试
+make run_modelsim TARGETS=bitmanip BUS=AHB CFG=MAX
+
+# CV-X-IF 测试（custom-0 ALU 指令）
+make run_modelsim TARGETS=cvxif BUS=AHB CFG=MAX \
+     SIM_BUILD_OPTS="+define+SCR1_RVX_EXT"
+
+# MTX 矩阵乘测试（完整链路：DMA+MAC+posted write+fence）
+make run_modelsim TARGETS=mtx BUS=AHB CFG=MAX \
+     SIM_BUILD_OPTS="+define+SCR1_RVX_EXT +define+SCR1_MTX_EXT"
 ```
 
-In this case simulation will run on Verilator with following parameters: `CFG=MAX BUS=AHB TRACE=0 TARGETS="hello isr_sample riscv_isa riscv_compliance riscv_arch dhrystone21 coremark bitmanip"`.
+## 扩展开关
 
-Makefile supports:
+| 宏 | 默认 | 说明 |
+|----|------|------|
+| `SCR1_RVB_EXT` | MAX 配置开启 | B 扩展 |
+| `SCR1_RVX_EXT` | 关 | CV-X-IF 接口 + 参考 CFU |
+| `SCR1_MTX_EXT` | 关 | 矩阵乘加速（依赖 RVX） |
 
-* choice of simulator - `run_<SIMULATOR> = <run_vcs, run_modelsim, run_ncsim, run_verilator, run_verilator_wf>`
-* selection of external interface - `BUS = <AHB, AXI>`,
-* configuration setup - `CFG = <MAX, BASE, MIN, CUSTOM>`,
-* parameters for CUSTOM configuration - `ARCH = <IMCB, IMC, IC, IM, I, EMC, EM, EC, E>, VECT_IRQ = <0, 1>, IPIC = <0, 1>, TCM = <0, 1>`
-* tests subset to run - `TARGETS = <hello, isr_sample, riscv_isa, riscv_compliance, riscv_arch, dhrystone21, coremark, bitmanip>`
-* enabling tracelog - `TRACE = <0, 1>`
-* and any additional options to pass to the simulator - `SIM_BUILD_OPTS`.
+均定义于 `src/includes/scr1_arch_description.svh`，关闭时行为与上游一致。
 
-Examples:
-``` sh
-    make run_verilator_wf CFG=MAX BUS=AXI TARGETS="riscv_isa riscv_compliance" TRACE=1
-    make run_vcs CFG=BASE BUS=AHB TARGETS="dhrystone21 coremark" SIM_BUILD_OPTS="-gui"
-    make run_modelsim CFG=CUSTOM BUS=AXI ARCH=I VECT_IRQ=1 IPIC=1 TCM=0 TARGETS=isr_sample
+---
+
+# 目录结构（新增部分）
+
+```
+src/core/pipeline/scr1_pipe_balu.sv      # B 扩展单元
+src/core/pipeline/scr1_pipe_cfu.sv       # CV-X-IF 参考 CFU
+src/core/pipeline/scr1_pipe_cfu_mtx.sv   # 矩阵乘 CFU（DMA+MAC+posted write）
+src/core/pipeline/scr1_cvxif_monitor.sv  # CV-X-IF 协议监控器
+src/top/scr1_itcm.sv / scr1_dtcm.sv      # 单口 ITCM/DTCM
+src/top/scr1_sp_memory.sv                # 单口存储原语
+src/top/scr1_dmem_arbiter.sv             # LSU/CFU 仲裁器
+sim/tests/{bitmanip,cvxif,mtx,tcm_cross}/  # 测试
+tools/                                   # 工具链脚本
+docs/cvxif_cfu_isa.md                    # 自定义指令 ISA 文档
 ```
 
-Build and run parameters can be configured in the `./Makefile`.
+# 许可
 
-After all the tests have finished, the results can be found in `build/<SIM_CFG>/test_results.txt`.
-
-**IMPORTANT:** To ensure correct rebuild, please clean build directory between simulation runs:
-``` sh
-    make clean
-```
-
-Please refer to the *"Simulation environment"* chapter of the [SCR1 User Manual](https://github.com/syntacore/scr1/blob/master/docs/scr1_um.pdf) for more information on setting up a simulation run.
-
-## SCR1 SDKs
-
-FPGA-based SDKs are available at the <https://github.com/syntacore/scr1-sdk>.
-
-Repo contains:
-
-* Pre-build images and open designs for several standard FPGAs boards:
-  * Digilent Arty (Xilinx)
-  * Digilent Nexys 4 DDR (Xilinx)
-  * Arria V GX Starter (Intel)
-  * Terasic DE10-Lite (Intel)
-* Software package:
-  * Bootloader
-  * Zephyr RTOS
-  * Tests\SW samples
-* User Guides for SDKs and tools
-
-## Contacts
-
-Report an issue: <https://github.com/syntacore/scr1/issues>
-
-Ask a question: scr1@syntacore.com
+继承上游 SHL 许可（见 [LICENSE](./LICENSE)），允许 unrestricted 商用。
