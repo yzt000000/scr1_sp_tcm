@@ -77,6 +77,12 @@ module scr1_core_top (
     output  logic [`SCR1_DMEM_DWIDTH-1:0]           core2dmem_wdata_o,          // DMEM write data
     input   logic [`SCR1_DMEM_DWIDTH-1:0]           dmem2core_rdata_i,          // DMEM read data
     input   type_scr1_mem_resp_e                    dmem2core_resp_i            // DMEM response
+`ifdef SCR1_RVX_EXT
+    ,
+    // CV-X-IF interface (CFU passthrough)
+    input  type_scr1_cvxif_resp_s                   cfu2core_resp_i,            // CV-X-IF response (CFU -> Core)
+    output type_scr1_cvxif_req_s                    core2cfu_req_o              // CV-X-IF request (Core -> CFU)
+`endif // SCR1_RVX_EXT
 );
 
 //-------------------------------------------------------------------------------
@@ -352,6 +358,12 @@ scr1_pipe_top i_pipe_top (
 
     // Fuse
     .soc2pipe_fuse_mhartid_i        (core_fuse_mhartid_i    )
+`ifdef SCR1_RVX_EXT
+    ,
+    .cfu2pipe_resp_i                (cfu2core_resp_i        ),
+    .pipe2cfu_req_o                 (core2cfu_req_o         ),
+    .csr2pipe_mode_i                (2'b11                  )   // Machine mode (SCR1 supports M-mode only)
+`endif // SCR1_RVX_EXT
 );
 
 

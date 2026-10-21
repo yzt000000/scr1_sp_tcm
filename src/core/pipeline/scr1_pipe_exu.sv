@@ -159,6 +159,14 @@ module scr1_pipe_exu (
     output  logic [`SCR1_XLEN-1:0]              exu2csr_pc_next_o,          // Next PC
     output  logic                               exu2ifu_pc_new_req_o,       // New PC request
     output  logic [`SCR1_XLEN-1:0]              exu2ifu_pc_new_o            // New PC data
+`ifdef SCR1_RVX_EXT
+    ,
+
+    // EXU <-> CFU interface (CV-X-IF)
+    output type_scr1_cvxif_req_s               exu2cfu_req_o,             // CV-X-IF request channel (Core -> CFU)
+    input  type_scr1_cvxif_resp_s              cfu2exu_resp_i,            // CV-X-IF response channel (CFU -> Core)
+    input  logic [1:0]                         csr2exu_mode_i             // Current privilege mode
+`endif // SCR1_RVX_EXT
 );
 
 //------------------------------------------------------------------------------
@@ -191,6 +199,16 @@ logic                               dbg_run_start_npbuf;
 `endif // SCR1_DBG_EN
 logic                               exu_queue_en;
 logic [`SCR1_XLEN-1:0]              exu_illegal_instr;
+
+`ifdef SCR1_RVX_EXT
+// CFU (CV-X-IF) signals
+logic                               cfu_vd;
+logic                               cfu_rdy;
+logic                               cfu_exc_req;
+logic                               cfu_timeout;
+localparam int unsigned SCR1_CVXIF_LAT_CNT_WIDTH = $clog2(SCR1_CVXIF_CFU_MAX_LAT + 1);
+logic [SCR1_CVXIF_LAT_CNT_WIDTH-1:0] cfu_lat_cnt;
+`endif // SCR1_RVX_EXT
 
 `ifndef SCR1_NO_EXE_STAGE
 logic                               idu2exu_use_rs1_ff;
@@ -353,6 +371,9 @@ always_ff @(posedge clk) begin
         exu_queue.wfi_req        <= idu2exu_cmd_i.wfi_req;
         exu_queue.exc_req        <= idu2exu_cmd_i.exc_req;
         exu_queue.exc_code       <= idu2exu_cmd_i.exc_code;
+`ifdef SCR1_RVX_EXT
+        exu_queue.cfu_req        <= idu2exu_cmd_i.cfu_req;
+`endif // SCR1_RVX_EXT
         idu2exu_use_rs1_ff       <= idu2exu_use_rs1_i;
         idu2exu_use_rs2_ff       <= idu2exu_use_rs2_i;
         if (idu2exu_use_rs1_i) begin
@@ -464,6 +485,47 @@ scr1_pipe_ialu i_ialu(
     .ialu2exu_addr_res_o        (ialu_addr_res     )
 );
 
+`ifdef SCR1_RVX_EXT
+//------------------------------------------------------------------------------
+// CFU (CV-X-IF) interface logic
+//------------------------------------------------------------------------------
+
+// CFU valid: custom instruction active in EXU stage
+assign cfu_vd = exu_queue_vd & exu_queue.cfu_req;
+
+// CFU request channel drive (Core -> CFU)
+assign exu2cfu_req_o.req_valid     = cfu_vd;
+assign exu2cfu_req_o.req_instr     = exu_queue.imm;
+assign exu2cfu_req_o.req_rs1       = mprf2exu_rs1_data_i;
+assign exu2cfu_req_o.req_rs1_valid = 1'b1;
+assign exu2cfu_req_o.req_rs2       = mprf2exu_rs2_data_i;
+assign exu2cfu_req_o.req_rs2_valid = 1'b1;
+assign exu2cfu_req_o.req_mode      = csr2exu_mode_i;
+assign exu2cfu_req_o.core_ready    = 1'b1;
+
+// CFU ready: response valid and no exception, or timeout (allow exception processing)
+assign cfu_rdy = (cfu2exu_resp_i.resp_valid & ~cfu2exu_resp_i.resp_exc) | cfu_timeout;
+
+// CFU exception: CFU reports illegal instruction or timeout
+assign cfu_exc_req = cfu_vd & ((cfu2exu_resp_i.resp_valid & cfu2exu_resp_i.resp_exc) | cfu_timeout);
+
+// CFU timeout protection counter
+always_ff @(posedge clk, negedge rst_n) begin
+    if (~rst_n) begin
+        cfu_lat_cnt <= '0;
+    end else begin
+        if (cfu_vd & ~cfu_rdy) begin
+            cfu_lat_cnt <= cfu_lat_cnt + 1'b1;
+        end else begin
+            cfu_lat_cnt <= '0;
+        end
+    end
+end
+
+assign cfu_timeout = (cfu_lat_cnt == SCR1_CVXIF_LAT_CNT_WIDTH'(SCR1_CVXIF_CFU_MAX_LAT));
+
+`endif // SCR1_RVX_EXT
+
 //------------------------------------------------------------------------------
 // Exceptions logic
 //------------------------------------------------------------------------------
@@ -490,6 +552,9 @@ assign exu_exc_req  = exu_queue_vd & (exu_queue.exc_req | lsu_exc_req
                                                         | exu2hdu_ibrkpt_hw_o
   `endif // SCR1_DBG_EN
 `endif // SCR1_TDU_EN
+`ifdef SCR1_RVX_EXT
+                                                        | cfu_exc_req
+`endif // SCR1_RVX_EXT
                                                         );
 
 // EXU exception request register
@@ -519,6 +584,9 @@ always_comb begin
   `endif // SCR1_DBG_EN
 `endif // SCR1_TDU_EN
         exu_queue.exc_req  : exc_code = exu_queue.exc_code;
+`ifdef SCR1_RVX_EXT
+        cfu_exc_req        : exc_code = SCR1_EXC_CODE_ILLEGAL_INSTR;
+`endif // SCR1_RVX_EXT
         lsu_exc_req        : exc_code = lsu_exc_code;
         csr2exu_rw_exc_i   : exc_code = SCR1_EXC_CODE_ILLEGAL_INSTR;
 `ifndef SCR1_RVC_EXT
@@ -801,6 +869,9 @@ always_comb begin
 `ifdef SCR1_RVM_EXT
         ialu_vd                 : exu_rdy = ialu_rdy;
 `endif // SCR1_RVM_EXT
+`ifdef SCR1_RVX_EXT
+        cfu_vd                  : exu_rdy = cfu_rdy;
+`endif // SCR1_RVX_EXT
         csr2exu_mstatus_mie_up_i: exu_rdy = 1'b0;
         default                 : exu_rdy = 1'b1;
     endcase
@@ -885,6 +956,9 @@ always_comb begin
         SCR1_RD_WB_INC_PC: exu2mprf_rd_data_o = inc_pc;
         SCR1_RD_WB_LSU   : exu2mprf_rd_data_o = lsu_l_data;
         SCR1_RD_WB_CSR   : exu2mprf_rd_data_o = csr2exu_r_data_i;
+`ifdef SCR1_RVX_EXT
+        SCR1_RD_WB_CFU   : exu2mprf_rd_data_o = cfu2exu_resp_i.resp_result;
+`endif // SCR1_RVX_EXT
         default          : exu2mprf_rd_data_o = ialu_main_res;
     endcase
 end

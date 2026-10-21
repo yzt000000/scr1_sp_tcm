@@ -71,6 +71,7 @@
   `define SCR1_RVI_EXT
   `define SCR1_RVM_EXT
   `define SCR1_RVC_EXT
+  `define SCR1_RVB_EXT
   parameter int unsigned SCR1_MTVEC_BASE_WR_BITS = 26;
   `define SCR1_MTVEC_MODE_EN
   `define SCR1_FAST_MUL
@@ -121,6 +122,22 @@
 //`define SCR1_RVE_EXT                // enable RV32E base integer instruction set, otherwise RV32I will be used
 `define SCR1_RVM_EXT                // enable standard extension "M" for integer hardware multiplier and divider
 `define SCR1_RVC_EXT                // enable standard extension "C" for compressed instructions
+`define SCR1_RVB_EXT                // enable standard extension "B" (Zba + Zbb + Zbc + Zbs bit manipulation)
+                                    // NOTE: how the Zbc part (clmul) is implemented depends on whether the
+                                    // iterative MDU of the "M" extension is present - see SCR1_RVB_ITER_CLMUL
+                                    // further down.  The remaining (26 - 3) B commands always resolve to the
+                                    // combinational unit in scr1_pipe_balu.sv.
+//`define SCR1_RVX_EXT                // enable CV-X-IF custom extension interface (CORE-V eXtension Interface)
+                                    // When enabled, the core exposes a CV-X-IF request/response channel for an
+                                    // externally connected Custom Function Unit (CFU).  Custom-0/1/2/3 opcodes
+                                    // are decoded and forwarded to the CFU; the core performs no custom
+                                    // instruction semantics.  When disabled, custom opcodes fall through to the
+                                    // illegal-instruction path with zero intrusion on the standard ISA.
+
+                                    // Requires SCR1_RVX_EXT. When enabled, the CFU gains a dmem master
+                                    // interface and a DMEM arbiter merges LSU+CFU requests.  Custom-1 opcode
+                                    // space (0x2b) is used for cfu.matmul4/matmul4h/matmul4b/mcfg_stride/msk.
+
 parameter int unsigned SCR1_MTVEC_BASE_WR_BITS = 26;    // number of writable high-order bits in MTVEC.base field
                                                             // legal values are 0 to 26
                                                             // read-only bits are hardwired to reset value
@@ -152,6 +169,43 @@ parameter int unsigned SCR1_TDU_TRIG_NUM = 2;   // number of hardware triggers
 
 
 //------------------------------------------------------------------------------
+// DERIVED CONFIGURATION
+//------------------------------------------------------------------------------
+
+// CV-X-IF (CORE-V eXtension Interface) configuration - available in all configs
+`define SCR1_CVXIF_VERSION           1_0_0   // CV-X-IF specification version bound (currently v1.0.0)
+parameter int unsigned SCR1_CVXIF_CFU_MAX_LAT = 1024; // maximum latency (cycles) a multi-cycle CFU may occupy
+                                                      // before the core triggers a timeout protection exception
+
+// Implementation choice for the Zbc instructions (clmul / clmulh / clmulr).
+//
+// There are two ways to build a carry-less multiplier:
+//
+//   1. combinational GF(2) array in scr1_pipe_balu.sv
+//      -> 1 cycle latency, ~3.5 kGE (1024 x AND2 + ~960 x XOR2)
+//
+//   2. iterative radix-2, reusing the MDU of the "M" extension
+//      -> ~31 cycles latency, ~0.2 kGE
+//
+// Option 2 is sound because a radix-2 step of one bit already produces its
+// partial product by AND only (op1 * {0, bit}), and replacing the accumulator
+// by XOR instead of ADD moves the arithmetic from the integer semiring into
+// GF(2)[x]: the carry chain is exactly what separates the two.  Everything
+// else - the iteration counter, the FSM, the 33-bit adder operand registers and
+// the 64-bit hi/lo shift register pair - is shared with DIV.
+//
+// IMPORTANT: with SCR1_FAST_MUL defined (which the recommended MAX config does)
+// integer MUL itself is a single cycle combinational array, so this option
+// trades clmul latency for area.  Undefine SCR1_RVB_ITER_CLMUL below to get the
+// single cycle array back.
+`ifdef SCR1_RVB_EXT
+ `ifdef SCR1_RVM_EXT
+  `define SCR1_RVB_ITER_CLMUL     // reuse the iterative MDU for carry-less multiplication
+ `endif // SCR1_RVM_EXT
+`endif // SCR1_RVB_EXT
+
+
+//------------------------------------------------------------------------------
 // CORE INTEGRATION OPTIONS
 //------------------------------------------------------------------------------
 
@@ -170,11 +224,23 @@ parameter int unsigned SCR1_TDU_TRIG_NUM = 2;   // number of hardware triggers
 parameter bit [`SCR1_XLEN-1:0]          SCR1_ARCH_RST_VECTOR        = 'h200;            // Reset vector value (start address after reset)
 parameter bit [`SCR1_XLEN-1:0]          SCR1_ARCH_MTVEC_BASE        = 'h1C0;            // MTVEC.base field reset value, or constant value for MTVEC.base bits that are hardwired
 
-parameter bit [`SCR1_DMEM_AWIDTH-1:0]   SCR1_TCM_ADDR_MASK          = 'hFFFF0000;       // TCM mask and size; size in bytes is two's complement of the mask value
-parameter bit [`SCR1_DMEM_AWIDTH-1:0]   SCR1_TCM_ADDR_PATTERN       = 'h00480000;       // TCM address match pattern
+// Tightly-coupled memory. The TCM is built from two INDEPENDENT single-port
+// RAMs, each with its own address window (classic MCU ITCM/DTCM style):
+//   ITCM : instruction memory, holds code and read-only data
+//   DTCM : data memory, holds mutable data, bss and stack
+parameter bit [`SCR1_DMEM_AWIDTH-1:0]   SCR1_ITCM_ADDR_MASK         = 'hFFFF0000;       // ITCM mask and size (64K); size is two's complement of the mask
+parameter bit [`SCR1_DMEM_AWIDTH-1:0]   SCR1_ITCM_ADDR_PATTERN      = 'h00480000;       // ITCM address match pattern
+parameter bit [`SCR1_DMEM_AWIDTH-1:0]   SCR1_DTCM_ADDR_MASK         = 'hFFFF0000;       // DTCM mask and size (64K)
+parameter bit [`SCR1_DMEM_AWIDTH-1:0]   SCR1_DTCM_ADDR_PATTERN      = 'h00490000;       // DTCM address match pattern
+
+// Router level window: covers BOTH the ITCM and the DTCM window so a single
+// router port can drive the TCM. The ITCM/DTCM split is resolved inside
+// scr1_tcm. Size is two's complement of the mask (128K here).
+parameter bit [`SCR1_DMEM_AWIDTH-1:0]   SCR1_TCM_ADDR_MASK          = 'hFFFE0000;       // combined ITCM+DTCM window mask
+parameter bit [`SCR1_DMEM_AWIDTH-1:0]   SCR1_TCM_ADDR_PATTERN       = 'h00480000;       // combined ITCM+DTCM window base
 
 parameter bit [`SCR1_DMEM_AWIDTH-1:0]   SCR1_TIMER_ADDR_MASK        = 'hFFFFFFE0;       // Timer mask
-parameter bit [`SCR1_DMEM_AWIDTH-1:0]   SCR1_TIMER_ADDR_PATTERN     = 'h00490000;       // Timer address match pattern
+parameter bit [`SCR1_DMEM_AWIDTH-1:0]   SCR1_TIMER_ADDR_PATTERN     = 'h00500000;       // Timer address match pattern (moved out of the DTCM window)
 
 // Device build ID
  `define SCR1_ARCH_BUILD_ID             `SCR1_MIMPID

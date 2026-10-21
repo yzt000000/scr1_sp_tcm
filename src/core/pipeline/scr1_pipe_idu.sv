@@ -113,6 +113,9 @@ always_comb begin
     idu2exu_cmd_o.imm         = '0;
     idu2exu_cmd_o.exc_req     = 1'b0;
     idu2exu_cmd_o.exc_code    = SCR1_EXC_CODE_INSTR_MISALIGN;
+`ifdef SCR1_RVX_EXT
+    idu2exu_cmd_o.cfu_req     = 1'b0;
+`endif // SCR1_RVX_EXT
 
     // Clock gating
     idu2exu_use_rs1_o         = 1'b0;
@@ -248,6 +251,11 @@ always_comb begin
                                 case (funct3)
                                     3'b000  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_SUB;
                                     3'b101  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_SRA;
+`ifdef SCR1_RVB_EXT
+                                    3'b100  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_XNOR;  // Zbb
+                                    3'b110  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_ORN;   // Zbb
+                                    3'b111  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_ANDN;  // Zbb
+`endif // SCR1_RVB_EXT
                                     default : rvi_illegal = 1'b1;
                                 endcase // funct3
                             end // 7'b0100000
@@ -265,6 +273,60 @@ always_comb begin
                                 endcase // funct3
                             end // 7'b0000001
 `endif  // SCR1_RVM_EXT
+`ifdef SCR1_RVB_EXT
+                            7'b0010000 : begin
+                                // Zba: shift-and-add
+                                case (funct3)
+                                    3'b010  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_SH1ADD;
+                                    3'b100  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_SH2ADD;
+                                    3'b110  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_SH3ADD;
+                                    default : rvi_illegal = 1'b1;
+                                endcase // funct3
+                            end // 7'b0010000
+
+                            7'b0000101 : begin
+                                // Zbb: min/max ; Zbc: carry-less multiplication
+                                case (funct3)
+                                    3'b001  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_CLMUL;
+                                    3'b010  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_CLMULR;
+                                    3'b011  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_CLMULH;
+                                    3'b100  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_MIN;
+                                    3'b101  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_MINU;
+                                    3'b110  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_MAX;
+                                    3'b111  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_MAXU;
+                                    default : rvi_illegal = 1'b1;
+                                endcase // funct3
+                            end // 7'b0000101
+
+                            7'b0110000 : begin
+                                // Zbb: rotate
+                                case (funct3)
+                                    3'b001  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_ROL;
+                                    3'b101  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_ROR;
+                                    default : rvi_illegal = 1'b1;
+                                endcase // funct3
+                            end // 7'b0110000
+
+                            7'b0000100 : begin
+                                // Zbb: zext.h (rs2 field must be zero)
+                                if ((funct3 == 3'b100) && (instr[24:20] == 5'b00000)) begin
+                                    idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_ZEXTH;
+                                end else begin
+                                    rvi_illegal = 1'b1;
+                                end
+                            end // 7'b0000100
+
+                            7'b0100100 : begin
+                                // Zbs: single-bit instructions
+                                case (funct3)
+                                    3'b001  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_BCLR;
+                                    3'b010  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_BSET;
+                                    3'b011  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_BINV;
+                                    3'b101  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_BEXT;
+                                    default : rvi_illegal = 1'b1;
+                                endcase // funct3
+                            end // 7'b0100100
+`endif  // SCR1_RVB_EXT
                             default : rvi_illegal = 1'b1;
                         endcase // funct7
 `ifdef SCR1_RVE_EXT
@@ -283,8 +345,27 @@ always_comb begin
                         idu2exu_cmd_o.rd_wb_sel   = SCR1_RD_WB_IALU;
                         case (funct3)
                             3'b000  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_ADD;        // ADDI
-                            3'b010  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_SUB_LT;     // SLTI
-                            3'b011  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_SUB_LTU;    // SLTIU
+                            3'b010  : begin
+`ifdef SCR1_RVB_EXT
+                                // SLTI, except when imm[11:6] == 6'b010010 which decodes to BSETI (Zbs).
+                                // The two encodings share the same opcode/funct3 space; Zbs takes priority.
+                                if (funct7[6:1] == 6'b010010) begin
+                                    idu2exu_cmd_o.imm          = `SCR1_XLEN'(shamt);  // zero-extend
+                                    idu2exu_cmd_o.ialu_cmd     = SCR1_IALU_CMD_BSET;
+                                end else
+`endif // SCR1_RVB_EXT
+                                idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_SUB_LT;         // SLTI
+                            end
+                            3'b011  : begin
+`ifdef SCR1_RVB_EXT
+                                // SLTIU, except when imm[11:6] == 6'b010010 which decodes to BINVI (Zbs)
+                                if (funct7[6:1] == 6'b010010) begin
+                                    idu2exu_cmd_o.imm          = `SCR1_XLEN'(shamt);  // zero-extend
+                                    idu2exu_cmd_o.ialu_cmd     = SCR1_IALU_CMD_BINV;
+                                end else
+`endif // SCR1_RVB_EXT
+                                idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_SUB_LTU;        // SLTIU
+                            end
                             3'b100  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_XOR;        // XORI
                             3'b110  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_OR;         // ORI
                             3'b111  : idu2exu_cmd_o.ialu_cmd  = SCR1_IALU_CMD_AND;        // ANDI
@@ -295,6 +376,24 @@ always_comb begin
                                         idu2exu_cmd_o.imm         = `SCR1_XLEN'(shamt);   // zero-extend
                                         idu2exu_cmd_o.ialu_cmd    = SCR1_IALU_CMD_SLL;
                                     end
+`ifdef SCR1_RVB_EXT
+                                    7'b0110000  : begin
+                                        // Zbb: CLZ / CTZ / CPOP / SEXT.B / SEXT.H
+                                        case (shamt)
+                                            5'b00000 : idu2exu_cmd_o.ialu_cmd = SCR1_IALU_CMD_CLZ;
+                                            5'b00001 : idu2exu_cmd_o.ialu_cmd = SCR1_IALU_CMD_CTZ;
+                                            5'b00010 : idu2exu_cmd_o.ialu_cmd = SCR1_IALU_CMD_CPOP;
+                                            5'b00100 : idu2exu_cmd_o.ialu_cmd = SCR1_IALU_CMD_SEXTB;
+                                            5'b00101 : idu2exu_cmd_o.ialu_cmd = SCR1_IALU_CMD_SEXTH;
+                                            default  : rvi_illegal = 1'b1;
+                                        endcase // shamt
+                                    end
+                                    7'b0100100  : begin
+                                        // Zbs: BCLRI
+                                        idu2exu_cmd_o.imm         = `SCR1_XLEN'(shamt);   // zero-extend
+                                        idu2exu_cmd_o.ialu_cmd    = SCR1_IALU_CMD_BCLR;
+                                    end
+`endif // SCR1_RVB_EXT
                                     default     : rvi_illegal   = 1'b1;
                                 endcase // funct7
                             end
@@ -310,6 +409,26 @@ always_comb begin
                                         idu2exu_cmd_o.imm         = `SCR1_XLEN'(shamt);   // zero-extend
                                         idu2exu_cmd_o.ialu_cmd    = SCR1_IALU_CMD_SRA;
                                     end
+`ifdef SCR1_RVB_EXT
+                                    7'b0110000  : begin
+                                        // Zbb: RORI (immediate form of ROR)
+                                        idu2exu_cmd_o.imm         = `SCR1_XLEN'(shamt);   // zero-extend
+                                        idu2exu_cmd_o.ialu_cmd    = SCR1_IALU_CMD_ROR;
+                                    end
+                                    7'b0010100  : begin
+                                        // Zbb: ORC.B (imm[4:0] must be 00111)
+                                        if (shamt == 5'b00111) begin
+                                            idu2exu_cmd_o.ialu_cmd = SCR1_IALU_CMD_ORCB;
+                                        end else begin
+                                            rvi_illegal = 1'b1;
+                                        end
+                                    end
+                                    7'b0100100  : begin
+                                        // Zbs: BEXTI
+                                        idu2exu_cmd_o.imm         = `SCR1_XLEN'(shamt);   // zero-extend
+                                        idu2exu_cmd_o.ialu_cmd    = SCR1_IALU_CMD_BEXT;
+                                    end
+`endif // SCR1_RVB_EXT
                                     default     : rvi_illegal   = 1'b1;
                                 endcase // funct7
                             end
@@ -485,6 +604,27 @@ always_comb begin
                             default : rvi_illegal = 1'b1;
                         endcase // funct3
                     end // SCR1_OPCODE_SYSTEM
+
+`ifdef SCR1_RVX_EXT
+                    SCR1_OPCODE_CUSTOM_0,
+                    SCR1_OPCODE_CUSTOM_1,
+                    SCR1_OPCODE_CUSTOM_2,
+                    SCR1_OPCODE_CUSTOM_3 : begin
+                        // CV-X-IF custom instruction: forward full instruction word to CFU
+                        idu2exu_cmd_o.cfu_req    = 1'b1;
+                        idu2exu_cmd_o.rd_wb_sel  = SCR1_RD_WB_CFU;
+                        idu2exu_cmd_o.imm        = instr;
+                        idu2exu_use_rs1_o        = 1'b1;
+                        idu2exu_use_rs2_o        = 1'b1;
+`ifndef SCR1_NO_EXE_STAGE
+                        idu2exu_use_rd_o         = 1'b1;
+                        idu2exu_use_imm_o        = 1'b1;
+`endif // SCR1_NO_EXE_STAGE
+`ifdef SCR1_RVE_EXT
+                        if (instr[11] | instr[19] | instr[24])  rve_illegal = 1'b1;
+`endif  // SCR1_RVE_EXT
+                    end // SCR1_OPCODE_CUSTOM_*
+`endif // SCR1_RVX_EXT
 
                     default : begin
                         rvi_illegal = 1'b1;
@@ -927,11 +1067,15 @@ SCR1_SVA_IDU_IALU_CMD_RANGE : assert property (
     (ifu2idu_vd_i & ~ifu2idu_imem_err_i) |->
     ((idu2exu_cmd_o.ialu_cmd >= SCR1_IALU_CMD_NONE) &
     (idu2exu_cmd_o.ialu_cmd <=
-`ifdef SCR1_RVM_EXT
+`ifdef SCR1_RVB_EXT
+                            SCR1_IALU_CMD_BSET
+`else // ~SCR1_RVB_EXT
+  `ifdef SCR1_RVM_EXT
                             SCR1_IALU_CMD_REMU
-`else
+  `else // ~SCR1_RVM_EXT
                             SCR1_IALU_CMD_SRA
-`endif // SCR1_RVM_EXT
+  `endif // ~SCR1_RVM_EXT
+`endif // ~SCR1_RVB_EXT
         ))
     ) else $error("IDU Error: IALU_CMD out of range");
 

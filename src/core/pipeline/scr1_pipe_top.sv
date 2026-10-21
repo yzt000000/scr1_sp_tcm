@@ -98,7 +98,14 @@ module scr1_pipe_top (
 `endif // SCR1_CLKCTRL_EN
 
     // Fuse
-    input   logic [`SCR1_XLEN-1:0]                      soc2pipe_fuse_mhartid_i     // Fuse MHARTID value
+    input   logic [`SCR1_XLEN-1:0]                      soc2pipe_fuse_mhartid_i    // Fuse MHARTID value
+`ifdef SCR1_RVX_EXT
+    ,
+    // CV-X-IF interface (CFU passthrough)
+    input  type_scr1_cvxif_resp_s                       cfu2pipe_resp_i,           // CV-X-IF response (CFU -> Core)
+    output type_scr1_cvxif_req_s                        pipe2cfu_req_o,            // CV-X-IF request (Core -> CFU)
+    input  logic [1:0]                                  csr2pipe_mode_i            // Current privilege mode
+`endif // SCR1_RVX_EXT
 );
 
 //-------------------------------------------------------------------------------
@@ -469,6 +476,12 @@ scr1_pipe_exu i_pipe_exu (
     .exu2csr_pc_next_o              (next_pc                 ),
     .exu2ifu_pc_new_req_o           (new_pc_req              ),
     .exu2ifu_pc_new_o               (new_pc                  )
+`ifdef SCR1_RVX_EXT
+    ,
+    .exu2cfu_req_o                  (pipe2cfu_req_o          ),
+    .cfu2exu_resp_i                 (cfu2pipe_resp_i         ),
+    .csr2exu_mode_i                 (csr2pipe_mode_i         )
+`endif // SCR1_RVX_EXT
 );
 
 //-------------------------------------------------------------------------------

@@ -115,6 +115,7 @@ parameter bit SCR1_CSR_MSTATUS_MPIE_RST_VAL         = 1'b1;
 `define SCR1_RVE_ENC                                `SCR1_XLEN'h0010
 `define SCR1_RVI_ENC                                `SCR1_XLEN'h0100
 `define SCR1_RVM_ENC                                `SCR1_XLEN'h1000
+`define SCR1_RVX_ENC                                `SCR1_XLEN'h00800000  // misa bit 23: non-standard (custom) extension
 parameter bit [1:0]             SCR1_MISA_MXL_32    = 2'd1;
 parameter bit [`SCR1_XLEN-1:0]  SCR1_CSR_MISA       = (SCR1_MISA_MXL_32 << (`SCR1_XLEN-2))
 `ifndef SCR1_RVE_EXT
@@ -131,6 +132,9 @@ parameter bit [`SCR1_XLEN-1:0]  SCR1_CSR_MISA       = (SCR1_MISA_MXL_32 << (`SCR
 `ifdef SCR1_RVB_EXT
                                                     | `SCR1_RVB_ENC
 `endif // SCR1_RVB_EXT
+`ifdef SCR1_RVX_EXT
+                                                    | `SCR1_RVX_ENC
+`endif // SCR1_RVX_EXT
                                                     ;
 
 // MVENDORID

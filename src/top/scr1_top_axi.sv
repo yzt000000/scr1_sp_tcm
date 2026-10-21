@@ -8,6 +8,10 @@
 `ifdef SCR1_IPIC_EN
 `include "scr1_ipic.svh"
 `endif // SCR1_IPIC_EN
+`ifdef SCR1_RVX_EXT
+`include "scr1_arch_types.svh"
+`include "scr1_riscv_isa_decoding.svh"
+`endif // SCR1_RVX_EXT
 
 `ifdef SCR1_TCM_EN
  `define SCR1_IMEM_ROUTER_EN
@@ -183,6 +187,7 @@ logic [`SCR1_DMEM_DWIDTH-1:0]                       core_dmem_wdata;
 logic [`SCR1_DMEM_DWIDTH-1:0]                       core_dmem_rdata;
 type_scr1_mem_resp_e                                core_dmem_resp;
 
+
 // Instruction memory interface from router to AXI bridge
 logic                                               axi_imem_req_ack;
 logic                                               axi_imem_req;
@@ -234,6 +239,12 @@ type_scr1_mem_resp_e                                timer_dmem_resp;
 // Misc
 logic                                               timer_irq;
 logic [63:0]                                        timer_val;
+
+`ifdef SCR1_RVX_EXT
+// CV-X-IF interface signals (Core <-> CFU)
+type_scr1_cvxif_req_s                               core2cfu_req;
+type_scr1_cvxif_resp_s                              cfu2core_resp;
+`endif // SCR1_RVX_EXT
 logic                                               axi_reinit;
 logic                                               axi_imem_idle;
 logic                                               axi_dmem_idle;
@@ -356,7 +367,26 @@ scr1_core_top i_core_top (
     .core2dmem_wdata_o          (core_dmem_wdata  ),
     .dmem2core_rdata_i          (core_dmem_rdata  ),
     .dmem2core_resp_i           (core_dmem_resp   )
+`ifdef SCR1_RVX_EXT
+    ,
+    .cfu2core_resp_i            (cfu2core_resp    ),
+    .core2cfu_req_o             (core2cfu_req     )
+`endif // SCR1_RVX_EXT
 );
+
+`ifdef SCR1_RVX_EXT
+//-------------------------------------------------------------------------------
+// CV-X-IF Custom Function Unit (reference implementation, custom-0 ALU only)
+//-------------------------------------------------------------------------------
+scr1_pipe_cfu #(
+    .MAX_LATENCY                (1)
+) i_cfu (
+    .clk                        (clk              ),
+    .rst_n                      (core_rst_n_local ),
+    .cvxif_req_i                (core2cfu_req     ),
+    .cvxif_resp_o               (cfu2core_resp    )
+);
+`endif // SCR1_RVX_EXT
 
 
 `ifdef SCR1_TCM_EN
@@ -364,7 +394,8 @@ scr1_core_top i_core_top (
 // TCM instance
 //-------------------------------------------------------------------------------
 scr1_tcm #(
-    .SCR1_TCM_SIZE  (`SCR1_DMEM_AWIDTH'(~SCR1_TCM_ADDR_MASK + 1'b1))
+    .SCR1_ITCM_SIZE (`SCR1_DMEM_AWIDTH'(~SCR1_ITCM_ADDR_MASK + 1'b1)),
+    .SCR1_DTCM_SIZE (`SCR1_DMEM_AWIDTH'(~SCR1_DTCM_ADDR_MASK + 1'b1))
 ) i_tcm (
     .clk            (clk             ),
     .rst_n          (core_rst_n_local),
@@ -372,6 +403,7 @@ scr1_tcm #(
     // Instruction interface to TCM
     .imem_req_ack   (tcm_imem_req_ack),
     .imem_req       (tcm_imem_req    ),
+    .imem_cmd       (tcm_imem_cmd    ),
     .imem_addr      (tcm_imem_addr   ),
     .imem_rdata     (tcm_imem_rdata  ),
     .imem_resp      (tcm_imem_resp   ),

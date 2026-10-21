@@ -180,6 +180,11 @@ TARGETS += hello
 # Comment this target if you don't want to run the bit manipulation (B) test
 TARGETS += bitmanip
 
+# CV-X-IF custom extension test (only when RVX_EXT=1)
+ifeq ($(RVX_EXT), 1)
+TARGETS += cvxif
+endif
+
 
 # When RVE extension is on, we want to exclude some tests, even if they are given from the command line
 ifneq (,$(findstring e,$(ARCH_lowercase)))
@@ -233,6 +238,9 @@ hello: | $(bld_dir)
 
 bitmanip: | $(bld_dir)
 	-$(MAKE) -C $(tst_dir)/bitmanip EXT_CFLAGS="$(EXT_CFLAGS)" ARCH=$(ARCH)
+
+cvxif: | $(bld_dir)
+	-$(MAKE) -C $(tst_dir)/cvxif EXT_CFLAGS="$(EXT_CFLAGS)" ARCH=$(ARCH)
 
 
 clean_hex: | $(bld_dir)

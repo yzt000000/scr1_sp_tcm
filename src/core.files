@@ -4,6 +4,8 @@ core/pipeline/scr1_ipic.sv
 core/pipeline/scr1_pipe_csr.sv
 core/pipeline/scr1_pipe_exu.sv
 core/pipeline/scr1_pipe_balu.sv
+core/pipeline/scr1_pipe_cfu.sv
+core/pipeline/scr1_cvxif_monitor.sv
 core/pipeline/scr1_pipe_ialu.sv
 core/pipeline/scr1_pipe_idu.sv
 core/pipeline/scr1_pipe_ifu.sv
