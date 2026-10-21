@@ -85,7 +85,7 @@ filtered_imc      := $(filter-out $(cut_list),$(testnames_imc))
 # ARCH_FLAGS := -Wa,-march=rv32im -march=rv32im
 # ARCH_FLAGS_C := -Wa,-march=rv32imc -march=rv32imc
 CFLAGS := -I$(inc_dir) -I$(src_dir) -DASM -mabi=ilp32 -D__riscv_xlen=32 -w
-LDFLAGS := -static -fvisibility=hidden -nostdlib -nostartfiles -T$(inc_dir)/link.ld -march=$(ARCH)_zicsr_zifencei -mabi=ilp32
+LDFLAGS := -static -fvisibility=hidden -nostdlib -nostartfiles -T$(inc_dir)/link.ld -march=$(ARCH) -mabi=ilp32
 GCCVERSIONGT7 := $(shell expr `$(RISCV_GCC) -dumpfullversion | cut -f1 -d'.'` \> 7)
 ifeq "$(GCCVERSIONGT7)" "1"
 	LDFLAGS += -mno-relax
@@ -104,19 +104,12 @@ $(obj_dir)/$(1).o: $(obj_dir) cp_asm
 endef
 
 define preprocessing
-for test_asm in $(1); do                                                  \
-march_tmp=$$test_asm ;                                                    \
-march_tmp=$${march_tmp%/src*} ;                                           \
-march_tmp=$$(basename $$march_tmp) ;                                      \
-file_name="$$(basename $${test_asm})" ;                                   \
-$(RISCV_GCC) $(CFLAGS) -Wa,$(2) $(2) -E $$test_asm                        \
--o $(bld_dir)/compliance_asm/$$file_name ;                                \
-done
+for test_asm in $$(find $(1) -name '*.S' | sort); do march_tmp=$$test_asm; march_tmp=$${march_tmp%/src*}; march_tmp=$$(basename $$march_tmp); file_name="$$(basename $${test_asm})"; $(RISCV_GCC) $(CFLAGS) -Wa,$(2) $(2) -E $$test_asm -o $(bld_dir)/compliance_asm/$$file_name; done
 endef
 
-$(foreach SRC,$(filtered_i),$(eval $(call compile_template,$(SRC),-march=rv32i_zicsr_zifencei)))
-$(foreach SRC,$(filtered_im),$(eval $(call compile_template,$(SRC),-march=rv32im_zicsr_zifencei)))
-$(foreach SRC,$(filtered_imc),$(eval $(call compile_template,$(SRC),-march=rv32imc_zicsr_zifencei)))
+$(foreach SRC,$(filtered_i),$(eval $(call compile_template,$(SRC),-march=rv32i)))
+$(foreach SRC,$(filtered_im),$(eval $(call compile_template,$(SRC),-march=rv32im)))
+$(foreach SRC,$(filtered_imc),$(eval $(call compile_template,$(SRC),-march=rv32imc)))
 
 
 log_requested_tgt: $(bld_dir)
@@ -139,20 +132,13 @@ $(bld_dir)/compliance_%.dump: $(dst_dir)/compliance_%.elf
 
 ref_data:
 	mkdir -p $(bld_dir)/ref_data
-	for files in $(reference_src) ; do \
-	sed_input=$$files ; \
-	sed_output=$$(basename $${files%.*}) ; \
-	sed "s/\r$$//; \
-	s/\(........\)/\1,/g; \
-	s/.$$//; s/\(.*\),\(.*\),\(.*\),\(.*\)/\4,\3,\2,\1/;" \
-	$$sed_input > $(bld_dir)/ref_data/$$sed_output; \
-	done
+	for files in $$(find $(RISCV_COMPLIANCE_TESTS)/riscv-test-suite -name '*.reference_output'); do sed_input=$$files; sed_output=$$(basename $${files%.*}); sed "s/\r$$//; s/\(........\)/\1,/g; s/.$$//; s/\(.*\),\(.*\),\(.*\),\(.*\)/\4,\3,\2,\1/;" $$sed_input > $(bld_dir)/ref_data/$$sed_output; done
 
 cp_asm:
 	mkdir -p $(bld_dir)/compliance_asm
-	$(call preprocessing,$(included_i),-march=rv32i_zicsr_zifencei)
-	$(call preprocessing,$(included_im),-march=rv32im_zicsr_zifencei)
-	$(call preprocessing,$(included_imc),-march=rv32imc_zicsr_zifencei)
+	$(call preprocessing,$(RISCV_COMPLIANCE_TESTS)/riscv-test-suite/rv32i $(RISCV_COMPLIANCE_TESTS)/riscv-test-suite/rv32Zicsr $(RISCV_COMPLIANCE_TESTS)/riscv-test-suite/rv32Zifencei,-march=rv32i)
+	$(call preprocessing,$(RISCV_COMPLIANCE_TESTS)/riscv-test-suite/rv32im,-march=rv32im)
+	$(call preprocessing,$(RISCV_COMPLIANCE_TESTS)/riscv-test-suite/rv32imc,-march=rv32imc)
 
 
 riscv_compliance_tests_dir    := $(if $(RISCV_COMPLIANCE_TESTS), $(RISCV_COMPLIANCE_TESTS), ./undefined)

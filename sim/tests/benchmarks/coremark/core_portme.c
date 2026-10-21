@@ -39,7 +39,7 @@
 CORETIMETYPE barebones_clock() {
 	unsigned long n;
 	__asm__ __volatile__ (
-		"rdtime %0"
+		"rdcycle %0"
 		: "=r" (n));
 	return n;
 }

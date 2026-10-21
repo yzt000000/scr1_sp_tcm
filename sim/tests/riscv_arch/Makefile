@@ -148,34 +148,20 @@ $(obj_dir)/$(1).o: $(obj_dir) cp_asm
 endef
 
 define preprocessing
-for test_asm in $(1); do                                                  \
-march_tmp=$$test_asm ;                                                    \
-march_tmp=$${march_tmp%/src*} ;                                           \
-march_tmp=$$(basename $$march_tmp) ;                                      \
-file_name="$$(basename $${test_asm})" ;                                   \
-$(RISCV_GCC) $(CFLAGS) -Wa,$(2) $(2) -E $$test_asm                        \
--o $(bld_dir)/arch_asm/$$file_name ;                                      \
-done
+for test_asm in $$(find $(1) -name '*.S' | sort); do march_tmp=$$test_asm; march_tmp=$${march_tmp%/src*}; march_tmp=$$(basename $$march_tmp); file_name="$$(basename $${test_asm})"; $(RISCV_GCC) $(CFLAGS) -Wa,$(2) $(2) -E $$test_asm -o $(bld_dir)/arch_asm/$$file_name; done
 endef
 
 define preprocessing_privilege
-for test_asm in $(1); do                                                       \
-march_tmp=$$test_asm ;                                                         \
-march_tmp=$${march_tmp%/src*} ;                                                \
-march_tmp=$$(basename $$march_tmp) ;                                           \
-file_name="$$(basename $${test_asm})" ;                                        \
-$(RISCV_GCC) $(CFLAGS) -Drvtest_mtrap_routine=True -Dmhandler -Wa,$(2) $(2) -E $$test_asm \
--o $(bld_dir)/arch_asm/$$file_name ;                                           \
-done
+for test_asm in $$(find $(1) -name '*.S' | sort); do march_tmp=$$test_asm; march_tmp=$${march_tmp%/src*}; march_tmp=$$(basename $$march_tmp); file_name="$$(basename $${test_asm})"; $(RISCV_GCC) $(CFLAGS) -Drvtest_mtrap_routine=True -Dmhandler -Wa,$(2) $(2) -E $$test_asm -o $(bld_dir)/arch_asm/$$file_name; done
 endef
 
-$(foreach SRC,$(filtered_i),$(eval $(call compile_template,$(SRC),-march=rv32i_zicsr_zifencei)))
-$(foreach SRC,$(filtered_im),$(eval $(call compile_template,$(SRC),-march=rv32im_zicsr_zifencei)))
-$(foreach SRC,$(filtered_ic),$(eval $(call compile_template,$(SRC),-march=rv32ic_zicsr_zifencei)))
+$(foreach SRC,$(filtered_i),$(eval $(call compile_template,$(SRC),-march=rv32i)))
+$(foreach SRC,$(filtered_im),$(eval $(call compile_template,$(SRC),-march=rv32im)))
+$(foreach SRC,$(filtered_ic),$(eval $(call compile_template,$(SRC),-march=rv32ic)))
 
-$(foreach SRC,$(filtered_e),$(eval $(call compile_template,$(SRC),-march=rv32e_zicsr_zifencei)))
-$(foreach SRC,$(filtered_em),$(eval $(call compile_template,$(SRC),-march=rv32em_zicsr_zifencei)))
-$(foreach SRC,$(filtered_ec),$(eval $(call compile_template,$(SRC),-march=rv32ec_zicsr_zifencei)))
+$(foreach SRC,$(filtered_e),$(eval $(call compile_template,$(SRC),-march=rv32e)))
+$(foreach SRC,$(filtered_em),$(eval $(call compile_template,$(SRC),-march=rv32em)))
+$(foreach SRC,$(filtered_ec),$(eval $(call compile_template,$(SRC),-march=rv32ec)))
 
 log_requested_tgt: $(bld_dir)
 	$(foreach test_name, $(filtered), $(eval $(shell echo arch_$(test_name).hex >> $(bld_dir)/../test_info)))
@@ -197,25 +183,31 @@ $(bld_dir)/arch_%.dump: $(dst_dir)/arch_%.elf
 
 ref_data:
 	mkdir -p $(bld_dir)/ref_data
-	for files in $(reference_src) ; do \
-	sed_input=$$files ; \
-	sed_output=$$(basename $${files%.*}) ; \
-	sed "s/\r$$//; \
-	s/\(........\)/\1,/g; \
-	s/.$$//; s/\(.*\),\(.*\),\(.*\),\(.*\)/\4,\3,\2,\1/;" \
-    $$sed_input > $(bld_dir)/ref_data/$$sed_output; \
-	done
+	for files in $$(find $(RISCV_ARCH_TESTS)/riscv-test-suite/rv32i_m -name '*.reference_output'); do sed_input=$$files; sed_output=$$(basename $${files%.*}); sed "s/\r$$//; s/\(........\)/\1,/g; s/.$$//; s/\(.*\),\(.*\),\(.*\),\(.*\)/\4,\3,\2,\1/;" $$sed_input > $(bld_dir)/ref_data/$$sed_output; done
 
 cp_asm:
 	mkdir -p $(bld_dir)/arch_asm
-	$(call preprocessing,$(included_i),-march=rv32i)
-	$(call preprocessing_privilege,$(included_ip),-march=rv32i)
-	$(call preprocessing,$(included_im),-march=rv32im)
-	$(call preprocessing,$(included_ic),-march=rv32ic)
-	$(call preprocessing,$(included_e),-march=rv32e)
-	$(call preprocessing,$(included_em),-march=rv32em)
-	$(call preprocessing,$(included_ec),-march=rv32ec)
-
+ifneq ($(included_i),)
+	$(call preprocessing,$(sort $(dir $(included_i))),-march=rv32i)
+endif
+ifneq ($(included_ip),)
+	$(call preprocessing_privilege,$(sort $(dir $(included_ip))),-march=rv32i)
+endif
+ifneq ($(included_im),)
+	$(call preprocessing,$(sort $(dir $(included_im))),-march=rv32im)
+endif
+ifneq ($(included_ic),)
+	$(call preprocessing,$(sort $(dir $(included_ic))),-march=rv32ic)
+endif
+ifneq ($(included_e),)
+	$(call preprocessing,$(sort $(dir $(included_e))),-march=rv32e)
+endif
+ifneq ($(included_em),)
+	$(call preprocessing,$(sort $(dir $(included_em))),-march=rv32em)
+endif
+ifneq ($(included_ec),)
+	$(call preprocessing,$(sort $(dir $(included_ec))),-march=rv32ec)
+endif
 riscv_arch_tests_dir    := $(if $(RISCV_ARCH_TESTS), $(RISCV_ARCH_TESTS), ./undefined)
 riscv_tests_commit      := 9141cf9274b610d059199e8aa2e21f54a0bc6a6e
 ## commit hash readed from local copy of https://github.com/riscv/riscv-arch-test.git

@@ -82,6 +82,7 @@ SECTIONS {
 
   _end = .;
   PROVIDE(__end = .);
+  PROVIDE(end = .);
 
   /* End of uninitalized data segement */
 

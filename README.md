@@ -4,15 +4,21 @@ SCR1 is an open-source and free to use RISC-V compatible MCU-class core, designe
 
 ![SCR1 cluster](./docs/img/scr1_cluster.svg)
 
+> **This fork modifies upstream SCR1 in two ways** (see report files at repo root):
+> - **ITCM/DTCM single-port redesign** — the original dual-port shared TCM is split into two physically independent single-port SRAMs (ITCM for code, DTCM for data) with separate address windows, matching mainstream MCU (Cortex-M style) practice. Details: [ITCM_DTCM_REPORT.md](./ITCM_DTCM_REPORT.md).
+> - **RISC-V Bit-Manipulation B extension** — Zba + Zbb + Zbc + Zbs (31 instructions) added via a new single-cycle `scr1_pipe_balu.sv` unit, enabled by `SCR1_RVB_EXT` in the MAX config. Details: [BITMANIP_EXTENSION_REPORT.md](./BITMANIP_EXTENSION_REPORT.md).
+>
+> Benchmark scores before/after the TCM redesign: [BENCHMARK_RESULTS.md](./BENCHMARK_RESULTS.md).
+
 ## Key features
 
 * Open sourced under SHL-license (see LICENSE file) - unrestricted commercial use allowed
-* RV32I or RV32E ISA base + optional RVM and RVC standard extensions
+* RV32I or RV32E ISA base + optional RVM, RVC and RVB (Zba+Zbb+Zbc+Zbs) standard extensions
 * Machine privilege mode only
 * 2 to 4 stage pipeline
 * Optional Integrated Programmable Interrupt Controller with 16 IRQ lines
 * Optional RISC-V Debug subsystem with JTAG interface
-* Optional on-chip Tightly-Coupled Memory
+* Optional on-chip Tightly-Coupled Memory — independent single-port ITCM (code) + DTCM (data) with separate address windows
 * 32-bit AXI4/AHB-Lite external interface
 * Written in SystemVerilog
 * Optimized for area and power
@@ -39,11 +45,13 @@ For more information on project usage, see [SCR1 User Manual](https://github.com
 |└─ scr1_um.pdf                    | SCR1 User Manual
 |**sim**                           | **Tests and scripts for simulation**
 |├─ tests/common                   | Common source files for tests
-|├─ tests/riscv_isa                | RISC-V ISA tests platform specific source files
-|├─ tests/riscv_compliance         | RISC-V Compliance platform specific source files
+|├─ tests/riscv_isa               | RISC-V ISA tests platform specific source files
+|├─ tests/riscv_arch              | RISC-V Architectural tests platform specific source files
+|├─ tests/riscv_compliance         | RISC-V Compliance platform specific source files
 |├─ tests/benchmarks/dhrystone21   | Dhrystone 2.1 benchmark source files
-|├─ tests/benchmarks/coremark      | EEMBC's CoreMark® benchmark platform specific source files
-|├─ tests/isr_sample               | Sample program "Interrupt Service Routine"
+|├─ tests/benchmarks/coremark      | EEMBC's CoreMark® benchmark platform specific source files
+|├─ tests/bitmanip                 | Bit-Manipulation B-extension self-check tests
+|├─ tests/isr_sample               | Sample program "Interrupt Service Routine"
 |├─ tests/hello                    | Sample program "Hello"
 |└─ verilator_wrap                 | Wrappers for Verilator simulation
 |**src**                           | **SCR1 RTL source and testbench files**
@@ -110,8 +118,8 @@ After the building, be sure to add the `<GCC_INSTALL_PATH>/bin` folder to the $P
 
 Currently supported simulators:
 
-* Verilator (last verified version: v5.014)
-* Mentor Graphics ModelSim (last verified version: INTEL FPGA STARTER EDITION 2020.1)
+* Verilator (last verified version: v5.x)
+* Mentor Graphics ModelSim / QuestaSim (last verified version: QuestaSim 2024.1)
 * Synopsys VCS (last verified version: S-2021.09-1)
 * Cadence NCSim (last verified version: 22.09-s004)
 
@@ -128,6 +136,7 @@ The simulation package includes the following tests:
 * **riscv_compliance** - RISC-V Compliance tests (submodule)
 * **dhrystone21** - Dhrystone 2.1 benchmark
 * **coremark** - EEMBC's CoreMark® benchmark (submodule)
+* **bitmanip** - Bit-Manipulation B-extension self-check tests
 
 After the main SCR1 repository has been cloned execute the following command:
 ```
@@ -144,15 +153,15 @@ By default, you may simply call Makefile without any parameters:
     make
 ```
 
-In this case simulation will run on Verilator with following parameters: `CFG=MAX BUS=AHB TRACE=0 TARGETS="hello isr_sample riscv_isa riscv_compliance dhrystone21 coremark"`.
+In this case simulation will run on Verilator with following parameters: `CFG=MAX BUS=AHB TRACE=0 TARGETS="hello isr_sample riscv_isa riscv_compliance riscv_arch dhrystone21 coremark bitmanip"`.
 
 Makefile supports:
 
 * choice of simulator - `run_<SIMULATOR> = <run_vcs, run_modelsim, run_ncsim, run_verilator, run_verilator_wf>`
 * selection of external interface - `BUS = <AHB, AXI>`,
 * configuration setup - `CFG = <MAX, BASE, MIN, CUSTOM>`,
-* parameters for CUSTOM configuration - `ARCH = <IMC, IC, IM, I, EMC, EM, EC, E>, VECT_IRQ = <0, 1>, IPIC = <0, 1>, TCM = <0, 1>`
-* tests subset to run - `TARGETS = <hello, isr_sample, riscv_isa, riscv_compliance, riscv_arch, dhrystone21, coremark>`
+* parameters for CUSTOM configuration - `ARCH = <IMCB, IMC, IC, IM, I, EMC, EM, EC, E>, VECT_IRQ = <0, 1>, IPIC = <0, 1>, TCM = <0, 1>`
+* tests subset to run - `TARGETS = <hello, isr_sample, riscv_isa, riscv_compliance, riscv_arch, dhrystone21, coremark, bitmanip>`
 * enabling tracelog - `TRACE = <0, 1>`
 * and any additional options to pass to the simulator - `SIM_BUILD_OPTS`.
 

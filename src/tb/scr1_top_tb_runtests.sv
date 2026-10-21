@@ -36,6 +36,7 @@ always_ff @(posedge clk) begin
         test_pass = 1;
         rst_init <= 1'b0;
         if ((i_top.i_core_top.i_pipe_top.curr_pc == SCR1_SIM_EXIT_ADDR) & ~rst_init & &rst_cnt) begin
+
             `ifdef VERILATOR
                 logic [255:0] full_filename;
                 full_filename = test_file;
@@ -144,6 +145,7 @@ always_ff @(posedge clk) begin
                 tests_total     += 1;
                 tests_passed    += (test_pass & !test_error);
                 watchdogs_cnt    <= '0;
+
                 `ifndef SIGNATURE_OUT
                     if ((test_pass & !test_error)) begin
                         $write("\033[0;32mTest passed\033[0m\n");
