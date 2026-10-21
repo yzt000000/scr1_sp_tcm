@@ -1,2 +1,0 @@
-fsdbDumpvars 0 "scr1_top_tb_ahb" +fsdbfile+../fsdb/itcm_test_fsdb.fsdb 
-run

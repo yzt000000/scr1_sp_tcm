@@ -1,1 +1,0 @@
-/software/vip_amba/iip/DW_apb_uart/4.01a/syn/auxScripts/disable_clock_gating_check.tcl

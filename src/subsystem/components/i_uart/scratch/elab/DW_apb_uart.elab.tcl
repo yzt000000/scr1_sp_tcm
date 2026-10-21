@@ -1,1 +1,0 @@
-/software/vip_amba/iip/DW_apb_uart/4.01a/scratch/elab/DW_apb_uart.elab.tcl

@@ -1,9 +1,10 @@
-`ifndef SCR1_IPIC_SVH
-`define SCR1_IPIC_SVH
-/// Copyright by Syntacore LLC Â© 2016-2018. See LICENSE for details
+/// Copyright by Syntacore LLC © 2016-2021. See LICENSE for details
 /// @file       <scr1_ipic.svh>
 /// @brief      IPIC header file
 ///
+
+`ifndef SCR1_IPIC_SVH
+`define SCR1_IPIC_SVH
 
 `include "scr1_arch_description.svh"
 
@@ -36,6 +37,8 @@ parameter                                   SCR1_IPIC_ICSR_IS       = 4;
 parameter                                   SCR1_IPIC_ICSR_PRV_LSB  = 8;
 parameter                                   SCR1_IPIC_ICSR_PRV_MSB  = 9;
 parameter                                   SCR1_IPIC_ICSR_LN_LSB   = 12;
+parameter                                   SCR1_IPIC_ICSR_LN_MSB   = SCR1_IPIC_ICSR_LN_LSB
+                                                                    + SCR1_IRQ_LINES_WIDTH;
 
 parameter   logic [1:0]                     SCR1_IPIC_PRV_M         = 2'b11;
 
@@ -44,8 +47,11 @@ parameter   logic [1:0]                     SCR1_IPIC_PRV_M         = 2'b11;
 //-------------------------------------------------------------------------------
 typedef enum logic {
     SCR1_CSR2IPIC_RD,
-    SCR1_CSR2IPIC_WR,
+    SCR1_CSR2IPIC_WR
+`ifdef SCR1_XPROP_EN
+    ,
     SCR1_CSR2IPIC_ERROR = 'x
+`endif // SCR1_XPROP_EN
 } type_scr1_csr2ipic_wr_e;
 
 `endif // SCR1_IPIC_EN

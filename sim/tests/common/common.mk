@@ -12,7 +12,7 @@ $(CFLAGS_ARCH) \
 -DFLAGS_STR=\"$(FLAGS_STR)\" \
 $(ADD_CFLAGS)
 
-LDFLAGS   ?= -nostartfiles -nostdlib -lgcc -lc -lnosys -march=rv32$(ARCH)_zicsr_zifencei -mabi=$(ABI) $(ADD_LDFLAGS)
+LDFLAGS   ?= -nostartfiles -nostdlib -lc -lgcc -march=rv32$(ARCH)_zicsr_zifencei -mabi=$(ABI) --specs=nano.specs $(ADD_LDFLAGS)
 
 ifeq (,$(findstring 0,$(TCM)))
 ld_script ?= $(inc_dir)/link_tcm.ld

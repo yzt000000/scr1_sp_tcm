@@ -2,203 +2,251 @@
 # Makefile for SCR1
 #------------------------------------------------------------------------------
 
-# Parameters
-ifeq ($(RVE),1)
-export ARCH += e
+# PARAMETERS
+
+# CFG = <MAX, BASE, MIN, CUSTOM>
+# BUS = <AHB, AXI>
+
+export CFG      ?= MAX
+export BUS      ?= AHB
+
+ifeq ($(CFG), MAX)
+# Predefined configuration SCR1_CFG_RV32IMC_MAX
+    override ARCH         := IMC
+    override VECT_IRQ     := 1
+    override IPIC         := 1
+    override TCM          := 1
+    override SIM_CFG_DEF  := SCR1_CFG_RV32IMC_MAX
 else
-export ARCH += i
+    ifeq ($(CFG), BASE)
+    # Predefined configuration SCR1_CFG_RV32IC_BASE
+        override ARCH         := IC
+        override VECT_IRQ     := 1
+        override IPIC         := 1
+        override TCM          := 1
+        override SIM_CFG_DEF  := SCR1_CFG_RV32IC_BASE
+    else
+        ifeq ($(CFG), MIN)
+        # Predefined configuration SCR1_CFG_RV32EC_MIN
+            override ARCH         := EC
+            override VECT_IRQ     := 0
+            override IPIC         := 0
+            override TCM          := 1
+            override SIM_CFG_DEF  := SCR1_CFG_RV32EC_MIN
+        else
+        # CUSTOM configuration. Parameters can be overwritten
+            # These options are for compiling tests only. Set the corresponding RTL parameters manually in the file scr1_arch_description.svh.
+            # ARCH = <IMC, IC, IM, I, EMC, EM, EC, E>
+            # VECT_IRQ = <0, 1>
+            # IPIC = <0, 1>
+            # TCM = <0, 1>
+            ARCH      ?= IMC
+            VECT_IRQ  ?= 0
+            IPIC      ?= 0
+            TCM       ?= 0
+            SIM_CFG_DEF  = SCR1_CFG_$(CFG)
+        endif
+    endif
 endif
 
-ifeq ($(RVM),1)
-export ARCH := $(ARCH)m
+# export all overrided variables
+export ARCH
+export VECT_IRQ
+export IPIC
+export TCM
+export SIM_CFG_DEF
+
+ARCH_lowercase = $(shell echo $(ARCH) | tr A-Z a-z)
+BUS_lowercase  = $(shell echo $(BUS)  | tr A-Z a-z)
+
+ifeq ($(ARCH_lowercase),)
+    ARCH_tmp = imc
+else
+    ifneq (,$(findstring e,$(ARCH_lowercase)))
+        ARCH_tmp   += e
+        EXT_CFLAGS += -D__RVE_EXT
+    else
+        ARCH_tmp   += i
+    endif
+    ifneq (,$(findstring m,$(ARCH_lowercase)))
+        ARCH_tmp   := $(ARCH_tmp)m
+    endif
+    ifneq (,$(findstring c,$(ARCH_lowercase)))
+        ARCH_tmp   := $(ARCH_tmp)c
+        EXT_CFLAGS += -D__RVC_EXT
+    endif
+    ifneq (,$(findstring b,$(ARCH_lowercase)))
+        ARCH_tmp   := $(ARCH_tmp)b
+    endif
 endif
 
-export ABI  ?= ilp32
-# Testbench memory delay patterns (FFFFFFFF - no delay, 00000000 - random delay, 00000001 - max delay)
+override ARCH=$(ARCH_tmp)
+
+# Use this parameter to enable tracelog
+TRACE ?= 0
+
+ifeq ($(TRACE), 1)
+    export SIM_TRACE_DEF = SCR1_TRACE_LOG_EN
+else
+    export SIM_TRACE_DEF = SCR1_TRACE_LOG_DIS
+endif
+
+
+# Use this parameter to pass additional options for simulation build command
+SIM_BUILD_OPTS ?=
+
+# Use this parameter to set the list of tests to run
+# TARGETS = <riscv_isa, riscv_compliance, riscv_arch, coremark, dhrystone21, hello, isr_sample>
+export TARGETS :=
+
+
+export XLEN  ?= 32
+export ABI   ?= ilp32
+# Testbench memory delay patterns\
+  (FFFFFFFF - no delay, 00000000 - random delay, 00000001 - max delay)
 imem_pattern ?= FFFFFFFF
 dmem_pattern ?= FFFFFFFF
 
-VCS_OPTS ?=
-MODELSIM_OPTS ?=
-NCSIM_OPTS ?=
+VCS_OPTS       ?=
+MODELSIM_OPTS  ?=
+NCSIM_OPTS     ?=
+VERILATOR_OPTS ?=
+
+current_goal := $(MAKECMDGOALS:run_%=%)
+ifeq ($(current_goal),)
+    current_goal := verilator
+endif
 
 # Paths
 export root_dir := $(shell pwd)
-export inc_dir := $(root_dir)/tests/common
-export bld_dir := $(root_dir)/build
+export tst_dir  := $(root_dir)/sim/tests
+export inc_dir  := $(tst_dir)/common
+export bld_dir  := $(root_dir)/build/$(current_goal)_$(BUS)_$(CFG)_$(ARCH)_IPIC_$(IPIC)_TCM_$(TCM)_VIRQ_$(VECT_IRQ)_TRACE_$(TRACE)
 
 test_results := $(bld_dir)/test_results.txt
-test_info := $(bld_dir)/test_info
-tcm_info  := $(bld_dir)/tcm_info
-itcm_info  := $(bld_dir)/itcm_info
-dtcm_info  := $(bld_dir)/dtcm_info
+test_info    := $(bld_dir)/test_info
+sim_results  := $(bld_dir)/sim_results.txt
 
-ifndef TB
-	TB=sram
-endif
-
+todo_list    := $(bld_dir)/todo.txt
 # Environment
-export CROSS_PREFIX ?= riscv64-unknown-elf-
-export RISCV_GCC ?= $(CROSS_PREFIX)gcc
+export CROSS_PREFIX  ?= riscv64-unknown-elf-
+export RISCV_GCC     ?= $(CROSS_PREFIX)gcc
 export RISCV_OBJDUMP ?= $(CROSS_PREFIX)objdump -D
 export RISCV_OBJCOPY ?= $(CROSS_PREFIX)objcopy -O verilog
 export RISCV_READELF ?= $(CROSS_PREFIX)readelf -s
-
-ifeq ($(BUS),AHB)
-export top_module := scr1_top_tb_ahb
-ifeq ($(TB),tcm)
-export rtl_files  := rtl_ahb_tcm.files
+#--
+ifneq (,$(findstring axi,$(BUS_lowercase)))
+export rtl_top_files := axi_top.files
+export rtl_tb_files  := axi_tb.files
+export top_module    := scr1_top_tb_axi
 else
-export rtl_files  := rtl_ahb.files
-endif
-endif
-
-ifeq ($(BUS),AXI)
-export rtl_files  := rtl_axi.files
-export top_module := scr1_top_tb_axi
+export rtl_top_files := ahb_top.files
+export rtl_tb_files  := ahb_tb.files
+export top_module    := scr1_top_tb_ahb
 endif
 
-ifeq ($(RVE),1)
-EXT_CFLAGS := -D__RVE_EXT
+ifneq (,$(findstring e,$(ARCH_lowercase)))
+# Tests can be compiled for RVE only if gcc version 8.0.0 or higher
+    GCCVERSIONGT7 := $(shell expr `$(RISCV_GCC) -dumpfullversion | cut -f1 -d'.'` \> 7)
+    ifeq "$(GCCVERSIONGT7)" "1"
+        ABI := ilp32e
+    endif
 endif
 
+#--
+ifeq (,$(findstring e,$(ARCH_lowercase)))
+    # Comment this target if you don't want to run the riscv_isa
+    TARGETS += riscv_isa
 
-
-ifeq ($(RVE),1)
-else
-
-ifeq ($(IPIC),1)
-TARGETS += vectored_isr_sample
+    # Comment this target if you don't want to run the riscv_compliance
+    TARGETS += riscv_compliance
 endif
 
-ifeq ($(RVM),1)
-TARGETS += riscv_isa
-endif
+# Comment this target if you don't want to run the riscv_arch
+TARGETS += riscv_arch
 
-endif
+# Comment this target if you don't want to run the isr_sample
+TARGETS += isr_sample
+
+# Comment this target if you don't want to run the coremark
+TARGETS += coremark
+
+# Comment this target if you don't want to run the dhrystone
 TARGETS += dhrystone21
 
-ifndef TS
-	TS = test1
+# Comment this target if you don't want to run the hello test
+TARGETS += hello
+
+# When RVE extension is on, we want to exclude some tests, even if they are given from the command line
+ifneq (,$(findstring e,$(ARCH_lowercase)))
+    excluded := riscv_isa riscv_compliance
+    excluded := $(filter $(excluded), $(TARGETS))
+    $(foreach test,$(excluded),$(warning Warning! $(test) test is not intended to run on an RVE extension, skipping it))
+    override TARGETS := $(filter-out $(excluded), $(TARGETS))
 endif
 
-ifndef FSDB
-	FSDB =$(TS)
-endif
-
-ifeq ($(TB),tcm)
-SVH := ./src/includes/scr1_arch_description_tcm.svh
-TCM_EN	= TCM=TRUE 
-else
-SVH := ./src/includes/scr1_arch_description_nb.svh
-TCM_EN	= TCM=FALSE 
+ifeq (,$(strip $(TARGETS)))
+    $(error Error! No tests included, aborting)
 endif
 
 # Targets
-.PHONY: tests run_modelsim run_vcs run_ncsim
+.PHONY: tests run_modelsim run_vcs run_ncsim run_verilator run_verilator_wf
 
-default: run_modelsim
+default: clean_test_list run_verilator
 
+clean_test_list:
+	rm -f $(test_info)
 
-tests: $(TS)
+echo_out: tests
+	@echo "                          Test               | build | simulation " ;
+	@echo "$$(cat $(test_results))"
 
-$(test_info): clean_hex clean_tcm tests
-	cd $(bld_dir); \
-	rm test_info; \
-	rm tcm_info; \
-	rm itcm_info; \
-	rm dtcm_info; \
-	ls -tr *.hex > $@
-$(tcm_info): 
-	cd $(bld_dir); \
-	cp test_info tcm_info; \
-	sed -i 's/hex/tcm/' tcm_info ;
+tests: $(TARGETS)
 
-$(itcm_info): 
-	cd $(bld_dir); \
-	cp test_info itcm_info; \
-	sed -i 's/hex/itcm/' itcm_info ;
+$(test_info): clean_test_list clean_hex tests
+	cd $(bld_dir)
 
-$(dtcm_info): 
-	cd $(bld_dir); \
-	cp test_info dtcm_info; \
-	sed -i 's/hex/dtcm/' dtcm_info ;
-
-
-
-
-build_define : build_dump
-	echo $(SVH)
-	cp $(SVH) ./src/includes/scr1_arch_description.svh
-
-build_dump:
-	echo $(FSDB)
-	echo 'fsdbDumpvars 0 "scr1_top_tb_ahb" +fsdbfile+../fsdb/$(FSDB).fsdb ' > src/dump.ucli
-	echo 'run' >> src/dump.ucli
-
-#ls -tr *.tcm > $@
-
-
-	
-#$(MAKE) -C $(root_dir)/tests/test1/test1  $(TCM_EN) 
-
-test1: | $(bld_dir)
-	$(MAKE) -C $(root_dir)/tests/test1/test1  EXT_CFLAGS="$(EXT_CFLAGS)"  $(TCM_EN)
-
-helloworld: | $(bld_dir)
-	$(MAKE) -C $(root_dir)/tests/helloworld  EXT_CFLAGS="$(EXT_CFLAGS)"  $(TCM_EN)
-
-coremark: | $(bld_dir)
-	$(MAKE) -C $(root_dir)/tests/coremark  EXT_CFLAGS="$(EXT_CFLAGS)"  $(TCM_EN)
-
-sram_test: | $(bld_dir)
-	$(MAKE) -C $(root_dir)/tests/sram_test  EXT_CFLAGS="$(EXT_CFLAGS)"  $(TCM_EN)
-
-dtcm_test: | $(bld_dir)
-	$(MAKE) -C $(root_dir)/tests/dtcm_test  EXT_CFLAGS="$(EXT_CFLAGS)"  $(TCM_EN)
-
-itcm_test: | $(bld_dir)
-	$(MAKE) -C $(root_dir)/tests/itcm_test  EXT_CFLAGS="$(EXT_CFLAGS)"  $(TCM_EN)
-
-demo_iasm: | $(bld_dir)
-	$(MAKE) -C $(root_dir)/tests/demo_iasm  EXT_CFLAGS="$(EXT_CFLAGS)"  $(TCM_EN)
-
-vectored_isr_sample: | $(bld_dir)
-	$(MAKE) -C $(root_dir)/tests/vectored_isr_sample
+isr_sample: | $(bld_dir)
+	$(MAKE) -C $(tst_dir)/isr_sample ARCH=$(ARCH) IPIC=$(IPIC) VECT_IRQ=$(VECT_IRQ)
 
 dhrystone21: | $(bld_dir)
-	$(MAKE) -C $(root_dir)/tests/benchmarks/dhrystone21 EXT_CFLAGS="$(EXT_CFLAGS)"  $(TCM_EN)
+	$(MAKE) -C $(tst_dir)/benchmarks/dhrystone21 EXT_CFLAGS="$(EXT_CFLAGS)" ARCH=$(ARCH)
+
+coremark: | $(bld_dir)
+	-$(MAKE) -C $(tst_dir)/benchmarks/coremark EXT_CFLAGS="$(EXT_CFLAGS)" ARCH=$(ARCH)
 
 riscv_isa: | $(bld_dir)
-	$(MAKE) -C $(root_dir)/tests/riscv_isa EXT_CFLAGS="$(EXT_CFLAGS)" $(TCM_EN)
-	echo "end of compile c"
+	$(MAKE) -C $(tst_dir)/riscv_isa ARCH=$(ARCH)
+
+riscv_compliance: | $(bld_dir)
+	$(MAKE) -C $(tst_dir)/riscv_compliance ARCH=$(ARCH)
+
+riscv_arch: | $(bld_dir)
+	$(MAKE) -C $(tst_dir)/riscv_arch ARCH=$(ARCH)
+
+hello: | $(bld_dir)
+	-$(MAKE) -C $(tst_dir)/hello EXT_CFLAGS="$(EXT_CFLAGS)" ARCH=$(ARCH)
 
 clean_hex: | $(bld_dir)
 	$(RM) $(bld_dir)/*.hex
 
-clean_tcm: | $(bld_dir)
-	$(RM) $(bld_dir)/*.tcm
-	$(RM) tcm_info
-
 $(bld_dir):
 	mkdir -p $(bld_dir)
 
-run_vcs: build_define $(test_info) $(tcm_info) $(itcm_info) $(dtcm_info) 
-	$(MAKE) -C $(root_dir)/src build_vcs;
+run_vcs: $(test_info)
+	$(MAKE) -C $(root_dir)/sim build_vcs SIM_CFG_DEF=$(SIM_CFG_DEF) SIM_TRACE_DEF=$(SIM_TRACE_DEF) SIM_BUILD_OPTS="$(SIM_BUILD_OPTS)";
 	printf "" > $(test_results);
 	cd $(bld_dir); \
-	$(bld_dir)/simv +fsdb+all=on +fsdb+mda=on -ucli -i ../src/dump.ucli \
+	$(bld_dir)/simv  -V \
 	+test_info=$(test_info) \
-	+tcm_info=$(tcm_info) \
-	+itcm_info=$(itcm_info) \
-	+dtcm_info=$(dtcm_info) \
 	+test_results=$(test_results) \
 	+imem_pattern=$(imem_pattern) \
 	+dmem_pattern=$(dmem_pattern) \
-	$(VCS_OPTS)
-
+	$(VCS_OPTS) | tee $(sim_results)  ;\
+	printf "                          Test               | build | simulation \n" ; \
+	printf "$$(cat $(test_results)) \n"
 run_modelsim: $(test_info)
-	$(MAKE) -C $(root_dir)/src build_modelsim; \
+	$(MAKE) -C $(root_dir)/sim build_modelsim SIM_CFG_DEF=$(SIM_CFG_DEF) SIM_TRACE_DEF=$(SIM_TRACE_DEF) SIM_BUILD_OPTS="$(SIM_BUILD_OPTS)"; \
 	printf "" > $(test_results); \
 	cd $(bld_dir); \
 	vsim -c -do "run -all" +nowarn3691 \
@@ -207,10 +255,13 @@ run_modelsim: $(test_info)
 	+imem_pattern=$(imem_pattern) \
 	+dmem_pattern=$(dmem_pattern) \
 	work.$(top_module) \
-	$(MODELSIM_OPTS)
+	$(MODELSIM_OPTS) | tee $(sim_results)  ;\
+	printf "Simulation performed on $$(vsim -version) \n" ;\
+	printf "                          Test               | build | simulation \n" ; \
+	printf "$$(cat $(test_results)) \n"
 
 run_ncsim: $(test_info)
-	$(MAKE) -C $(root_dir)/src build_ncsim;
+	$(MAKE) -C $(root_dir)/sim build_ncsim SIM_CFG_DEF=$(SIM_CFG_DEF) SIM_TRACE_DEF=$(SIM_TRACE_DEF) SIM_BUILD_OPTS="$(SIM_BUILD_OPTS)";
 	printf "" > $(test_results);
 	cd $(bld_dir); \
 	irun \
@@ -220,21 +271,44 @@ run_ncsim: $(test_info)
 	+test_results=$(test_results) \
 	+imem_pattern=$(imem_pattern) \
 	+dmem_pattern=$(dmem_pattern) \
-	$(NCSIM_OPTS)
-run_verdi:
-	$(MAKE) -C $(root_dir)/src run_verdi; 
+	$(NCSIM_OPTS) | tee $(sim_results)  ;\
+	printf "Simulation performed on $$(irun -version) \n" ;\
+	printf "                          Test               | build | simulation \n" ; \
+	printf "$$(cat $(test_results)) \n"
 
+run_verilator: $(test_info)
+	$(MAKE) -C $(root_dir)/sim build_verilator SIM_CFG_DEF=$(SIM_CFG_DEF) SIM_TRACE_DEF=$(SIM_TRACE_DEF) SIM_BUILD_OPTS="$(SIM_BUILD_OPTS)";
+	printf "" > $(test_results);
+	cd $(bld_dir); \
+	echo $(top_module) | tee $(sim_results); \
+	$(bld_dir)/verilator/V$(top_module) \
+	+test_info=$(test_info) \
+	+test_results=$(test_results) \
+	+imem_pattern=$(imem_pattern) \
+	+dmem_pattern=$(dmem_pattern) \
+	$(VERILATOR_OPTS) | tee -a $(sim_results) ;\
+	printf "Simulation performed on $$(verilator -version) \n" ;\
+	printf "                          Test               | build | simulation \n" ; \
+	printf "$$(cat $(test_results)) \n"
 
-clean: clean_tcm
-	$(MAKE) -C $(root_dir)/tests/benchmarks/dhrystone21 clean
-	$(MAKE) -C $(root_dir)/tests/riscv_isa clean
-	$(MAKE) -C $(root_dir)/tests/test1/test1 clean
-	$(RM) $(test_info)
-	$(RM) $(tcm_info)
-	$(RM) $(bld_dir)/*.o
-	$(RM) $(bld_dir)/*.log
-	$(RM) -rf $(bld_dir)/simv* 
-	$(RM) -rf $(bld_dir)/csrc
-
-clean_all: clean
-	$(RM)  -rf $(bld_dir)/*
+run_verilator_wf: $(test_info)
+	$(MAKE) -C $(root_dir)/sim build_verilator_wf SIM_CFG_DEF=$(SIM_CFG_DEF) SIM_TRACE_DEF=$(SIM_TRACE_DEF) SIM_BUILD_OPTS="$(SIM_BUILD_OPTS)";
+	printf "" > $(test_results);
+	cd $(bld_dir); \
+	echo $(top_module) | tee $(sim_results); \
+	$(bld_dir)/verilator/V$(top_module) \
+	+test_info=$(test_info) \
+	+test_results=$(test_results) \
+	+imem_pattern=$(imem_pattern) \
+	+dmem_pattern=$(dmem_pattern) \
+	$(VERILATOR_OPTS) | tee -a $(sim_results)  ;\
+	printf "Simulation performed on $$(verilator -version) \n" ;\
+	printf "                          Test               | build | simulation \n" ; \
+	printf "$$(cat $(test_results)) \n"
+clean:
+	$(RM) -R $(root_dir)/build/*
+#	$(MAKE) -C $(tst_dir)/benchmarks/dhrystone21 clean
+#	$(MAKE) -C $(tst_dir)/riscv_isa clean
+#	$(MAKE) -C $(tst_dir)/riscv_compliance clean
+#	$(MAKE) -C $(tst_dir)/riscv_arch clean
+#	$(RM) $(test_info)

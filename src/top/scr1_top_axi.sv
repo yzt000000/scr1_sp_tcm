@@ -364,8 +364,7 @@ scr1_core_top i_core_top (
 // TCM instance
 //-------------------------------------------------------------------------------
 scr1_tcm #(
-    .SCR1_ITCM_SIZE (`SCR1_DMEM_AWIDTH'(~SCR1_ITCM_ADDR_MASK + 1'b1)),
-    .SCR1_DTCM_SIZE (`SCR1_DMEM_AWIDTH'(~SCR1_DTCM_ADDR_MASK + 1'b1))
+    .SCR1_TCM_SIZE  (`SCR1_DMEM_AWIDTH'(~SCR1_TCM_ADDR_MASK + 1'b1))
 ) i_tcm (
     .clk            (clk             ),
     .rst_n          (core_rst_n_local),
@@ -373,7 +372,6 @@ scr1_tcm #(
     // Instruction interface to TCM
     .imem_req_ack   (tcm_imem_req_ack),
     .imem_req       (tcm_imem_req    ),
-    .imem_cmd       (tcm_imem_cmd    ),
     .imem_addr      (tcm_imem_addr   ),
     .imem_rdata     (tcm_imem_rdata  ),
     .imem_resp      (tcm_imem_resp   ),

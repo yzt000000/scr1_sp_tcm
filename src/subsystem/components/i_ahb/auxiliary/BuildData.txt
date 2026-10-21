@@ -1,1 +1,0 @@
-/software/vip_amba/iip/DW_ahb/2.13a/auxiliary/BuildData.txt

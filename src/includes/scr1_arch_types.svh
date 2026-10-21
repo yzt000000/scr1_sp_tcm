@@ -1,14 +1,36 @@
-`ifndef SCR1_ARCH_TYPES_SVH
-`define SCR1_ARCH_TYPES_SVH
-/// Copyright by Syntacore LLC Â© 2016-2018. See LICENSE for details
+/// Copyright by Syntacore LLC © 2016-2021. See LICENSE for details
 /// @file       <scr1_arch_types.svh>
 /// @brief      Pipeline types description file
 ///
 
+`ifndef SCR1_ARCH_TYPES_SVH
+`define SCR1_ARCH_TYPES_SVH
+
 `include "scr1_arch_description.svh"
+
+//-------------------------------------------------------------------------------
+// MPRF and CSR parameters
+//-------------------------------------------------------------------------------
+
+`ifdef SCR1_RVE_EXT
+  `define SCR1_MPRF_AWIDTH    4
+  `define SCR1_MPRF_SIZE      16
+`else // SCR1_RVE_EXT
+  `define SCR1_MPRF_AWIDTH    5
+  `define SCR1_MPRF_SIZE      32
+`endif // SCR1_RVE_EXT
 
 typedef logic [`SCR1_XLEN-1:0]  type_scr1_mprf_v;
 typedef logic [`SCR1_XLEN-1:0]  type_scr1_pc_v;
+
+parameter int unsigned  SCR1_CSR_ADDR_WIDTH             = 12;
+parameter int unsigned  SCR1_CSR_MTVEC_BASE_ZERO_BITS   = 6;
+parameter int unsigned  SCR1_CSR_MTVEC_BASE_VAL_BITS    = `SCR1_XLEN-SCR1_CSR_MTVEC_BASE_ZERO_BITS;
+parameter bit [`SCR1_XLEN-1:SCR1_CSR_MTVEC_BASE_ZERO_BITS]  SCR1_CSR_MTVEC_BASE_WR_RST_VAL    =
+                                      SCR1_CSR_MTVEC_BASE_VAL_BITS'(SCR1_ARCH_MTVEC_BASE >> SCR1_CSR_MTVEC_BASE_ZERO_BITS);
+parameter int unsigned  SCR1_CSR_MTVEC_BASE_RO_BITS = (`SCR1_XLEN-(SCR1_CSR_MTVEC_BASE_ZERO_BITS+SCR1_MTVEC_BASE_WR_BITS));
+
+`define SCR1_MTVAL_ILLEGAL_INSTR_EN
 
 //-------------------------------------------------------------------------------
 // Exception and IRQ codes
@@ -40,8 +62,11 @@ parameter bit [SCR1_EXC_CODE_WIDTH_E-1:0] SCR1_EXC_CODE_RESET               = 4'
 typedef enum logic [1:0] {
     SCR1_OP_WIDTH_BYTE  = 2'b00,
     SCR1_OP_WIDTH_HALF  = 2'b01,
-    SCR1_OP_WIDTH_WORD  = 2'b10,
+    SCR1_OP_WIDTH_WORD  = 2'b10
+`ifdef SCR1_XPROP_EN
+    ,
     SCR1_OP_WIDTH_ERROR = 'x
+`endif // SCR1_XPROP_EN
 } type_scr1_op_width_e;
 
 `endif //SCR1_ARCH_TYPES_SVH

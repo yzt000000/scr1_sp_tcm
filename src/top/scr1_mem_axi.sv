@@ -1,4 +1,4 @@
-/// Copyright by Syntacore LLC © 2016-2018. See LICENSE for details
+/// Copyright by Syntacore LLC © 2016-2020. See LICENSE for details
 /// @file       <scr1_mem_axi.sv>
 /// @brief      Memory AXI bridge
 ///
@@ -110,6 +110,8 @@ typedef struct packed {
 
 type_scr1_request_s         [SCR1_REQ_BUF_SIZE-1:0]     req_fifo;
 type_scr1_req_status_s      [SCR1_REQ_BUF_SIZE-1:0]     req_status;
+type_scr1_req_status_s      [SCR1_REQ_BUF_SIZE-1:0]     req_status_new;
+logic                       [SCR1_REQ_BUF_SIZE-1:0]     req_status_en;
 logic               [$clog2(SCR1_REQ_BUF_SIZE)-1:0]     req_aval_ptr;
 logic               [$clog2(SCR1_REQ_BUF_SIZE)-1:0]     req_proc_ptr;
 logic               [$clog2(SCR1_REQ_BUF_SIZE)-1:0]     req_done_ptr;
@@ -149,30 +151,60 @@ always_ff @(posedge clk) begin
     end
 end
 
+// Request Status Queue
+// It is used for holding control info of processing requests
 
+// Combinational logic of Request Status Queue
+always_comb begin
+    // Default
+    req_status_en  = '0; // No update
+    req_status_new = req_status; // Hold request info
+
+    // Update status on new core request
+    if( core_req & core_req_ack ) begin
+        req_status_en[req_aval_ptr]            = 1'd1;
+
+        req_status_new[req_aval_ptr].req_resp  = 1'd1;
+        req_status_new[req_aval_ptr].req_write = core_cmd == SCR1_MEM_CMD_WR;
+
+        req_status_new[req_aval_ptr].req_addr  = ~( (force_read & arready) |
+                                                    (force_write & awready) );
+
+        req_status_new[req_aval_ptr].req_data  = ~( (force_write & wready & awlen == 8'd0) |
+                                                    (~force_write & core_cmd == SCR1_MEM_CMD_RD) );
+    end
+
+    // Update status on AXI address phase
+    if ( (awvalid & awready) | (arvalid & arready) ) begin
+        req_status_en[req_proc_ptr]           = 1'd1;
+        req_status_new[req_proc_ptr].req_addr = 1'd0;
+    end
+
+    // Update status on AXI data phase
+    if ( wvalid & wready & wlast ) begin
+        req_status_en[req_proc_ptr]           = 1'd1;
+        req_status_new[req_proc_ptr].req_data = 1'd0;
+    end
+
+    // Update status when AXI finish transaction
+    if ( (bvalid & bready) | (rvalid & rready & rlast) ) begin
+        req_status_en[req_done_ptr]           = 1'd1;
+        req_status_new[req_done_ptr].req_resp = 1'd0;
+    end
+end
+
+// Request Status Queue register
 always_ff @(negedge rst_n, posedge clk) begin
     if (~rst_n) begin
         req_status <= '0;
     end else begin
-        if (core_req & core_req_ack) begin
-            req_status[req_aval_ptr].req_write  <= (core_cmd == SCR1_MEM_CMD_WR);
-            req_status[req_aval_ptr].req_addr   <= ~(force_read & arready | force_write & awready);
-            req_status[req_aval_ptr].req_data   <= ~(force_write & wready & (awlen == 8'd0) | ~force_write & (core_cmd == SCR1_MEM_CMD_RD));
-            req_status[req_aval_ptr].req_resp   <= 1'd1;
-        end
-        if ((awvalid & awready | arvalid & arready) & req_status[req_proc_ptr].req_addr) begin
-            req_status[req_proc_ptr].req_addr   <= 1'd0;
-        end
-        if (wvalid & wready & req_status[req_proc_ptr].req_data & wlast) begin
-            req_status[req_proc_ptr].req_data   <= 1'd0;
-        end
-        if ((bvalid & bready & req_status[req_done_ptr].req_resp        ) |
-            (rvalid & rready & req_status[req_done_ptr].req_resp & rlast)  ) begin
-            req_status[req_done_ptr].req_resp   <= 1'd0;
+        for (int unsigned i = 0; i < SCR1_REQ_BUF_SIZE; ++i) begin
+            if ( req_status_en[i] ) begin
+                req_status[i] <= req_status_new[i];
+            end
         end
     end
 end
-
 
 always_ff @(negedge rst_n, posedge clk) begin
     if (~rst_n)                         req_aval_ptr <= '0;
@@ -309,7 +341,10 @@ assign wlast    = 1'd1;
 assign wuser    = '0;
 
 
-`ifdef SCR1_SIM_ENV
+`ifdef SCR1_TRGT_SIMULATION
+//-------------------------------------------------------------------------------
+// Assertion
+//-------------------------------------------------------------------------------
 
 // X checks
 SCR1_SVA_AXI_X_CHECK0  : assert property (@(negedge clk) disable iff (~rst_n)   !$isunknown({core_req, awready, wready, bvalid, arready, rvalid}) )
@@ -323,6 +358,6 @@ SCR1_SVA_AXI_X_CHECK2  : assert property (@(negedge clk) disable iff (~rst_n)   
 SCR1_SVA_AXI_X_CHECK3  : assert property (@(negedge clk) disable iff (~rst_n)   rvalid |->
                                                                                     !$isunknown({rid, rresp}) )
                                                                                                         else $error("AXI bridge: X state on input");
-`endif // SCR1_SIM_ENV
+`endif // SCR1_TRGT_SIMULATION
 
 endmodule : scr1_mem_axi

@@ -1,4 +1,4 @@
-/// Copyright by Syntacore LLC Â© 2016-2018. See LICENSE for details
+/// Copyright by Syntacore LLC © 2016-2021. See LICENSE for details
 /// @file       <scr1_imem_ahb.sv>
 /// @brief      Instruction memory AHB bridge
 ///
@@ -14,7 +14,6 @@ module scr1_imem_ahb (
     // Core Interface
     output  logic                           imem_req_ack,
     input   logic                           imem_req,
-    input   type_scr1_mem_cmd_e             imem_cmd,
     input   logic   [SCR1_AHB_WIDTH-1:0]    imem_addr,
     output  logic   [SCR1_AHB_WIDTH-1:0]    imem_rdata,
     output  type_scr1_mem_resp_e            imem_resp,
@@ -183,7 +182,9 @@ always_ff @(negedge rst_n, posedge clk) begin
     end else begin
         case (fsm)
             SCR1_FSM_ADDR : begin
-                fsm <= (req_fifo_empty) ? SCR1_FSM_ADDR : SCR1_FSM_DATA;
+                if (hready) begin
+                    fsm <= (req_fifo_empty) ? SCR1_FSM_ADDR : SCR1_FSM_DATA;
+                end
             end
             SCR1_FSM_DATA : begin
                 if (hready) begin
@@ -205,11 +206,13 @@ always_comb begin
     req_fifo_rd = 1'b0;
     case (fsm)
         SCR1_FSM_ADDR : begin
-            req_fifo_rd = ~req_fifo_empty;
+            if (hready) begin
+                req_fifo_rd = ~req_fifo_empty;
+            end
         end
         SCR1_FSM_DATA : begin
             if (hready) begin
-                req_fifo_rd = ~req_fifo_empty;
+                req_fifo_rd = ~req_fifo_empty & (hresp == SCR1_HRESP_OKAY);
             end
         end
         default : begin
@@ -279,21 +282,16 @@ end
 
 assign haddr  = req_fifo[0].haddr;
 
-`ifdef SCR1_SIM_ENV
+`ifdef SCR1_TRGT_SIMULATION
 //-------------------------------------------------------------------------------
 // Assertion
 //-------------------------------------------------------------------------------
 
-// Check Core interafce
+// Check Core interface
 SCR1_SVA_IMEM_AHB_BRIDGE_REQ_XCHECK : assert property (
     @(negedge clk) disable iff (~rst_n)
     !$isunknown(imem_req)
     ) else $error("IMEM AHB bridge Error: imem_req has unknown values");
-
-SCR1_IMEM_AHB_BRIDGE_CMD_XCHECK : assert property (
-    @(negedge clk) disable iff (~rst_n)
-    imem_req |-> !$isunknown(imem_cmd)
-    ) else $error("IMEM AHB bridge Error: imem_cmd has unknown values");
 
 SCR1_IMEM_AHB_BRIDGE_ADDR_XCHECK : assert property (
     @(negedge clk) disable iff (~rst_n)
@@ -304,11 +302,6 @@ SCR1_IMEM_AHB_BRIDGE_ADDR_ALLIGN : assert property (
     @(negedge clk) disable iff (~rst_n)
     imem_req |-> (imem_addr[1:0] == '0)
     ) else $error("IMEM AHB bridge Error: imem_addr has unalign values");
-
-SCR1_IMEM_AHB_BRIDGE_CMD_VD : assert property (
-    @(negedge clk) disable iff (~rst_n)
-    imem_req |-> (imem_cmd === SCR1_MEM_CMD_RD)
-    ) else $error("IMEM AHB bridge Error: imem_cmd has not valid command");
 
 // Check AHB interface
 SCR1_IMEM_AHB_BRIDGE_HREADY_XCHECK : assert property (
@@ -321,6 +314,6 @@ SCR1_IMEM_AHB_BRIDGE_HRESP_XCHECK : assert property (
     !$isunknown(hresp)
     ) else $error("IMEM AHB bridge Error: hresp has unknown values");
 
-`endif // SCR1_SIM_ENV
+`endif // SCR1_TRGT_SIMULATION
 
 endmodule : scr1_imem_ahb

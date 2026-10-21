@@ -1,8 +1,9 @@
-/// Copyright by Syntacore LLC © 2016-2018. See LICENSE for details
+/// Copyright by Syntacore LLC © 2016-2021. See LICENSE for details
 /// @file       <scr1_memory_tb_ahb.sv>
 /// @brief      AHB memory testbench
 ///
 
+`include "scr1_arch_description.svh"
 `include "scr1_ahb.svh"
 `include "scr1_ipic.svh"
 
@@ -15,7 +16,10 @@ module scr1_memory_tb_ahb #(
     input   logic                                   clk,
 `ifdef SCR1_IPIC_EN
     output  logic  [SCR1_IRQ_LINES_NUM-1:0]         irq_lines,
+`else // SCR1_IPIC_EN
+    output  logic                                   ext_irq,
 `endif // SCR1_IPIC_EN
+    output  logic                                   soft_irq,
     input   integer                                 imem_req_ack_stall_in,
     input   integer                                 dmem_req_ack_stall_in,
 
@@ -42,16 +46,6 @@ module scr1_memory_tb_ahb #(
     output  logic                                   dmem_hresp
 );
 
-string stuff_file;
-
-//-------------------------------------------------------------------------------
-// Local parameters
-//-------------------------------------------------------------------------------
-localparam SCR1_PRINT_ADDR      = 32'hF0000000;
-localparam SCR1_IRQ_ADDR        = 32'hF0000100;
-localparam SCR1_MEM_ERR_ADDR    = 32'hFFFFF100;
-localparam SCR1_MEM_ERR_PTR     = 32'hF0000200;
-
 //-------------------------------------------------------------------------------
 // Local Types
 //-------------------------------------------------------------------------------
@@ -65,15 +59,25 @@ typedef enum logic {
 // Memory definition
 //-------------------------------------------------------------------------------
 logic [7:0]                             memory [0:2**SCR1_MEM_POWER_SIZE-1];
-logic [31:0]                            mem_err_ptr;
 `ifdef SCR1_IPIC_EN
-logic [SCR1_IRQ_LINES_NUM-1:0]          irq_reg;
+logic [SCR1_IRQ_LINES_NUM-1:0]          irq_lines_reg;
+`else // SCR1_IPIC_EN
+logic                                   ext_irq_reg;
 `endif // SCR1_IPIC_EN
+logic                                   soft_irq_reg;
+
 logic [7:0]                             mirage [0:2**SCR1_MEM_POWER_SIZE-1];
 bit                                     mirage_en;
 bit                                     mirage_rangeen;
 bit [SCR1_AHB_WIDTH-1:0]                mirage_adrlo = '1;
 bit [SCR1_AHB_WIDTH-1:0]                mirage_adrhi = '1;
+
+`ifdef VERILATOR
+logic [255:0]                           test_file;
+`else // VERILATOR
+string                                  test_file;
+`endif // VERILATOR
+bit                                     test_file_init;
 
 //-------------------------------------------------------------------------------
 // Local functions
@@ -134,16 +138,6 @@ begin
 end
 endfunction : scr1_write_mem
 
-function logic scr1_check_err_addr(
-    int addr
-);
-logic   tmp;
-begin
-    tmp = (addr == SCR1_MEM_ERR_ADDR) | (addr ==  mem_err_ptr);
-    return ~tmp;
-end
-endfunction : scr1_check_err_addr
-
 function logic [3:0] scr1_be_form(
     input   logic [1:0]     offset,
     input   logic [1:0]     hsize
@@ -201,19 +195,11 @@ always_ff @(negedge rst_n, posedge clk) begin
         imem_req_ack_stall <= imem_req_ack_stall_in;
         imem_req_ack_rnd   <= 1'b0;
     end else begin
-        case (imem_ahb_state)
-            SCR1_AHB_STATE_IDLE : begin
-            end
-            SCR1_AHB_STATE_DATA : begin
-                if (imem_req_ack_stall == '0) begin
-                    imem_req_ack_rnd <= $random;
-                end else begin
-                    imem_req_ack_stall <= {imem_req_ack_stall[0], imem_req_ack_stall[31:1]};
-                end
-            end
-            default : begin
-            end
-        endcase
+        if (imem_req_ack_stall == '0) begin
+            imem_req_ack_rnd <= $random;
+        end else begin
+            imem_req_ack_stall <= ((imem_ahb_state == SCR1_AHB_STATE_DATA) | ~imem_req_ack_stall[0]) ? {imem_req_ack_stall[0], imem_req_ack_stall[31:1]} : imem_req_ack_stall;
+        end
     end
 end
 
@@ -228,17 +214,19 @@ always_ff @(negedge rst_n, posedge clk) begin
     end else begin
         case (imem_ahb_state)
             SCR1_AHB_STATE_IDLE : begin
-                case (imem_htrans)
-                    SCR1_HTRANS_IDLE : begin
-                        imem_ahb_state <= SCR1_AHB_STATE_IDLE;
-                    end
-                    SCR1_HTRANS_NONSEQ : begin
-                        imem_ahb_state <= SCR1_AHB_STATE_DATA;
-                    end
-                    default : begin
-                        imem_ahb_state <= SCR1_AHB_STATE_ERR;
-                    end
-                endcase
+//                if (imem_req_ack) begin
+                    case (imem_htrans)
+                        SCR1_HTRANS_IDLE : begin
+                            imem_ahb_state <= SCR1_AHB_STATE_IDLE;
+                        end
+                        SCR1_HTRANS_NONSEQ : begin
+                            imem_ahb_state <= SCR1_AHB_STATE_DATA;
+                        end
+                        default : begin
+                            imem_ahb_state <= SCR1_AHB_STATE_ERR;
+                        end
+                    endcase
+ //               end
             end
             SCR1_AHB_STATE_DATA : begin
                 if (imem_req_ack) begin
@@ -275,23 +263,23 @@ always_ff @(negedge rst_n, posedge clk) begin
     end else begin
         case (imem_ahb_state)
             SCR1_AHB_STATE_IDLE : begin
-                case (imem_htrans)
-                    SCR1_HTRANS_IDLE : begin
-                    end
-                    SCR1_HTRANS_NONSEQ : begin
-                        imem_ahb_addr  <= imem_haddr;
-                        if (scr1_check_err_addr(imem_haddr)) begin
+//                if (imem_req_ack) begin
+                    case (imem_htrans)
+                        SCR1_HTRANS_IDLE : begin
+                        end
+                        SCR1_HTRANS_NONSEQ : begin
+                            imem_ahb_addr  <= imem_haddr;
                             if(mirage_rangeen & imem_haddr>=mirage_adrlo & imem_haddr<mirage_adrhi)
                                 imem_hrdata_l <= scr1_read_mem({imem_haddr[SCR1_AHB_WIDTH-1:2], 2'b00}, imem_be, imem_wr_hazard, dmem_hwdata, 1'b1);
                             else
                                 imem_hrdata_l <= scr1_read_mem({imem_haddr[SCR1_AHB_WIDTH-1:2], 2'b00}, imem_be, imem_wr_hazard, dmem_hwdata, 1'b0);
                         end
-                    end
-                    default : begin
-                        imem_ahb_addr  <= 'x;
-                        imem_hrdata_l  <= 'x;
-                    end
-                endcase
+                        default : begin
+                            imem_ahb_addr  <= 'x;
+                            imem_hrdata_l  <= 'x;
+                        end
+                    endcase
+ //               end
             end
             SCR1_AHB_STATE_DATA : begin
                 if (imem_req_ack) begin
@@ -302,12 +290,10 @@ always_ff @(negedge rst_n, posedge clk) begin
                         end
                         SCR1_HTRANS_NONSEQ : begin
                             imem_ahb_addr  <= imem_haddr;
-                            if (scr1_check_err_addr(imem_haddr)) begin
-                                if(mirage_rangeen & imem_haddr>=mirage_adrlo & imem_haddr<mirage_adrhi)
-                                    imem_hrdata_l <= scr1_read_mem({imem_haddr[SCR1_AHB_WIDTH-1:2], 2'b00}, imem_be, imem_wr_hazard, dmem_hwdata, 1'b1);
-                                else
-                                    imem_hrdata_l <= scr1_read_mem({imem_haddr[SCR1_AHB_WIDTH-1:2], 2'b00}, imem_be, imem_wr_hazard, dmem_hwdata, 1'b0);
-                            end
+                            if(mirage_rangeen & imem_haddr>=mirage_adrlo & imem_haddr<mirage_adrhi)
+                                imem_hrdata_l <= scr1_read_mem({imem_haddr[SCR1_AHB_WIDTH-1:2], 2'b00}, imem_be, imem_wr_hazard, dmem_hwdata, 1'b1);
+                            else
+                                imem_hrdata_l <= scr1_read_mem({imem_haddr[SCR1_AHB_WIDTH-1:2], 2'b00}, imem_be, imem_wr_hazard, dmem_hwdata, 1'b0);
                         end
                         default : begin
                             imem_ahb_addr  <= 'x;
@@ -325,22 +311,26 @@ always_ff @(negedge rst_n, posedge clk) begin
 end
 
 //-------------------------------------------------------------------------------
-// Instruction Memory responce
+// Instruction Memory response
 //-------------------------------------------------------------------------------
 always_comb begin
-    imem_hready = 1'b0;
+    imem_hready = 1'b1;
     imem_hresp  = SCR1_HRESP_OKAY;
     imem_hrdata = 'x;
-    if (imem_ahb_state == SCR1_AHB_STATE_DATA) begin
-        if (imem_req_ack) begin
-            imem_hready = 1'b1;
-            if (~scr1_check_err_addr(imem_ahb_addr)) begin
-                imem_hresp  = SCR1_HRESP_ERROR;
-            end else begin
+    case (imem_ahb_state)
+        SCR1_AHB_STATE_IDLE : begin
+        end
+        SCR1_AHB_STATE_DATA : begin
+            if (imem_req_ack) begin
+                imem_hready = 1'b1;
+
+                imem_hresp  = SCR1_HRESP_OKAY;
                 imem_hrdata = imem_hrdata_l;
             end
         end
-    end
+        default : begin
+        end
+    endcase
 end
 
 //-------------------------------------------------------------------------------
@@ -351,19 +341,11 @@ always_ff @(negedge rst_n, posedge clk) begin
         dmem_req_ack_stall <= dmem_req_ack_stall_in;
         dmem_req_ack_rnd   <= 1'b0;
     end else begin
-        case (dmem_ahb_state)
-            SCR1_AHB_STATE_IDLE : begin
-            end
-            SCR1_AHB_STATE_DATA : begin
-                if (dmem_req_ack_stall == 32'd0) begin
-                    dmem_req_ack_rnd <= $random;
-                end else begin
-                    dmem_req_ack_stall <= {dmem_req_ack_stall[0], dmem_req_ack_stall[31:1]};
-                end
-            end
-            default : begin
-            end
-        endcase
+        if (dmem_req_ack_stall == 32'd0) begin
+            dmem_req_ack_rnd <= $random;
+        end else begin
+            dmem_req_ack_stall <= ((dmem_ahb_state == SCR1_AHB_STATE_DATA) | ~dmem_req_ack_stall[0]) ? {dmem_req_ack_stall[0], dmem_req_ack_stall[31:1]} : dmem_req_ack_stall;
+        end
     end
 end
 
@@ -378,17 +360,19 @@ always_ff @(negedge rst_n, posedge clk) begin
     end else begin
         case (dmem_ahb_state)
             SCR1_AHB_STATE_IDLE : begin
-                case (dmem_htrans)
-                    SCR1_HTRANS_IDLE : begin
-                        dmem_ahb_state <= SCR1_AHB_STATE_IDLE;
-                    end
-                    SCR1_HTRANS_NONSEQ : begin
-                        dmem_ahb_state    <= SCR1_AHB_STATE_DATA;
-                    end
-                    default : begin
-                        dmem_ahb_state    <= SCR1_AHB_STATE_ERR;
-                    end
-                endcase
+//                if (dmem_req_ack) begin
+                    case (dmem_htrans)
+                        SCR1_HTRANS_IDLE : begin
+                            dmem_ahb_state <= SCR1_AHB_STATE_IDLE;
+                        end
+                        SCR1_HTRANS_NONSEQ : begin
+                            dmem_ahb_state    <= SCR1_AHB_STATE_DATA;
+                        end
+                        default : begin
+                            dmem_ahb_state    <= SCR1_AHB_STATE_ERR;
+                        end
+                    endcase
+//                end
             end
             SCR1_AHB_STATE_DATA : begin
                 if (dmem_req_ack) begin
@@ -397,13 +381,11 @@ always_ff @(negedge rst_n, posedge clk) begin
                             dmem_ahb_state    <= SCR1_AHB_STATE_IDLE;
                         end
                         SCR1_HTRANS_NONSEQ : begin
-                            if (~dmem_hwrite & scr1_check_err_addr(dmem_haddr)) begin
+                            if (~dmem_hwrite) begin
                                 case (dmem_haddr)
-                                    SCR1_IRQ_ADDR : begin
-                                        // Skip access, switch to SCR1_AHB_STATE_IDLE
-                                        dmem_ahb_state    <= SCR1_AHB_STATE_IDLE;
-                                    end
-                                    SCR1_MEM_ERR_PTR : begin
+                                    SCR1_SIM_SOFT_IRQ_ADDR,
+                                    SCR1_SIM_EXT_IRQ_ADDR
+                                    : begin
                                         // Skip access, switch to SCR1_AHB_STATE_IDLE
                                         dmem_ahb_state    <= SCR1_AHB_STATE_IDLE;
                                     end
@@ -440,41 +422,53 @@ always_ff @(negedge rst_n, posedge clk) begin
     end else begin
         case (dmem_ahb_state)
             SCR1_AHB_STATE_IDLE : begin
-                case (dmem_htrans)
-                    SCR1_HTRANS_IDLE : begin
-                    end
-                    SCR1_HTRANS_NONSEQ : begin
-                        dmem_ahb_addr <= dmem_haddr;
-                        dmem_ahb_wr   <= dmem_hwrite;
-                        dmem_ahb_size <= dmem_hsize;
-                        dmem_ahb_be   <= dmem_be;
-                        if (~dmem_hwrite & scr1_check_err_addr(dmem_haddr)) begin
-                            case (dmem_haddr)
-`ifdef SCR1_IPIC_EN
-                                SCR1_IRQ_ADDR : begin
-                                    dmem_hrdata_l <= '0;
-                                    dmem_hrdata_l[SCR1_IRQ_LINES_NUM-1:0] <= irq_reg;
-                                end
-`endif // SCR1_IPIC_EN
-                                SCR1_MEM_ERR_PTR : begin
-                                    dmem_hrdata_l <= mem_err_ptr;
-                                end
-                                default : begin
-                                    if(mirage_rangeen & dmem_haddr>=mirage_adrlo & dmem_haddr<mirage_adrhi)
-                                        dmem_hrdata_l <= scr1_read_mem({dmem_haddr[SCR1_AHB_WIDTH-1:2], 2'b00}, dmem_be, dmem_wr_hazard, dmem_hwdata, 1'b1);
-                                    else
-                                        dmem_hrdata_l <= scr1_read_mem({dmem_haddr[SCR1_AHB_WIDTH-1:2], 2'b00}, dmem_be, dmem_wr_hazard, dmem_hwdata, 1'b0);
-                                end
-                            endcase
+//                if (dmem_req_ack) begin
+                    case (dmem_htrans)
+                        SCR1_HTRANS_IDLE : begin
                         end
-                    end
-                    default : begin
-                        dmem_ahb_addr  <= 'x;
-                        dmem_ahb_wr    <= 'x;
-                        dmem_ahb_size  <= SCR1_HSIZE_ERR;
-                        dmem_hrdata_l  <= 'x;
-                    end
-                endcase
+                        SCR1_HTRANS_NONSEQ : begin
+                            dmem_ahb_addr <= dmem_haddr;
+                            dmem_ahb_wr   <= dmem_hwrite;
+                            dmem_ahb_size <= dmem_hsize;
+                            dmem_ahb_be   <= dmem_be;
+                            if (~dmem_hwrite) begin
+                                case (dmem_haddr)
+                                    // Reading Soft IRQ value
+                                    SCR1_SIM_SOFT_IRQ_ADDR : begin
+                                        dmem_hrdata_l <= '0;
+                                        dmem_hrdata_l[0] <= soft_irq_reg;
+                                    end
+`ifdef SCR1_IPIC_EN
+                                    // Reading IRQ Lines values
+                                    SCR1_SIM_EXT_IRQ_ADDR : begin
+                                        dmem_hrdata_l <= '0;
+                                        dmem_hrdata_l[SCR1_IRQ_LINES_NUM-1:0] <= irq_lines_reg;
+                                    end
+`else // SCR1_IPIC_EN
+                                    // Reading External IRQ value
+                                    SCR1_SIM_EXT_IRQ_ADDR : begin
+                                        dmem_hrdata_l <= '0;
+                                        dmem_hrdata_l[0] <= ext_irq_reg;
+                                    end
+`endif // SCR1_IPIC_EN
+                                    // Regular read operation
+                                    default : begin
+                                        if(mirage_rangeen & dmem_haddr>=mirage_adrlo & dmem_haddr<mirage_adrhi)
+                                            dmem_hrdata_l <= scr1_read_mem({dmem_haddr[SCR1_AHB_WIDTH-1:2], 2'b00}, dmem_be, dmem_wr_hazard, dmem_hwdata, 1'b1);
+                                        else
+                                            dmem_hrdata_l <= scr1_read_mem({dmem_haddr[SCR1_AHB_WIDTH-1:2], 2'b00}, dmem_be, dmem_wr_hazard, dmem_hwdata, 1'b0);
+                                    end
+                                endcase
+                            end
+                        end
+                        default : begin
+                            dmem_ahb_addr  <= 'x;
+                            dmem_ahb_wr    <= 'x;
+                            dmem_ahb_size  <= SCR1_HSIZE_ERR;
+                            dmem_hrdata_l  <= 'x;
+                        end
+                    endcase
+//                end
             end
             SCR1_AHB_STATE_DATA : begin
                 if (dmem_req_ack) begin
@@ -489,14 +483,11 @@ always_ff @(negedge rst_n, posedge clk) begin
                             dmem_ahb_wr   <= dmem_hwrite;
                             dmem_ahb_size <= dmem_hsize;
                             dmem_ahb_be   <= dmem_be;
-                            if (~dmem_hwrite & scr1_check_err_addr(dmem_haddr)) begin
+                            if (~dmem_hwrite) begin
                                 case (dmem_haddr)
-`ifdef SCR1_IPIC_EN
-                                    SCR1_IRQ_ADDR : begin
-                                        // Skip access, switch to SCR1_AHB_STATE_IDLE
-                                    end
-`endif // SCR1_IPIC_EN
-                                    SCR1_MEM_ERR_PTR : begin
+                                    SCR1_SIM_SOFT_IRQ_ADDR,
+                                    SCR1_SIM_EXT_IRQ_ADDR
+                                    : begin
                                         // Skip access, switch to SCR1_AHB_STATE_IDLE
                                     end
                                     default : begin
@@ -529,73 +520,86 @@ always_ff @(negedge rst_n, posedge clk) begin
 end
 
 //-------------------------------------------------------------------------------
-// Data Memory responce
+// Data Memory response
 //-------------------------------------------------------------------------------
 always_comb begin
     dmem_hready = 1'b0;
-    dmem_hresp  = SCR1_HRESP_OKAY;
+    dmem_hresp  = SCR1_HRESP_ERROR;
     dmem_hrdata = 'x;
-    if (dmem_ahb_state == SCR1_AHB_STATE_DATA) begin
-        if (dmem_req_ack) begin
-            dmem_hready = 1'b1;
-            if (~scr1_check_err_addr(dmem_ahb_addr)) begin
-                dmem_hresp  = SCR1_HRESP_ERROR;
-            end else begin
+    case (dmem_ahb_state)
+        SCR1_AHB_STATE_IDLE : begin
+            if (dmem_req_ack) begin
+                dmem_hready = 1'b1;
+            end
+        end
+        SCR1_AHB_STATE_DATA : begin
+            if (dmem_req_ack) begin
+                dmem_hready = 1'b1;
+                dmem_hresp  = SCR1_HRESP_OKAY;
                 if (~dmem_ahb_wr) begin
                     dmem_hrdata = dmem_hrdata_l;
                 end
             end
         end
-    end
+        default : begin
+        end
+    endcase
 end
 
 //-------------------------------------------------------------------------------
 // Data Memory write
 //-------------------------------------------------------------------------------
-
-always @(negedge rst_n) begin
-    if (stuff_file.len() > 0) begin
-        $readmemh(stuff_file,memory);
-    end else begin
-        memory = '{2**SCR1_MEM_POWER_SIZE{'0}};
-    end
-end
-
 always @(negedge rst_n, posedge clk) begin
     if (~rst_n) begin
+        soft_irq_reg   <= '0;
+
 `ifdef SCR1_IPIC_EN
-        irq_reg     <= '0;
+        irq_lines_reg  <= '0;
+`else // SCR1_IPIC_EN
+        ext_irq_reg    <= '0;
 `endif // SCR1_IPIC_EN
-        mem_err_ptr <= SCR1_MEM_ERR_ADDR;
+        if (test_file_init) $readmemh(test_file, memory);
     end else begin
         if ((dmem_ahb_state == SCR1_AHB_STATE_DATA) & dmem_req_ack & dmem_ahb_wr) begin
-            if (scr1_check_err_addr(dmem_ahb_addr)) begin
-                case (dmem_ahb_addr)
-                    SCR1_PRINT_ADDR : begin
-                        $write("%c", dmem_hwdata[7:0]);
-                    end
+
+            case (dmem_ahb_addr)
+                // Printing character in the simulation console
+                SCR1_SIM_PRINT_ADDR : begin
+                    $write("%c", dmem_hwdata[7:0]);
+
+                end
+                // Writing Soft IRQ value
+                SCR1_SIM_SOFT_IRQ_ADDR : begin
+                    soft_irq_reg <= dmem_hwdata[0];
+                end
 `ifdef SCR1_IPIC_EN
-                    SCR1_IRQ_ADDR : begin
-                        irq_reg <= dmem_hwdata[SCR1_IRQ_LINES_NUM-1:0];
-                    end
+                // Writing IRQ Lines values
+                SCR1_SIM_EXT_IRQ_ADDR : begin
+                    irq_lines_reg <= dmem_hwdata[SCR1_IRQ_LINES_NUM-1:0];
+                end
+`else // SCR1_IPIC_EN
+                // Writing External IRQ value
+                SCR1_SIM_EXT_IRQ_ADDR : begin
+                    ext_irq_reg <= dmem_hwdata[0];
+                end
 `endif // SCR1_IPIC_EN
-                    SCR1_MEM_ERR_PTR : begin
-                        mem_err_ptr <= dmem_hwdata;
-                    end
-                    default : begin
-                        if(mirage_rangeen & dmem_ahb_addr>=mirage_adrlo & dmem_ahb_addr<mirage_adrhi)
-                            scr1_write_mem({dmem_ahb_addr[SCR1_AHB_WIDTH-1:2], 2'b00}, dmem_ahb_be, dmem_hwdata, 1'b1);
-                        else
-                            scr1_write_mem({dmem_ahb_addr[SCR1_AHB_WIDTH-1:2], 2'b00}, dmem_ahb_be, dmem_hwdata, 1'b0);
-                    end
-                endcase
-            end
+                // Regular write operation
+                default : begin
+                    if(mirage_rangeen & dmem_ahb_addr>=mirage_adrlo & dmem_ahb_addr<mirage_adrhi)
+                        scr1_write_mem({dmem_ahb_addr[SCR1_AHB_WIDTH-1:2], 2'b00}, dmem_ahb_be, dmem_hwdata, 1'b1);
+                    else
+                        scr1_write_mem({dmem_ahb_addr[SCR1_AHB_WIDTH-1:2], 2'b00}, dmem_ahb_be, dmem_hwdata, 1'b0);
+                end
+            endcase
         end
     end
 end
 
 `ifdef SCR1_IPIC_EN
-assign irq_lines = irq_reg;
+assign irq_lines = irq_lines_reg;
+`else // SCR1_IPIC_EN
+assign ext_irq = ext_irq_reg;
 `endif // SCR1_IPIC_EN
+assign soft_irq = soft_irq_reg;
 
 endmodule : scr1_memory_tb_ahb
