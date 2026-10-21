@@ -1,4 +1,4 @@
-/// Copyright by Syntacore LLC © 2016-2021. See LICENSE for details
+/// Copyright by Syntacore LLC ï¿½ 2016-2021. See LICENSE for details
 /// @file       <scr1_csr.svh>
 /// @brief      CSR mapping/description file
 ///
@@ -110,6 +110,7 @@ parameter bit SCR1_CSR_MSTATUS_MIE_RST_VAL          = 1'b0;
 parameter bit SCR1_CSR_MSTATUS_MPIE_RST_VAL         = 1'b1;
 
 // MISA
+`define SCR1_RVB_ENC                                `SCR1_XLEN'h0002
 `define SCR1_RVC_ENC                                `SCR1_XLEN'h0004
 `define SCR1_RVE_ENC                                `SCR1_XLEN'h0010
 `define SCR1_RVI_ENC                                `SCR1_XLEN'h0100
@@ -127,6 +128,9 @@ parameter bit [`SCR1_XLEN-1:0]  SCR1_CSR_MISA       = (SCR1_MISA_MXL_32 << (`SCR
 `ifdef SCR1_RVM_EXT
                                                     | `SCR1_RVM_ENC
 `endif // SCR1_RVM_EXT
+`ifdef SCR1_RVB_EXT
+                                                    | `SCR1_RVB_ENC
+`endif // SCR1_RVB_EXT
                                                     ;
 
 // MVENDORID

@@ -89,7 +89,8 @@ typedef enum logic [1:0] {
 typedef enum logic [1:0] {
    SCR1_IALU_MDU_NONE,
    SCR1_IALU_MDU_MUL,
-   SCR1_IALU_MDU_DIV
+   SCR1_IALU_MDU_DIV,
+   SCR1_IALU_MDU_CLMUL
 } type_scr1_ialu_mdu_cmd;
  `endif // SCR1_RVM_EXT
 
@@ -141,6 +142,19 @@ logic        [1:0]                          div_cmd;            // DIV command: 
 logic                                       div_cmd_div;        // DIV command is DIV
 logic                                       div_cmd_rem;        // DIV command is REM(U)
 
+`ifdef SCR1_RVB_ITER_CLMUL
+// Carry-less multiplier signals (reuse the radix-2 datapath of the MDU)
+logic                                       mdu_cmd_clmul;      // MDU command is CLMUL(H)(R)
+logic                                       clmul_cmd_hi;       // high half of the product is requested
+logic                                       clmul_cmd_r;        // CLMULR: P[62:31] instead of P[63:32]
+logic                                       clmul_step;         // current multiplier bit
+logic        [`SCR1_XLEN-1:0]               clmul_lo;           // low half feeding the shift-out
+logic        [SCR1_MDU_SUM_WIDTH-1:0]       clmul_pp;           // op1 & {33{clmul_step}}
+logic        [(2*`SCR1_XLEN)-1:0]           clmul_pair;         // 64-bit {sum, lo} >> 1
+logic        [`SCR1_XLEN-1:0]               clmul_res_hi;       // P[63:32]
+logic        [`SCR1_XLEN-1:0]               clmul_res_lo;       // P[31:0]
+`endif // SCR1_RVB_ITER_CLMUL
+
 // Multiplier signals
 logic                                       mul_op1_is_sgn;     // First MUL operand is signed
 logic                                       mul_op2_is_sgn;     // Second MUL operand is signed
@@ -188,6 +202,11 @@ logic        [`SCR1_XLEN-1:0]               mdu_res_hi_next;
 logic        [`SCR1_XLEN-1:0]               mdu_res_lo_ff;
 logic        [`SCR1_XLEN-1:0]               mdu_res_lo_next;
 `endif // SCR1_RVM_EXT
+
+// Bit manipulation (B extension) signals
+`ifdef SCR1_RVB_EXT
+logic        [`SCR1_XLEN-1:0]               balu_res;       // BALU (Zba/Zbb/Zbc/Zbs) result
+`endif // SCR1_RVB_EXT
 
 //-------------------------------------------------------------------------------
 // Main adder
@@ -290,18 +309,38 @@ assign mdu_cmd_mul = (exu2ialu_cmd_i == SCR1_IALU_CMD_MUL)
                    | (exu2ialu_cmd_i == SCR1_IALU_CMD_MULHU)
                    | (exu2ialu_cmd_i == SCR1_IALU_CMD_MULHSU);
 
-assign mdu_cmd     = mdu_cmd_div ? SCR1_IALU_MDU_DIV
-                   : mdu_cmd_mul ? SCR1_IALU_MDU_MUL
-                                 : SCR1_IALU_MDU_NONE;
+`ifdef SCR1_RVB_ITER_CLMUL
+assign mdu_cmd_clmul = (exu2ialu_cmd_i == SCR1_IALU_CMD_CLMUL)
+                     | (exu2ialu_cmd_i == SCR1_IALU_CMD_CLMULH)
+                     | (exu2ialu_cmd_i == SCR1_IALU_CMD_CLMULR);
+assign clmul_cmd_hi  = (exu2ialu_cmd_i == SCR1_IALU_CMD_CLMULH)
+                     | (exu2ialu_cmd_i == SCR1_IALU_CMD_CLMULR);
+assign clmul_cmd_r   = (exu2ialu_cmd_i == SCR1_IALU_CMD_CLMULR);
+`endif // SCR1_RVB_ITER_CLMUL
+
+assign mdu_cmd     = mdu_cmd_div   ? SCR1_IALU_MDU_DIV
+                   : mdu_cmd_mul   ? SCR1_IALU_MDU_MUL
+`ifdef SCR1_RVB_ITER_CLMUL
+                   : mdu_cmd_clmul ? SCR1_IALU_MDU_CLMUL
+`endif // SCR1_RVB_ITER_CLMUL
+                                   : SCR1_IALU_MDU_NONE;
 
 assign main_ops_non_zero = |exu2ialu_main_op1_i & |exu2ialu_main_op2_i;
 assign main_ops_diff_sgn = exu2ialu_main_op1_i[`SCR1_XLEN-1]
                          ^ exu2ialu_main_op2_i[`SCR1_XLEN-1];
 
  `ifdef SCR1_FAST_MUL
-    assign mdu_cmd_is_iter = mdu_cmd_div;
+    assign mdu_cmd_is_iter = mdu_cmd_div
+`ifdef SCR1_RVB_ITER_CLMUL
+                           | mdu_cmd_clmul
+`endif // SCR1_RVB_ITER_CLMUL
+                           ;
  `else // ~SCR1_FAST_MUL
-    assign mdu_cmd_is_iter = mdu_cmd_mul | mdu_cmd_div;
+    assign mdu_cmd_is_iter = mdu_cmd_mul | mdu_cmd_div
+`ifdef SCR1_RVB_ITER_CLMUL
+                           | mdu_cmd_clmul
+`endif // SCR1_RVB_ITER_CLMUL
+                           ;
  `endif // ~SCR1_FAST_MUL
 
 assign mdu_iter_req = mdu_cmd_is_iter ? (main_ops_non_zero & mdu_fsm_idle) : 1'b0;
@@ -326,8 +365,14 @@ always_ff @(posedge clk) begin
     end
 end
 
+// The carry-less product needs the full multiplicand scanned bit by bit, so it
+// uses exactly the same iteration count as DIV (P[31] still depends on
+// op1[0] * op2[31], therefore fewer iterations would be wrong).
 assign mdu_iter_cnt_next = ~mdu_fsm_idle ? mdu_iter_cnt >> 1
                          : mdu_cmd_div   ? SCR1_DIV_CNT_INIT
+`ifdef SCR1_RVB_ITER_CLMUL
+                         : mdu_cmd_clmul ? SCR1_DIV_CNT_INIT
+`endif // SCR1_RVB_ITER_CLMUL
  `ifndef SCR1_FAST_MUL
                          : mdu_cmd_mul   ? SCR1_MUL_CNT_INIT
  `endif // ~SCR1_FAST_MUL
@@ -419,6 +464,53 @@ assign {mul_res_hi, mul_res_lo} = ~mdu_cmd_mul ? '0
                                 : mdu_fsm_idle ? ({mdu_sum_res, exu2ialu_main_op2_i[`SCR1_XLEN-1:SCR1_MUL_WIDTH]})
                                                : ({mdu_sum_res, mdu_res_lo_ff[`SCR1_XLEN-1:SCR1_MUL_WIDTH]});
 `endif // ~SCR1_FAST_MUL
+
+//-------------------------------------------------------------------------------
+// Carry-less multiplier logic (Zbc)
+//-------------------------------------------------------------------------------
+//
+// The Zbc instructions reuse the very same radix-2 shift-and-accumulate loop the
+// divider uses.  Two properties make that possible:
+//
+//   1. Partial products are already free of carry arithmetic.  With a one bit
+//      step the product op1 * {0, bit} degenerates into plain AND gates, so the
+//      existing AND array is not needed at all.
+//
+//   2. Accumulating with XOR instead of ADD moves the arithmetic from the ring
+//      of integers into GF(2)[x] - the polynomial ring over GF(2).  Suppressing
+//      the carries is therefore the only semantic change; everything else
+//      (FSM, iteration counter, the 64-bit {hi, lo} shift register pair) is
+//      shared with DIV.
+//
+// Algorithm (one bit per cycle):
+//   {hi, lo} = {0, rs2}
+//   repeat 32 times:
+//       hi = hi XOR (rs1 & {32{lo[0]}})
+//       {hi, lo} = {hi, lo} >> 1
+//   product P = {hi, lo}
+//       clmul  = P[31:0]
+//       clmulh = P[63:32]   (P[63] is always 0 for RV32)
+//       clmulr = P[62:31]
+//
+`ifdef SCR1_RVB_ITER_CLMUL
+// First iteration takes the multiplier bit straight from rs2, later ones from
+// the shifting low half.
+assign clmul_step = mdu_fsm_idle ? exu2ialu_main_op2_i[0] : mdu_res_lo_ff[0];
+
+// No sign concept in GF(2), hence no sign extension and no correction step.
+assign clmul_pp   = mdu_cmd_clmul
+                  ? ({SCR1_MDU_SUM_WIDTH{clmul_step}} & {1'b0, exu2ialu_main_op1_i})
+                  : '0;
+
+// The low half feeding the shift-out: rs2 on the first iteration, afterwards the
+// running low half.  Kept in its own variable because SystemVerilog does not
+// allow a part select on the result of a conditional expression.
+assign clmul_lo     = mdu_fsm_idle ? exu2ialu_main_op2_i : mdu_res_lo_ff;
+
+assign clmul_pair   = {mdu_sum_res, clmul_lo[`SCR1_XLEN-1:1]};
+assign clmul_res_hi = clmul_pair[(2*`SCR1_XLEN)-1:`SCR1_XLEN];
+assign clmul_res_lo = clmul_pair[`SCR1_XLEN-1:0];
+`endif // SCR1_RVB_ITER_CLMUL
 
 //-------------------------------------------------------------------------------
 // Divider logic
@@ -515,11 +607,27 @@ always_comb begin
             mdu_sum_op2 = mul_part_prod;
         end
 `endif // SCR1_FAST_MUL
+`ifdef SCR1_RVB_ITER_CLMUL
+        SCR1_IALU_MDU_CLMUL : begin
+            // Accumulator: zero on the first iteration, otherwise the running high half
+            mdu_sum_op1 = mdu_fsm_idle ? '0 : {1'b0, mdu_res_hi_ff};
+            mdu_sum_op2 = clmul_pp;
+        end
+`endif // SCR1_RVB_ITER_CLMUL
         default : begin end
     endcase
+`ifdef SCR1_RVB_ITER_CLMUL
+    // Carry-less mode bypasses the adder altogether: a bitwise XOR accumulates
+    // the partial products without ever generating a carry, which is precisely
+    // what turns integer multiplication into polynomial multiplication over GF(2).
+    mdu_sum_res = mdu_cmd_clmul ? (mdu_sum_op1 ^ mdu_sum_op2)
+                : mdu_sum_sub   ? (mdu_sum_op1 - mdu_sum_op2)
+                                : (mdu_sum_op1 + mdu_sum_op2);
+`else // ~SCR1_RVB_ITER_CLMUL
     mdu_sum_res = mdu_sum_sub
                 ? (mdu_sum_op1 - mdu_sum_op2)
                 : (mdu_sum_op1 + mdu_sum_op2);
+`endif // ~SCR1_RVB_ITER_CLMUL
 end
 
 //-------------------------------------------------------------------------------
@@ -538,16 +646,39 @@ end
 
 assign mdu_res_c_next  = mdu_cmd_div ? div_res_rem_c : mdu_res_c_ff;
 assign mdu_res_hi_next = mdu_cmd_div ? div_res_rem
+`ifdef SCR1_RVB_ITER_CLMUL
+                       : mdu_cmd_clmul ? clmul_res_hi
+`endif // SCR1_RVB_ITER_CLMUL
  `ifndef SCR1_FAST_MUL
                        : mdu_cmd_mul ? mul_res_hi
  `endif // SCR1_FAST_MUL
                                      : mdu_res_hi_ff;
 assign mdu_res_lo_next = mdu_cmd_div ? div_res_quo
+`ifdef SCR1_RVB_ITER_CLMUL
+                       : mdu_cmd_clmul ? clmul_res_lo
+`endif // SCR1_RVB_ITER_CLMUL
  `ifndef SCR1_FAST_MUL
                        : mdu_cmd_mul ? mul_res_lo
  `endif // SCR1_FAST_MUL
                                      : mdu_res_lo_ff;
 `endif // SCR1_RVM_EXT
+
+//-------------------------------------------------------------------------------
+// Bit manipulation (B extension) unit
+//-------------------------------------------------------------------------------
+//
+// The B extension is a purely combinational single-cycle unit. It is instantiated
+// here (instead of in the EXU) so that its result can be merged into the existing
+// IALU result multiplexer and no write-back path changes are needed.
+//
+`ifdef SCR1_RVB_EXT
+scr1_pipe_balu i_balu (
+    .op1_i  (exu2ialu_main_op1_i),
+    .op2_i  (exu2ialu_main_op2_i),
+    .cmd_i  (exu2ialu_cmd_i     ),
+    .res_o  (balu_res           )
+);
+`endif // SCR1_RVB_EXT
 
 //-------------------------------------------------------------------------------
 // Operation result forming
@@ -605,6 +736,69 @@ always_comb begin
         SCR1_IALU_CMD_SRA: begin
             ialu2exu_main_res_o = shft_res;
         end
+`ifdef SCR1_RVB_EXT
+        // Zba
+        SCR1_IALU_CMD_SH1ADD,
+        SCR1_IALU_CMD_SH2ADD,
+        SCR1_IALU_CMD_SH3ADD,
+        // Zbb
+        SCR1_IALU_CMD_ANDN,
+        SCR1_IALU_CMD_ORN,
+        SCR1_IALU_CMD_XNOR,
+        SCR1_IALU_CMD_CLZ,
+        SCR1_IALU_CMD_CTZ,
+        SCR1_IALU_CMD_CPOP,
+        SCR1_IALU_CMD_MAX,
+        SCR1_IALU_CMD_MAXU,
+        SCR1_IALU_CMD_MIN,
+        SCR1_IALU_CMD_MINU,
+        SCR1_IALU_CMD_SEXTB,
+        SCR1_IALU_CMD_SEXTH,
+        SCR1_IALU_CMD_ZEXTH,
+        SCR1_IALU_CMD_ROL,
+        SCR1_IALU_CMD_ROR,
+        SCR1_IALU_CMD_ORCB,
+        // Zbs
+        SCR1_IALU_CMD_BCLR,
+        SCR1_IALU_CMD_BEXT,
+        SCR1_IALU_CMD_BINV,
+        SCR1_IALU_CMD_BSET : begin
+            ialu2exu_main_res_o = balu_res;
+        end
+`ifdef SCR1_RVB_ITER_CLMUL
+        // Zbc - iterative through the MDU, so it must hand over the ready handshake
+        SCR1_IALU_CMD_CLMUL,
+        SCR1_IALU_CMD_CLMULH,
+        SCR1_IALU_CMD_CLMULR : begin
+            case (mdu_fsm_ff)
+                SCR1_IALU_MDU_FSM_IDLE : begin
+                    ialu2exu_main_res_o    = '0;
+                    ialu2exu_rvm_res_rdy_o = ~mdu_iter_req;
+                end
+                SCR1_IALU_MDU_FSM_ITER : begin
+                    ialu2exu_main_res_o    = clmul_cmd_r  ? {clmul_res_hi[`SCR1_XLEN-2:0],
+                                                             clmul_res_lo[`SCR1_XLEN-1]}
+                                           : clmul_cmd_hi ? clmul_res_hi
+                                                          : clmul_res_lo;
+                    ialu2exu_rvm_res_rdy_o = mdu_iter_rdy;
+                end
+                default : begin
+                    // CORR is unreachable for the carry-less loop; keep the
+                    // handshake asserted so the pipeline can never deadlock
+                    ialu2exu_main_res_o    = '0;
+                    ialu2exu_rvm_res_rdy_o = 1'b1;
+                end
+            endcase
+        end
+`else // ~SCR1_RVB_ITER_CLMUL
+        // Zbc
+        SCR1_IALU_CMD_CLMUL,
+        SCR1_IALU_CMD_CLMULH,
+        SCR1_IALU_CMD_CLMULR : begin
+            ialu2exu_main_res_o = balu_res;
+        end
+`endif // ~SCR1_RVB_ITER_CLMUL
+`endif // SCR1_RVB_EXT
 `ifdef SCR1_RVM_EXT
         SCR1_IALU_CMD_MUL,
         SCR1_IALU_CMD_MULHU,

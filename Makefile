@@ -177,6 +177,10 @@ TARGETS += dhrystone21
 # Comment this target if you don't want to run the hello test
 TARGETS += hello
 
+# Comment this target if you don't want to run the bit manipulation (B) test
+TARGETS += bitmanip
+
+
 # When RVE extension is on, we want to exclude some tests, even if they are given from the command line
 ifneq (,$(findstring e,$(ARCH_lowercase)))
     excluded := riscv_isa riscv_compliance
@@ -226,6 +230,10 @@ riscv_arch: | $(bld_dir)
 
 hello: | $(bld_dir)
 	-$(MAKE) -C $(tst_dir)/hello EXT_CFLAGS="$(EXT_CFLAGS)" ARCH=$(ARCH)
+
+bitmanip: | $(bld_dir)
+	-$(MAKE) -C $(tst_dir)/bitmanip EXT_CFLAGS="$(EXT_CFLAGS)" ARCH=$(ARCH)
+
 
 clean_hex: | $(bld_dir)
 	$(RM) $(bld_dir)/*.hex
