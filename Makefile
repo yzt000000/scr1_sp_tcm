@@ -185,6 +185,10 @@ ifeq ($(RVX_EXT), 1)
 TARGETS += cvxif
 endif
 
+# Matrix Multiply extension test (only when MTX_EXT=1)
+ifeq ($(MTX_EXT), 1)
+TARGETS += mtx
+endif
 
 # When RVE extension is on, we want to exclude some tests, even if they are given from the command line
 ifneq (,$(findstring e,$(ARCH_lowercase)))
@@ -242,6 +246,8 @@ bitmanip: | $(bld_dir)
 cvxif: | $(bld_dir)
 	-$(MAKE) -C $(tst_dir)/cvxif EXT_CFLAGS="$(EXT_CFLAGS)" ARCH=$(ARCH)
 
+mtx: | $(bld_dir)
+	-$(MAKE) -C $(tst_dir)/mtx EXT_CFLAGS="$(EXT_CFLAGS)" ARCH=$(ARCH)
 
 clean_hex: | $(bld_dir)
 	$(RM) $(bld_dir)/*.hex

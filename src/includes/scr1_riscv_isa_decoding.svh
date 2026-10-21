@@ -268,6 +268,24 @@ typedef struct packed {
 } type_scr1_cvxif_resp_s;
 `endif // SCR1_RVX_EXT
 
+`ifdef SCR1_MTX_EXT
+//------------------------------------------------------------------------------
+// CFU DMEM master interface (CFU -> arbiter) - Matrix Multiply extension
+//------------------------------------------------------------------------------
+typedef struct packed {
+    logic                               req;
+    type_scr1_mem_cmd_e                 cmd;
+    type_scr1_mem_width_e               width;
+    logic [`SCR1_DMEM_AWIDTH-1:0]       addr;
+    logic [`SCR1_DMEM_DWIDTH-1:0]       wdata;
+} type_scr1_cfu_dmem_req_s;
+
+typedef struct packed {
+    logic                               req_ack;
+    logic [`SCR1_DMEM_DWIDTH-1:0]       rdata;
+    type_scr1_mem_resp_e                resp;
+} type_scr1_cfu_dmem_resp_s;
+`endif // SCR1_MTX_EXT
 
 `endif // SCR1_RISCV_ISA_DECODING_SVH
 

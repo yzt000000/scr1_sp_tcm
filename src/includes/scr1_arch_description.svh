@@ -134,6 +134,7 @@
                                     // instruction semantics.  When disabled, custom opcodes fall through to the
                                     // illegal-instruction path with zero intrusion on the standard ISA.
 
+//`define SCR1_MTX_EXT                // enable Matrix Multiply extension (4x4 block matmul via CFU DMA engine)
                                     // Requires SCR1_RVX_EXT. When enabled, the CFU gains a dmem master
                                     // interface and a DMEM arbiter merges LSU+CFU requests.  Custom-1 opcode
                                     // space (0x2b) is used for cfu.matmul4/matmul4h/matmul4b/mcfg_stride/msk.

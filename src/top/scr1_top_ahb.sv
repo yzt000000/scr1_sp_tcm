@@ -119,6 +119,21 @@ logic [`SCR1_DMEM_DWIDTH-1:0]                       core_dmem_wdata;
 logic [`SCR1_DMEM_DWIDTH-1:0]                       core_dmem_rdata;
 type_scr1_mem_resp_e                                core_dmem_resp;
 
+// Data memory interface to dmem_router (from arbiter or direct from core)
+logic                                               router_dmem_req_ack;
+logic                                               router_dmem_req;
+type_scr1_mem_cmd_e                                 router_dmem_cmd;
+type_scr1_mem_width_e                               router_dmem_width;
+logic [`SCR1_DMEM_AWIDTH-1:0]                       router_dmem_addr;
+logic [`SCR1_DMEM_DWIDTH-1:0]                       router_dmem_wdata;
+logic [`SCR1_DMEM_DWIDTH-1:0]                       router_dmem_rdata;
+type_scr1_mem_resp_e                                router_dmem_resp;
+
+`ifdef SCR1_MTX_EXT
+// CFU DMEM master interface
+type_scr1_cfu_dmem_req_s                              cfu_dmem_req_w;
+type_scr1_cfu_dmem_resp_s                             cfu_dmem_resp_w;
+`endif // SCR1_MTX_EXT
 
 // Instruction memory interface from router to AHB bridge
 logic                                               ahb_imem_req_ack;
@@ -298,6 +313,52 @@ scr1_core_top i_core_top (
 );
 
 `ifdef SCR1_RVX_EXT
+`ifdef SCR1_MTX_EXT
+//-------------------------------------------------------------------------------
+// CV-X-IF CFU with Matrix Multiply extension + DMEM arbiter
+//-------------------------------------------------------------------------------
+scr1_pipe_cfu_mtx #(
+    .MAX_LATENCY                (256),
+    .MAX_OUTSTANDING            (4),
+    .MAC_PARALLEL               (1)
+) i_cfu (
+    .clk                        (clk              ),
+    .rst_n                      (core_rst_n_local ),
+    .cvxif_req_i                (core2cfu_req     ),
+    .cvxif_resp_o               (cfu2core_resp    ),
+    .cfu_dmem_req_o             (cfu_dmem_req_w   ),
+    .cfu_dmem_resp_i            (cfu_dmem_resp_w  )
+);
+
+scr1_dmem_arbiter i_dmem_arbiter (
+    .clk            (clk                    ),
+    .rst_n          (core_rst_n_local       ),
+    .m0_req         (core_dmem_req          ),
+    .m0_cmd         (core_dmem_cmd          ),
+    .m0_width       (core_dmem_width        ),
+    .m0_addr        (core_dmem_addr         ),
+    .m0_wdata       (core_dmem_wdata        ),
+    .m0_req_ack     (core_dmem_req_ack      ),
+    .m0_rdata       (core_dmem_rdata        ),
+    .m0_resp        (core_dmem_resp         ),
+    .m1_req         (cfu_dmem_req_w.req     ),
+    .m1_cmd         (cfu_dmem_req_w.cmd     ),
+    .m1_width       (cfu_dmem_req_w.width   ),
+    .m1_addr        (cfu_dmem_req_w.addr    ),
+    .m1_wdata       (cfu_dmem_req_w.wdata   ),
+    .m1_req_ack     (cfu_dmem_resp_w.req_ack),
+    .m1_rdata       (cfu_dmem_resp_w.rdata  ),
+    .m1_resp        (cfu_dmem_resp_w.resp   ),
+    .out_req        (router_dmem_req        ),
+    .out_cmd        (router_dmem_cmd        ),
+    .out_width      (router_dmem_width      ),
+    .out_addr       (router_dmem_addr       ),
+    .out_wdata      (router_dmem_wdata      ),
+    .out_req_ack    (router_dmem_req_ack    ),
+    .out_rdata      (router_dmem_rdata      ),
+    .out_resp       (router_dmem_resp       )
+);
+`else // SCR1_MTX_EXT
 //-------------------------------------------------------------------------------
 // CV-X-IF Custom Function Unit (reference implementation, custom-0 ALU only)
 //-------------------------------------------------------------------------------
@@ -309,7 +370,20 @@ scr1_pipe_cfu #(
     .cvxif_req_i                (core2cfu_req     ),
     .cvxif_resp_o               (cfu2core_resp    )
 );
+`endif // SCR1_MTX_EXT
 `endif // SCR1_RVX_EXT
+
+`ifndef SCR1_MTX_EXT
+// Direct connect core dmem to router dmem when MTX extension is disabled
+assign router_dmem_req     = core_dmem_req;
+assign router_dmem_cmd     = core_dmem_cmd;
+assign router_dmem_width   = core_dmem_width;
+assign router_dmem_addr    = core_dmem_addr;
+assign router_dmem_wdata   = core_dmem_wdata;
+assign core_dmem_req_ack   = router_dmem_req_ack;
+assign core_dmem_rdata     = router_dmem_rdata;
+assign core_dmem_resp      = router_dmem_resp;
+`endif // SCR1_MTX_EXT
 
 
 `ifdef SCR1_TCM_EN
@@ -437,14 +511,14 @@ scr1_dmem_router #(
     .rst_n          (core_rst_n_local    ),
     .clk            (clk                 ),
     // Interface to core
-    .dmem_req_ack   (core_dmem_req_ack   ),
-    .dmem_req       (core_dmem_req       ),
-    .dmem_cmd       (core_dmem_cmd       ),
-    .dmem_width     (core_dmem_width     ),
-    .dmem_addr      (core_dmem_addr      ),
-    .dmem_wdata     (core_dmem_wdata     ),
-    .dmem_rdata     (core_dmem_rdata     ),
-    .dmem_resp      (core_dmem_resp      ),
+    .dmem_req_ack   (router_dmem_req_ack   ),
+    .dmem_req       (router_dmem_req       ),
+    .dmem_cmd       (router_dmem_cmd       ),
+    .dmem_width     (router_dmem_width     ),
+    .dmem_addr      (router_dmem_addr      ),
+    .dmem_wdata     (router_dmem_wdata     ),
+    .dmem_rdata     (router_dmem_rdata     ),
+    .dmem_resp      (router_dmem_resp      ),
 `ifdef SCR1_TCM_EN
     // Interface to TCM
     .port1_req_ack  (tcm_dmem_req_ack    ),
