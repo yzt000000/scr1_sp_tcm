@@ -30,6 +30,12 @@ module scr1_core_top (
 `ifdef SCR1_DBG_EN
     output  logic                                   sys_rst_n_o,                // System reset
     output  logic                                   sys_rdc_qlfy_o,             // System RDC qualifier
+
+    // External HART control (asynchronous, synchronized inside the HDU):
+    // ext halt requests the core to be halted with the context preserved,
+    // ext resume requests the halted core to continue execution
+    input   logic                                   ext_halt_req_i,             // External halt request (async, level)
+    input   logic                                   ext_resume_req_i,           // External resume request (async, level)
 `endif // SCR1_DBG_EN
 
     // Fuses
@@ -342,6 +348,10 @@ scr1_pipe_top i_pipe_top (
 
     // DM <-> Pipeline: PC i/f
     .pipe2dm_pc_sample_o            (dm_pc_sample           ),
+
+    // External HART control i/f
+    .ext_halt_req_i                 (ext_halt_req_i         ),
+    .ext_resume_req_i               (ext_resume_req_i       ),
 `endif // SCR1_DBG_EN
 
     // IRQ

@@ -74,6 +74,10 @@ module scr1_pipe_top (
 
     // DM <-> Pipeling: PC i/f
     output logic [`SCR1_XLEN-1:0]                       pipe2dm_pc_sample_o,        // Current PC for sampling
+
+    // External HART control i/f (asynchronous, synchronized inside the HDU)
+    input  logic                                        ext_halt_req_i,             // External halt request (async, level)
+    input  logic                                        ext_resume_req_i,           // External resume request (async, level)
 `endif // SCR1_DBG_EN
 
     // IRQ
@@ -733,6 +737,10 @@ scr1_pipe_hdu i_pipe_hdu (
     .dm2hdu_dreg_resp_i         (dm2pipe_dreg_resp_i   ),
     .dm2hdu_dreg_fail_i         (dm2pipe_dreg_fail_i   ),
     .dm2hdu_dreg_rdata_i        (dm2pipe_dreg_rdata_i  ),
+
+    // External HART control i/f
+    .ext_halt_req_i             (ext_halt_req_i        ),
+    .ext_resume_req_i           (ext_resume_req_i      ),
     //
 `ifdef SCR1_TDU_EN
     // HDU <-> TDU interface

@@ -278,17 +278,28 @@ end
 //-------------------------------------------------------------------------------
 
 `include "scr1_top_tb_runtests.sv"
-//-------------------------------------------------------------------------------
+
+`include "scr1_tcm_sbr_bfm.sv"
+
+`include "scr1_ext_halt_tb.sv"
+
+//------------------------------------------------------------------------------
 // Core instance
-//-------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 scr1_top_ahb i_top (
     // Reset
     .pwrup_rst_n            (rst_n                  ),
     .rst_n                  (rst_n                  ),
+`ifdef SCR1_TCM_EN
+    .cpu_rst_n              (cpu_rst_n              ),
+`else // SCR1_TCM_EN
     .cpu_rst_n              (rst_n                  ),
+`endif // SCR1_TCM_EN
 `ifdef SCR1_DBG_EN
     .sys_rst_n_o            (                       ),
     .sys_rdc_qlfy_o         (                       ),
+    .ext_halt_req           (ext_halt_req           ),
+    .ext_resume_req         (ext_resume_req         ),
 `endif // SCR1_DBG_EN
 
     // Clock
@@ -346,6 +357,23 @@ scr1_top_ahb i_top (
     .dmem_hready        (dmem_hready    ),
     .dmem_hrdata        (dmem_hrdata    ),
     .dmem_hresp         (dmem_hresp     )
+
+`ifdef SCR1_TCM_EN
+    ,
+    // TCM AHB Subordinate port (driven by the external master BFM)
+    .tcm_sbr_hprot      (tcm_sbr_hprot     ),
+    .tcm_sbr_hburst     (tcm_sbr_hburst    ),
+    .tcm_sbr_hsize      (tcm_sbr_hsize     ),
+    .tcm_sbr_htrans     (tcm_sbr_htrans    ),
+    .tcm_sbr_hmastlock  (tcm_sbr_hmastlock ),
+    .tcm_sbr_haddr      (tcm_sbr_haddr     ),
+    .tcm_sbr_hwrite     (tcm_sbr_hwrite    ),
+    .tcm_sbr_hwdata     (tcm_sbr_hwdata    ),
+    .tcm_sbr_hreadyin   (tcm_sbr_hreadyin  ),
+    .tcm_sbr_hreadyout  (tcm_sbr_hreadyout ),
+    .tcm_sbr_hrdata     (tcm_sbr_hrdata    ),
+    .tcm_sbr_hresp      (tcm_sbr_hresp     )
+`endif // SCR1_TCM_EN
 );
 
 //-------------------------------------------------------------------------------

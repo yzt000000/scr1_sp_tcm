@@ -5,6 +5,7 @@
 
 `include "scr1_arch_description.svh"
 `include "scr1_memif.svh"
+`include "scr1_ahb.svh"
 `ifdef SCR1_IPIC_EN
 `include "scr1_ipic.svh"
 `endif // SCR1_IPIC_EN
@@ -32,6 +33,14 @@ module scr1_top_axi (
                                                                             //    external SOC (could be useful in small
                                                                             //    SCR-core-centric SOCs))
     output  logic                                   sys_rdc_qlfy_o,         // System-to-External SOC Reset Domain Crossing Qualifier
+
+    // External HART control (asynchronous, synchronized inside the HDU):
+    // ext halt requests the core to be halted with the context preserved,
+    // ext resume requests the halted core to continue execution - e.g. an
+    // external bus master can halt the core, load a program into the TCM
+    // through the TCM AHB subordinate port and then resume the core
+    input   logic                                   ext_halt_req,           // External halt request (async, level)
+    input   logic                                   ext_resume_req,         // External resume request (async, level)
 `endif // SCR1_DBG_EN
 
     // Fuses
@@ -149,6 +158,24 @@ module scr1_top_axi (
     input   logic [3:0]                             io_axi_dmem_ruser,
     input   logic                                   io_axi_dmem_rvalid,
     output  logic                                   io_axi_dmem_rready
+
+`ifdef SCR1_TCM_EN
+    ,
+    // TCM AHB Subordinate port: external masters load/read the ITCM/DTCM
+    // through this interface (real TCM address map: 0x0048_xxxx / 0x0049_xxxx)
+    input   logic [3:0]                             tcm_sbr_hprot,
+    input   logic [2:0]                             tcm_sbr_hburst,
+    input   logic [2:0]                             tcm_sbr_hsize,
+    input   logic [1:0]                             tcm_sbr_htrans,
+    input   logic                                   tcm_sbr_hmastlock,
+    input   logic [SCR1_AHB_WIDTH-1:0]              tcm_sbr_haddr,
+    input   logic                                   tcm_sbr_hwrite,
+    input   logic [SCR1_AHB_WIDTH-1:0]              tcm_sbr_hwdata,
+    input   logic                                   tcm_sbr_hreadyin,
+    output  logic                                   tcm_sbr_hreadyout,
+    output  logic [SCR1_AHB_WIDTH-1:0]              tcm_sbr_hrdata,
+    output  logic                                   tcm_sbr_hresp
+`endif // SCR1_TCM_EN
 );
 
 //-------------------------------------------------------------------------------
@@ -239,6 +266,16 @@ logic [`SCR1_DMEM_AWIDTH-1:0]                       tcm_dmem_addr;
 logic [`SCR1_DMEM_DWIDTH-1:0]                       tcm_dmem_wdata;
 logic [`SCR1_DMEM_DWIDTH-1:0]                       tcm_dmem_rdata;
 type_scr1_mem_resp_e                                tcm_dmem_resp;
+
+// TCM slave memif interface from the AHB subordinate bridge
+logic                                               tcm_sbr_req_ack;
+logic                                               tcm_sbr_req;
+type_scr1_mem_cmd_e                                 tcm_sbr_cmd;
+type_scr1_mem_width_e                               tcm_sbr_width;
+logic [`SCR1_DMEM_AWIDTH-1:0]                       tcm_sbr_addr;
+logic [`SCR1_DMEM_DWIDTH-1:0]                       tcm_sbr_wdata;
+logic [`SCR1_DMEM_DWIDTH-1:0]                       tcm_sbr_rdata;
+type_scr1_mem_resp_e                                tcm_sbr_resp;
 `endif // SCR1_TCM_EN
 
 // Data memory interface from router to memory-mapped timer
@@ -335,6 +372,8 @@ scr1_core_top i_core_top (
 `ifdef SCR1_DBG_EN
     .sys_rst_n_o                (sys_rst_n_o      ),
     .sys_rdc_qlfy_o             (sys_rdc_qlfy_o   ),
+    .ext_halt_req_i             (ext_halt_req     ),
+    .ext_resume_req_i           (ext_resume_req   ),
 `endif // SCR1_DBG_EN
 
     // Fuses
@@ -395,9 +434,7 @@ scr1_core_top i_core_top (
 // CV-X-IF CFU with Matrix Multiply extension + DMEM arbiter
 //-------------------------------------------------------------------------------
 scr1_pipe_cfu_mtx #(
-    .MAX_LATENCY                (256),
-    .MAX_OUTSTANDING            (4),
-    .MAC_PARALLEL               (1)
+    .MAX_LATENCY                (256)
 ) i_cfu (
     .clk                        (clk              ),
     .rst_n                      (core_rst_n_local ),
@@ -464,15 +501,52 @@ assign core_dmem_resp      = router_dmem_resp;
 
 
 `ifdef SCR1_TCM_EN
+//-----------------------------------------------------------------------------
+// TCM AHB subordinate bridge
+//-----------------------------------------------------------------------------
+// The bridge and the TCM share the system reset domain (rst_n_sync): an
+// external master may load the TCM while the CPU is still held in reset -
+// the TCM banks answer normally because no core requests are pending then
+// (reset-time loading is naturally prioritized).
+scr1_tcm_ahb_sbr i_tcm_ahb_sbr (
+    .clk            (clk                ),
+    .rst_n          (rst_n_sync         ),
+
+    .hprot          (tcm_sbr_hprot      ),
+    .hburst         (tcm_sbr_hburst     ),
+    .hsize          (tcm_sbr_hsize      ),
+    .htrans         (tcm_sbr_htrans     ),
+    .hmastlock      (tcm_sbr_hmastlock  ),
+    .haddr          (tcm_sbr_haddr      ),
+    .hwrite         (tcm_sbr_hwrite     ),
+    .hwdata         (tcm_sbr_hwdata     ),
+    .hreadyin       (tcm_sbr_hreadyin   ),
+    .hreadyout      (tcm_sbr_hreadyout  ),
+    .hrdata         (tcm_sbr_hrdata     ),
+    .hresp          (tcm_sbr_hresp      ),
+
+    .sbr_req        (tcm_sbr_req        ),
+    .sbr_cmd        (tcm_sbr_cmd        ),
+    .sbr_width      (tcm_sbr_width      ),
+    .sbr_addr       (tcm_sbr_addr       ),
+    .sbr_wdata      (tcm_sbr_wdata      ),
+    .sbr_req_ack    (tcm_sbr_req_ack    ),
+    .sbr_rdata      (tcm_sbr_rdata      ),
+    .sbr_resp       (tcm_sbr_resp       )
+);
+
 //-------------------------------------------------------------------------------
 // TCM instance
 //-------------------------------------------------------------------------------
+// TCM reset is taken from the system reset as well: the subordinate bridge
+// must get responses while the CPU is held in reset (reset-time loading),
+// and the core issues no TCM requests during its own reset anyway
 scr1_tcm #(
     .SCR1_ITCM_SIZE (`SCR1_DMEM_AWIDTH'(~SCR1_ITCM_ADDR_MASK + 1'b1)),
     .SCR1_DTCM_SIZE (`SCR1_DMEM_AWIDTH'(~SCR1_DTCM_ADDR_MASK + 1'b1))
 ) i_tcm (
     .clk            (clk             ),
-    .rst_n          (core_rst_n_local),
+    .rst_n          (rst_n_sync      ),
 
     // Instruction interface to TCM
     .imem_req_ack   (tcm_imem_req_ack),
@@ -490,7 +564,17 @@ scr1_tcm #(
     .dmem_addr      (tcm_dmem_addr   ),
     .dmem_wdata     (tcm_dmem_wdata  ),
     .dmem_rdata     (tcm_dmem_rdata  ),
-    .dmem_resp      (tcm_dmem_resp   )
+    .dmem_resp      (tcm_dmem_resp   ),
+
+    // External subordinate interface from the AHB bridge
+    .sbr_req_ack    (tcm_sbr_req_ack ),
+    .sbr_req        (tcm_sbr_req     ),
+    .sbr_cmd        (tcm_sbr_cmd     ),
+    .sbr_width      (tcm_sbr_width   ),
+    .sbr_addr       (tcm_sbr_addr    ),
+    .sbr_wdata      (tcm_sbr_wdata   ),
+    .sbr_rdata      (tcm_sbr_rdata   ),
+    .sbr_resp       (tcm_sbr_resp    )
 );
 `endif // SCR1_TCM_EN
 

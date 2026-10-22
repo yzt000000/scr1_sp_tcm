@@ -5,10 +5,15 @@
 /// Configures CFU, invokes cfu.matmul4 (compute only), then stc (posted
 /// write) and xwait (fence).  Returns a0 = error bits of the xwait status
 /// (err_cnt | err_sticky; 0 = success).
+///
+/// mtx_run_cfg(a_base, b_base, c_base, stride, msk): parameterized variant
+/// for the coverage cases (non-identity matrices, unsigned mode, stride != 4).
+/// a3 = stride (elements), a4 = msk (bit0 = signed).
 
 .section .text
 .align 2
 .global mtx_run
+.global mtx_run_cfg
 
 # int mtx_run(int a_base, int b_base, int c_base)
 mtx_run:
@@ -34,6 +39,30 @@ mtx_run:
 
     # t2 = status word ([31:16] hw, [15:8] err_cnt, [0] err_sticky)
     # Error bits: err_cnt (bits 15:8) | err_sticky (bit 0)
+    li      t3, 0xFF01
+    and     a0, t2, t3
+    ret
+
+# int mtx_run_cfg(int a_base, int b_base, int c_base, int stride, int msk)
+mtx_run_cfg:
+    # Set stride from a3
+    .insn   r 0x2b, 0x0, 0x1, x0, a3, x0      # cfu.mcfg_stride a3
+
+    # Set msk from a4
+    .insn   r 0x2b, 0x0, 0x2, x0, a4, x0      # cfu.mcfg_msk a4
+
+    # Set C base address (a2)
+    .insn   r 0x2b, 0x0, 0x3, x0, a2, x0      # cfu.mcfg_cbase a2
+
+    # Execute matmul4: acc = A * B (compute only, no memory write)
+    .insn   r 0x2b, 0x0, 0x0, t2, a0, a1      # cfu.matmul4 t2, a0, a1
+
+    # Posted store acc to C (non-blocking)
+    .insn   r 0x2b, 0x0, 0x16, x0, a2, x0     # cfu.stc a2
+
+    # Wait for posted write to complete, t2 = status word
+    .insn   r 0x2b, 0x0, 0x15, t2, x0, x0     # cfu.xwait t2
+
     li      t3, 0xFF01
     and     a0, t2, t3
     ret

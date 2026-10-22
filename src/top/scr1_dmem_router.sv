@@ -120,13 +120,12 @@ always_ff @(negedge rst_n, posedge clk) begin
                         fsm <= SCR1_FSM_ADDR;
                     end
                     default : begin
-                        // The outstanding access is still not answered and the
-                        // core has moved to a different port. Waiting for the
-                        // stale transaction would dead-lock the router, so
-                        // restart it; see scr1_imem_router for the rationale.
-                        if (dmem_req & (port_sel != port_sel_r)) begin
-                            fsm <= SCR1_FSM_ADDR;
-                        end
+                        // Wait for the outstanding access on port_sel_r to
+                        // complete.  The TCM latches the bank ownership of
+                        // each accepted access (see scr1_tcm.sv), so the
+                        // response arrives exactly once, addressed to the
+                        // port that owns it - no restart of the accepted
+                        // request is needed here.
                     end
                 endcase
             end
@@ -189,10 +188,6 @@ always_comb begin
         SCR1_FSM_DATA : begin
             if (sel_resp == SCR1_MEM_RESP_RDY_OK) begin
                 port0_req = dmem_req & (port_sel == SCR1_SEL_PORT0);
-            end else if ((sel_resp == SCR1_MEM_RESP_NOTRDY) && (port_sel == port_sel_r)) begin
-                // Keep driving the port that owns the outstanding access; see
-                // scr1_imem_router for the full rationale.
-                port0_req = dmem_req & (port_sel_r == SCR1_SEL_PORT0);
             end
         end
         default : begin
@@ -224,10 +219,6 @@ always_comb begin
         SCR1_FSM_DATA : begin
             if (sel_resp == SCR1_MEM_RESP_RDY_OK) begin
                 port1_req = dmem_req & (port_sel == SCR1_SEL_PORT1);
-            end else if ((sel_resp == SCR1_MEM_RESP_NOTRDY) && (port_sel == port_sel_r)) begin
-                // Keep driving the port that owns the outstanding access; see
-                // scr1_imem_router for the full rationale.
-                port1_req = dmem_req & (port_sel_r == SCR1_SEL_PORT1);
             end
         end
         default : begin
@@ -259,10 +250,6 @@ always_comb begin
         SCR1_FSM_DATA : begin
             if (sel_resp == SCR1_MEM_RESP_RDY_OK) begin
                 port2_req = dmem_req & (port_sel == SCR1_SEL_PORT2);
-            end else if ((sel_resp == SCR1_MEM_RESP_NOTRDY) && (port_sel == port_sel_r)) begin
-                // Keep driving the port that owns the outstanding access; see
-                // scr1_imem_router for the full rationale.
-                port2_req = dmem_req & (port_sel_r == SCR1_SEL_PORT2);
             end
         end
         default : begin

@@ -1,4 +1,4 @@
-/// Copyright by Syntacore LLC © 2016-2021. See LICENSE for details
+/// Copyright by Syntacore LLC ï¿½ 2016-2021. See LICENSE for details
 /// @file       <scr1_ipic.svh>
 /// @brief      IPIC header file
 ///
@@ -12,7 +12,7 @@
 //-------------------------------------------------------------------------------
 // Parameters declaration
 //-------------------------------------------------------------------------------
-parameter                                   SCR1_IRQ_VECT_NUM       = 16;   // must be power of 2 in the current implementation
+parameter                                   SCR1_IRQ_VECT_NUM       = 128;  // must be power of 2 in the current implementation
 parameter                                   SCR1_IRQ_VECT_WIDTH     = $clog2(SCR1_IRQ_VECT_NUM+1);
 parameter                                   SCR1_IRQ_LINES_NUM      = SCR1_IRQ_VECT_NUM;
 parameter                                   SCR1_IRQ_LINES_WIDTH    = $clog2(SCR1_IRQ_LINES_NUM);

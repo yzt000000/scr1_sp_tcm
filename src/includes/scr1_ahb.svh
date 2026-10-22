@@ -1,4 +1,4 @@
-/// Copyright by Syntacore LLC © 2016-2021. See LICENSE for details
+/// Copyright by Syntacore LLC ï¿½ 2016-2021. See LICENSE for details
 /// @file       <scr1_ahb.svh>
 /// @brief      AHB header file
 ///
@@ -12,6 +12,7 @@ parameter SCR1_AHB_WIDTH  = 32;
 
 // Encoding for HTRANS signal
 parameter logic [1:0] SCR1_HTRANS_IDLE   = 2'b00;
+parameter logic [1:0] SCR1_HTRANS_SEQ    = 2'b01;
 parameter logic [1:0] SCR1_HTRANS_NONSEQ = 2'b10;
 `ifdef SCR1_XPROP_EN
 parameter logic [1:0] SCR1_HTRANS_ERR    = 'x;
@@ -21,6 +22,7 @@ parameter logic [1:0] SCR1_HTRANS_ERR    = '0;
 
 // Encoding for HBURST signal
 parameter logic [2:0] SCR1_HBURST_SINGLE = 3'b000;
+parameter logic [2:0] SCR1_HBURST_INCR   = 3'b101;
 `ifdef SCR1_XPROP_EN
 parameter logic [2:0] SCR1_HBURST_ERR    = 'x;
 `else // SCR1_XPROP_EN

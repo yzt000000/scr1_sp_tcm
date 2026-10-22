@@ -1,4 +1,4 @@
-/// Copyright by Syntacore LLC © 2016-2021. See LICENSE for details
+/// Copyright by Syntacore LLC ï¿½ 2016-2021. See LICENSE for details
 /// @file       <scr1_pipe_hdu.sv>
 /// @brief      HART Debug Unit (HDU)
 ///
@@ -73,6 +73,14 @@ module scr1_pipe_hdu #(parameter HART_PBUF_INSTR_REGOUT_EN = 1'b1) (
     input  logic                                        dm2hdu_dreg_resp_i,         // Abstract Data Register response
     input  logic                                        dm2hdu_dreg_fail_i,         // Abstract Data Register fail
     input  logic [`SCR1_XLEN-1:0]                       dm2hdu_dreg_rdata_i,        // Abstract Data Register read data
+
+    // External HART control i/f (asynchronous level inputs, synchronized
+    // to the HDU clock internally). ext_halt_req_i requests the HART to be
+    // halted (same effect as dmcontrol.haltreq via JTAG; the halt cause is
+    // reported as DMREQ); ext_resume_req_i requests the halted HART to
+    // resume execution (same effect as dmcontrol.resumereq).
+    input  logic                                        ext_halt_req_i,             // External halt request (async, level)
+    input  logic                                        ext_resume_req_i,           // External resume request (async, level)
 
 `ifdef SCR1_TDU_EN
     // HDU <-> TDU interface
@@ -160,6 +168,12 @@ logic                                               dfsm_event_next;
 logic                                               hart_resume_req;
 logic                                               hart_halt_req;
 logic                                               hart_cmd_req;
+
+// External HART control signals (synchronized inputs)
+logic                                               ext_halt_req;
+logic                                               ext_resume_req;
+logic                                               ext_halt_req_meta;
+logic                                               ext_resume_req_meta;
 
 // HART Run Control register
 logic                                               hart_runctrl_upd;
@@ -266,7 +280,34 @@ assign dm_cmd_run     = (dm2hdu_cmd_i == SCR1_HDU_DBGSTATE_RUN);
 assign dm_cmd_drun    = (dm2hdu_cmd_i == SCR1_HDU_DBGSTATE_DRUN);
 
 assign dm_dhalt_req   = dm2hdu_cmd_req_i & dm_cmd_dhalted;
-assign dm_run_req     = dm2hdu_cmd_req_i & (dm_cmd_run | dm_cmd_drun);
+assign dm_run_req     = (dm2hdu_cmd_req_i & (dm_cmd_run | dm_cmd_drun))
+                      | ext_resume_req;
+
+//------------------------------------------------------------------------------
+// External HART control inputs synchronizer
+//------------------------------------------------------------------------------
+// The external halt/resume requests may come from an asynchronous clock
+// domain (or from board pins), so they are passed through a 2FF synchronizer
+// before entering the HDU logic. The requests are LEVEL signals: the HART
+// halt request has to be held until the HART enters the halted state (the
+// internal halt handshake may take up to SCR1_HDU_TIMEOUT clocks), and the
+// resume request has to be held until the HART returns to the run state.
+// The halt FSM registers are not gated by clk_en, so external requests work
+// even without an active debug session.
+
+always_ff @(posedge clk, negedge rst_n) begin
+    if (~rst_n) begin
+        ext_halt_req_meta   <= 1'b0;
+        ext_resume_req_meta <= 1'b0;
+        ext_halt_req        <= 1'b0;
+        ext_resume_req      <= 1'b0;
+    end else begin
+        ext_halt_req_meta   <= ext_halt_req_i;
+        ext_resume_req_meta <= ext_resume_req_i;
+        ext_halt_req        <= ext_halt_req_meta;
+        ext_resume_req      <= ext_resume_req_meta;
+    end
+end
 
 // Debug state FSM
 //------------------------------------------------------------------------------
@@ -400,8 +441,10 @@ always_comb begin
     end
 end
 
-assign hart_halt_req   = dm_cmd_dhalted & hart_cmd_req;
-assign hart_resume_req = (dm_cmd_run | dm_cmd_drun) & hart_cmd_req;
+assign hart_halt_req   = (dm_cmd_dhalted & hart_cmd_req)
+                       | (ext_halt_req & dbg_state_run);
+assign hart_resume_req = ((dm_cmd_run | dm_cmd_drun) & hart_cmd_req)
+                       | (ext_resume_req & dbg_state_dhalted);
 
 // HART Run Control register
 //------------------------------------------------------------------------------

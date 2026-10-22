@@ -54,7 +54,6 @@ typedef enum logic {
 type_scr1_fsm_e                 fsm;
 logic                           port_sel;
 logic                           port_sel_r;
-logic [`SCR1_IMEM_AWIDTH-1:0]   imem_addr_r;
 logic [`SCR1_IMEM_DWIDTH-1:0]   sel_rdata;
 type_scr1_mem_resp_e            sel_resp;
 logic                           sel_req_ack;
@@ -69,14 +68,12 @@ always_ff @(negedge rst_n, posedge clk) begin
     if (~rst_n) begin
         fsm        <= SCR1_FSM_ADDR;
         port_sel_r <= 1'b0;
-        imem_addr_r<= '0;
     end else begin
         case (fsm)
             SCR1_FSM_ADDR : begin
                 if (imem_req & sel_req_ack) begin
                     fsm <= SCR1_FSM_DATA;
                     port_sel_r <= port_sel;
-                    imem_addr_r <= imem_addr;
                 end
             end
             SCR1_FSM_DATA : begin
@@ -85,7 +82,6 @@ always_ff @(negedge rst_n, posedge clk) begin
                         if (imem_req & sel_req_ack) begin
                             fsm <= SCR1_FSM_DATA;
                             port_sel_r <= port_sel;
-                            imem_addr_r <= imem_addr;
                         end else begin
                             fsm <= SCR1_FSM_ADDR;
                         end
@@ -95,9 +91,11 @@ always_ff @(negedge rst_n, posedge clk) begin
                     end
                     default : begin
                         // Wait for the outstanding access on port_sel_r to
-                        // complete.  The old port is kept active with the
-                        // latched address (imem_addr_r), so its response will
-                        // eventually arrive.
+                        // complete.  The TCM latches the bank ownership of
+                        // each accepted access (see scr1_tcm.sv), so the
+                        // response arrives exactly once, addressed to the
+                        // port that owns it - no re-driving of the accepted
+                        // request is needed here.
                     end
                 endcase
             end
@@ -138,12 +136,6 @@ always_comb begin
         SCR1_FSM_DATA : begin
             if (sel_resp == SCR1_MEM_RESP_RDY_OK) begin
                 port0_req = imem_req & ~port_sel;
-            end else if (sel_resp == SCR1_MEM_RESP_NOTRDY) begin
-                // Keep driving the port that owns the outstanding access
-                // (port_sel_r) with the latched address so its response can
-                // arrive.  This prevents a dead-lock when the core has moved
-                // to a different port (e.g. a branch out of the TCM window).
-                port0_req = ~port_sel_r;
             end
         end
         default : begin
@@ -153,13 +145,10 @@ end
 
 `ifdef SCR1_XPROP_EN
 assign port0_cmd   = (~port_sel) ? imem_cmd  : SCR1_MEM_CMD_ERROR;
-assign port0_addr  = ((fsm == SCR1_FSM_DATA) & (port_sel != port_sel_r) & ~port_sel_r)
-                   ? imem_addr_r
-                   : ((~port_sel) ? imem_addr : 'x);
+assign port0_addr  = (~port_sel) ? imem_addr : 'x;
 `else // SCR1_XPROP_EN
 assign port0_cmd   = imem_cmd ;
-assign port0_addr  = ((fsm == SCR1_FSM_DATA) & (port_sel != port_sel_r) & ~port_sel_r)
-                   ? imem_addr_r : imem_addr;
+assign port0_addr  = imem_addr;
 `endif // SCR1_XPROP_EN
 
 //-------------------------------------------------------------------------------
@@ -174,10 +163,6 @@ always_comb begin
         SCR1_FSM_DATA : begin
             if (sel_resp == SCR1_MEM_RESP_RDY_OK) begin
                 port1_req = imem_req & port_sel;
-            end else if (sel_resp == SCR1_MEM_RESP_NOTRDY) begin
-                // See the comment on port0_req: keep driving the port that owns
-                // the outstanding access so it can raise its response.
-                port1_req = port_sel_r;
             end
         end
         default : begin
@@ -187,13 +172,10 @@ end
 
 `ifdef SCR1_XPROP_EN
 assign port1_cmd   = (port_sel) ? imem_cmd  : SCR1_MEM_CMD_ERROR;
-assign port1_addr  = ((fsm == SCR1_FSM_DATA) & (port_sel != port_sel_r) & port_sel_r)
-                   ? imem_addr_r
-                   : ((port_sel) ? imem_addr : 'x);
+assign port1_addr  = (port_sel) ? imem_addr : 'x;
 `else // SCR1_XPROP_EN
 assign port1_cmd   = imem_cmd ;
-assign port1_addr  = ((fsm == SCR1_FSM_DATA) & (port_sel != port_sel_r) & port_sel_r)
-                   ? imem_addr_r : imem_addr;
+assign port1_addr  = imem_addr;
 `endif // SCR1_XPROP_EN
 
 `ifdef SCR1_TRGT_SIMULATION

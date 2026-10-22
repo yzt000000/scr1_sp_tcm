@@ -503,8 +503,14 @@ assign exu2cfu_req_o.req_rs2_valid = 1'b1;
 assign exu2cfu_req_o.req_mode      = csr2exu_mode_i;
 assign exu2cfu_req_o.core_ready    = 1'b1;
 
-// CFU ready: response valid and no exception, or timeout (allow exception processing)
-assign cfu_rdy = (cfu2exu_resp_i.resp_valid & ~cfu2exu_resp_i.resp_exc) | cfu_timeout;
+// CFU ready: a response without exception completes immediately; the timeout
+// completes a MISSING response (CFU deadlock) with an illegal-instruction
+// exception. An exception response is never force-completed by the timeout:
+// it has to be committed through the trap path, and while that is blocked
+// (e.g. the no_commit / debug-halt window) the EXU correctly waits instead of
+// silently dropping the exception when the timeout expires.
+assign cfu_rdy = (~cfu2exu_resp_i.resp_exc)
+               & (cfu2exu_resp_i.resp_valid | cfu_timeout);
 
 // CFU exception: CFU reports illegal instruction or timeout
 assign cfu_exc_req = cfu_vd & ((cfu2exu_resp_i.resp_valid & cfu2exu_resp_i.resp_exc) | cfu_timeout);

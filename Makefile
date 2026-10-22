@@ -190,6 +190,11 @@ ifeq ($(MTX_EXT), 1)
 TARGETS += mtx
 endif
 
+# TCM AHB subordinate port test (only when TCM=1)
+ifeq ($(TCM), 1)
+TARGETS += tcm_sbr
+endif
+
 # When RVE extension is on, we want to exclude some tests, even if they are given from the command line
 ifneq (,$(findstring e,$(ARCH_lowercase)))
     excluded := riscv_isa riscv_compliance
@@ -248,6 +253,9 @@ cvxif: | $(bld_dir)
 
 mtx: | $(bld_dir)
 	-$(MAKE) -C $(tst_dir)/mtx EXT_CFLAGS="$(EXT_CFLAGS)" ARCH=$(ARCH)
+
+tcm_sbr: | $(bld_dir)
+	-$(MAKE) -C $(tst_dir)/tcm_sbr EXT_CFLAGS="$(EXT_CFLAGS)" ARCH=$(ARCH)
 
 clean_hex: | $(bld_dir)
 	$(RM) $(bld_dir)/*.hex

@@ -76,6 +76,18 @@ property p_instr_stable;
     |=> cvxif_req_i.req_instr == $past(cvxif_req_i.req_instr);
 endproperty
 
+// Property: forward progress - an accepted request must be answered within
+// a bounded latency window. This catches a hung CFU (deadlock: req_valid
+// held forever without any resp_valid) instead of silently stalling the
+// core until the EXU timeout kicks in.
+localparam int unsigned SCR1_MON_RESP_LATENCY = 2048;
+
+property p_forward_progress;
+    @(posedge clk) disable iff (~rst_n)
+    cvxif_req_i.req_valid && cvxif_resp_i.cfu_ready
+    |-> ##[1:SCR1_MON_RESP_LATENCY] cvxif_resp_i.resp_valid;
+endproperty
+
 assert property (p_req_stable)
     else $error("CV-X-IF protocol violation: req_valid unstable before cfu_ready");
 
@@ -84,6 +96,9 @@ assert property (p_resp_requires_req)
 
 assert property (p_instr_stable)
     else $error("CV-X-IF protocol violation: instruction unstable during multi-cycle");
+
+assert property (p_forward_progress)
+    else $error("CV-X-IF protocol violation: no response within latency window (CFU deadlock?)");
 
 endmodule : scr1_cvxif_monitor
 `endif // SCR1_TRGT_SIMULATION

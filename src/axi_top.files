@@ -7,3 +7,4 @@ top/scr1_tcm.sv
 top/scr1_timer.sv
 top/scr1_mem_axi.sv
 top/scr1_top_axi.sv
+top/scr1_tcm_ahb_sbr.sv

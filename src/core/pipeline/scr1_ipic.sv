@@ -142,6 +142,51 @@ begin
 end
 endfunction : scr1_search_one_16
 
+// Parameterized priority encoder covering all SCR1_IRQ_VECT_NUM lines.
+// The vector is processed in 16-line segments by scr1_search_one_16; among
+// the segments with a valid hit the LOWEST segment number wins, which keeps
+// the original 16-line priority semantics (lower line number = higher
+// priority) across the whole vector. SCR1_IRQ_VECT_NUM must be a multiple
+// of 16 (any power of two >= 16 satisfies this).
+localparam int unsigned SCR1_IPR_LOW_WIDTH = (SCR1_IRQ_VECT_NUM < `SCR1_XLEN)
+                                              ? SCR1_IRQ_VECT_NUM
+                                              : `SCR1_XLEN;
+localparam int unsigned SCR1_SO16_SEG_NUM = SCR1_IRQ_VECT_NUM / 16;
+localparam int unsigned SCR1_SO16_SEG_IDX = (SCR1_SO16_SEG_NUM <= 1)
+                                            ? 1
+                                            : $clog2(SCR1_SO16_SEG_NUM);
+
+function automatic type_scr1_search_one_16_s scr1_search_one_vect(
+    input   logic [SCR1_IRQ_VECT_NUM-1:0]    din
+);
+    type_scr1_search_one_16_s    seg [SCR1_SO16_SEG_NUM-1:0];
+    type_scr1_search_one_16_s    result;
+begin
+    for (int unsigned i = 0; i < SCR1_SO16_SEG_NUM; ++i) begin
+        seg[i] = scr1_search_one_16(din[(i+1)*16-1-:16]);
+    end
+    // Scan from the highest segment down, overwrite on every hit: the
+    // lowest segment with a hit remains -> low line number priority
+    result.vd  = 1'b0;
+    result.idx = '0;
+    for (int unsigned i = SCR1_SO16_SEG_NUM; i > 0; --i) begin
+        if (seg[i-1].vd) begin
+            result.vd  = 1'b1;
+            // NOTE: seg[i-1].idx is SCR1_IRQ_IDX_WIDTH wide (the struct field
+            // width) but carries only the 4-bit in-segment index - the
+            // segment tree of scr1_search_one_16 never sets bits above [3:0].
+            // Concatenate with an EXPLICIT 4-bit slice: {seg, idx[3:0]} stays
+            // within SCR1_IRQ_IDX_WIDTH bits. Without the slice the struct
+            // field's full width would push the segment number out of the
+            // width conversion and the encoder would return the in-segment
+            // index only (lines 16..127 would never be selected).
+            result.idx = SCR1_IRQ_IDX_WIDTH'({SCR1_SO16_SEG_IDX'(i-1), seg[i-1].idx[3:0]});
+        end
+    end
+    return result;
+end
+endfunction : scr1_search_one_vect
+
 //------------------------------------------------------------------------------
 // Local signals declaration
 //------------------------------------------------------------------------------
@@ -297,7 +342,9 @@ always_comb begin
                 ipic2csr_rdata_o[SCR1_IPIC_ICSR_IE]  = ipic_cicsr.ie;
             end
             SCR1_IPIC_IPR : begin
-                ipic2csr_rdata_o = `SCR1_XLEN'(ipic_ipr_ff);
+                // Lines above XLEN are not visible in the packed readback;
+                // their pending state is queried per-line via CICSR/IDX
+                ipic2csr_rdata_o = `SCR1_XLEN'(ipic_ipr_ff[SCR1_IPR_LOW_WIDTH-1:0]);
             end
             SCR1_IPIC_ISVR : begin
                 ipic2csr_rdata_o = `SCR1_XLEN'(ipic_isvr_ff);
@@ -456,7 +503,14 @@ always_comb begin
         case (csr2ipic_addr_i)
             SCR1_IPIC_CICSR: ipic_ipr_clr_req[irq_serv_idx] = csr2ipic_wdata_i[SCR1_IPIC_ICSR_IP]
                                                             & irq_serv_vd;
-            SCR1_IPIC_IPR  : ipic_ipr_clr_req               = csr2ipic_wdata_i[SCR1_IRQ_VECT_NUM-1:0];
+            SCR1_IPIC_IPR  : begin
+                // RW1C from the XLEN-wide CSR data: clears the low lines
+                // (up to min(VECT_NUM, XLEN)) only; higher lines are
+                // cleared via CICSR/IDX or SOI. The SCR1_IPR_LOW_WIDTH
+                // localparam keeps both part-select bounds <= XLEN so the
+                // construct is statically in-bounds for any VECT_NUM.
+                ipic_ipr_clr_req[SCR1_IPR_LOW_WIDTH-1:0] = csr2ipic_wdata_i[SCR1_IPR_LOW_WIDTH-1:0];
+            end
             SCR1_IPIC_SOI  : ipic_ipr_clr_req[irq_req_idx]  = irq_req_vd;
             SCR1_IPIC_ICSR : ipic_ipr_clr_req[ipic_idxr_ff] = csr2ipic_wdata_i[SCR1_IPIC_ICSR_IP];
             default        : begin end
@@ -586,11 +640,11 @@ assign ipic_icsr.line  = SCR1_IRQ_LINES_WIDTH'(ipic_idxr_ff);
 
 assign irq_req_v = ipic_ipr_ff & ipic_ier_ff;
 
-assign irr_priority        = scr1_search_one_16(irq_req_v);
+assign irr_priority        = scr1_search_one_vect(irq_req_v);
 assign irq_req_vd          = irr_priority.vd;
 assign irq_req_idx         = irr_priority.idx;
 
-assign isvr_priority_eoi   = scr1_search_one_16(ipic_isvr_eoi);
+assign isvr_priority_eoi   = scr1_search_one_vect(ipic_isvr_eoi);
 assign irq_eoi_req_vd      = isvr_priority_eoi.vd;
 assign irq_eoi_req_idx     = isvr_priority_eoi.idx;
 

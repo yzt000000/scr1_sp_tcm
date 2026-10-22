@@ -8,3 +8,4 @@ top/scr1_timer.sv
 top/scr1_dmem_ahb.sv
 top/scr1_imem_ahb.sv
 top/scr1_top_ahb.sv
+top/scr1_tcm_ahb_sbr.sv

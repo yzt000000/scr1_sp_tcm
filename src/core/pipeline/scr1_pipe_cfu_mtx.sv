@@ -32,8 +32,6 @@
 `ifdef SCR1_RVX_EXT
 module scr1_pipe_cfu_mtx #(
     parameter int unsigned MAX_LATENCY     = 256,
-    parameter int unsigned MAX_OUTSTANDING = 4,
-    parameter int unsigned MAC_PARALLEL    = 1,
     parameter int unsigned POST_DEPTH      = 2
 ) (
     input   logic                   clk,
@@ -119,7 +117,7 @@ logic mtx_single_legal;
 logic stride_illegal;
 
 assign stride_illegal   = (cvxif_req_i.req_rs1 == 0) || (cvxif_req_i.req_rs1[31:8] != 0);
-assign mtx_single_legal = is_mcfg_msk    ? (cvxif_req_i.req_rs1[1:0] != 2'b11)
+assign mtx_single_legal = is_mcfg_msk    ? (cvxif_req_i.req_rs1[1] == 1'b0)
                         : is_mcfg_stride ? ~stride_illegal
                         : is_mcfg_cbase  ? 1'b1
                         : is_stc         ? 1'b1
@@ -516,7 +514,10 @@ always_ff @(posedge clk or negedge rst_n) begin
             for (int w = 0; w < POST_WORDS; w++) post_data[d][w] <= '0;
         end
     end else if (post_enq) begin
-        post_base[post_wptr]   <= cvxif_req_i.req_rs1;
+        // C base comes from the mcfg_cbase configuration (cbase_ff); the
+        // stc operand is ignored - this makes mcfg_cbase actually take
+        // effect (it used to be written but never read, a dead config)
+        post_base[post_wptr]   <= cbase_ff;
         post_stride[post_wptr] <= stride_ff;
         for (int w = 0; w < 16; w++)
             post_data[post_wptr][w] <= acc[w];
@@ -615,7 +616,8 @@ always_comb begin
         cvxif_resp_o.resp_valid   = 1'b1;
         cvxif_resp_o.resp_result  = {31'b0, ~mem_err};
         cvxif_resp_o.resp_exc     = mem_err;
-        cvxif_resp_o.resp_exc_code = mem_err ? SCR1_EXC_CODE_LD_ACCESS_FAULT
+        cvxif_resp_o.resp_exc_code = mem_err ? (bg_mem_err ? SCR1_EXC_CODE_ST_ACCESS_FAULT
+                                                            : SCR1_EXC_CODE_LD_ACCESS_FAULT)
                                               : SCR1_EXC_CODE_ILLEGAL_INSTR;
     end else begin
         cvxif_resp_o.cfu_ready    = 1'b0;
