@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCR1 实现差异对比报告 — 本仓库 vs RTL版 (2026-10-22)</title>
+<style>
+:root{
+  --bg:#0f1419;--bg2:#161d24;--card:#1b242e;--card2:#212c38;
+  --border:#2c3a47;--text:#d5dde5;--muted:#8496a5;
+  --blue:#4fc3f7;--green:#81c784;--orange:#ffb74d;--purple:#ba68c8;--red:#e57373;--yellow:#ffd54f;
+  --mono:'Cascadia Code','Consolas','JetBrains Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI','Microsoft YaHei',sans-serif;font-size:14px;line-height:1.65;padding:0 0 60px}
+.wrap{max-width:1280px;margin:0 auto;padding:0 24px}
+header{background:linear-gradient(135deg,#132030 0%,#1a2735 60%,#20303f 100%);border-bottom:1px solid var(--border);padding:34px 0 26px;margin-bottom:24px}
+header h1{font-size:22px;font-weight:600;letter-spacing:.5px}
+header h1 .vs{color:var(--orange)}
+header .sub{color:var(--muted);font-size:12.5px;margin-top:8px}
+header .sub code{color:var(--blue);font-family:var(--mono);font-size:11.5px}
+.badges{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
+.badge{font-size:11px;padding:3px 10px;border-radius:10px;border:1px solid var(--border);color:var(--muted)}
+.badge.bA{border-color:#2e5a78;color:var(--blue)}
+.badge.bB{border-color:#7a5a2e;color:var(--orange)}
+nav{display:flex;gap:4px;border-bottom:1px solid var(--border);flex-wrap:wrap;margin-bottom:22px}
+nav button{background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);padding:9px 16px;font-size:13px;cursor:pointer;font-family:inherit}
+nav button:hover{color:var(--text)}
+nav button.on{color:var(--blue);border-bottom-color:var(--blue);font-weight:600}
+section{display:none}
+section.on{display:block;animation:fade .25s}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+h2{font-size:17px;margin:4px 0 14px;padding-left:10px;border-left:3px solid var(--blue)}
+h3{font-size:14.5px;margin:18px 0 10px;color:var(--blue)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:900px){.grid2,.grid3{grid-template-columns:1fr}}
+.kpi{background:var(--card2);border-radius:8px;padding:12px 14px;text-align:center}
+.kpi .num{font-size:22px;font-weight:700;font-family:var(--mono)}
+.kpi .lbl{font-size:11px;color:var(--muted);margin-top:2px}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0}
+th{background:var(--card2);color:var(--muted);font-weight:600;text-align:left;padding:8px 10px;border:1px solid var(--border);font-size:12px}
+td{padding:7px 10px;border:1px solid var(--border);vertical-align:top}
+td.yes{color:var(--green)}td.no{color:var(--red)}td.part{color:var(--yellow)}
+tr:hover td{background:rgba(79,195,247,.05)}
+code{font-family:var(--mono);background:#243040;padding:1px 5px;border-radius:4px;font-size:12px;color:#9fd6ff}
+.pathA{color:var(--orange)}.pathB{color:var(--blue)}
+pre{background:#0c1116;border:1px solid var(--border);border-radius:8px;padding:13px 15px;overflow-x:auto;font-family:var(--mono);font-size:12px;line-height:1.55;margin:10px 0;tab-size:4}
+pre .kw{color:#7ec8ff;font-weight:600}
+pre .cm{color:#5b7a6f;font-style:italic}
+pre .st{color:#d8b76a}
+pre .nm{color:#f0a8c0}
+pre .mac{color:#c792ea}
+pre .ty{color:#89ddff}
+.codehead{display:flex;justify-content:space-between;align-items:center;background:#182229;border:1px solid var(--border);border-bottom:none;border-radius:8px 8px 0 0;padding:6px 12px;font-size:11.5px;font-family:var(--mono)}
+.codehead .fname{color:var(--green)}
+.codehead .src{color:var(--muted)}
+.codehead+.prewrap>pre{border-radius:0 0 8px 8px}
+.tag{display:inline-block;font-size:10.5px;padding:1px 8px;border-radius:8px;margin-right:6px;vertical-align:middle}
+.tag.same{background:#1d3a2a;color:var(--green);border:1px solid #2d5a40}
+.tag.diff{background:#3a2a1d;color:var(--orange);border:1px solid #5a402d}
+.tag.onlyA{background:#1d2a3a;color:var(--blue);border:1px solid #2d405a}
+.tag.onlyB{background:#33203d;color:var(--purple);border:1px solid #4d3060}
+.note{background:#1d2a24;border-left:3px solid var(--green);border-radius:0 6px 6px 0;padding:10px 14px;font-size:12.5px;margin:12px 0}
+.warn{background:#332a1d;border-left:3px solid var(--yellow);border-radius:0 6px 6px 0;padding:10px 14px;font-size:12.5px;margin:12px 0}
+.warn b{color:var(--yellow)}
+.archrow{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.archcol{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px}
+.archcol h4{text-align:center;font-size:13px;margin-bottom:4px;padding-bottom:8px;border-bottom:1px dashed var(--border)}
+.archcol h4 span{font-size:11px;color:var(--muted);display:block;font-weight:400;margin-top:2px}
+.svgbox{width:100%}
+.legend{display:flex;gap:14px;justify-content:center;font-size:11px;color:var(--muted);margin-top:8px;flex-wrap:wrap}
+.legend i{display:inline-block;width:18px;height:3px;border-radius:2px;margin-right:4px;vertical-align:middle}
+details{background:var(--card2);border:1px solid var(--border);border-radius:8px;margin:10px 0;padding:0}
+details summary{cursor:pointer;padding:10px 14px;font-size:13px;font-weight:600;color:var(--text);list-style:none}
+details summary::before{content:'▸ ';color:var(--blue)}
+details[open] summary::before{content:'▾ '}
+details .body{padding:4px 14px 14px}
+.small{font-size:11.5px;color:var(--muted)}
+.footer{margin-top:30px;padding-top:16px;border-top:1px solid var(--border);color:var(--muted);font-size:11.5px;text-align:center}
+.flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;margin:6px 0}
+.flow .n{background:var(--card2);border:1px solid var(--border);padding:3px 8px;border-radius:5px;white-space:nowrap}
+.flow .a{color:var(--orange);font-weight:700}
+.flow .b{color:var(--blue);font-weight:700}
+</style>
+</head>
+<body>
+<header>
+<div class="wrap">
+<h1>SCR1 实现差异对比报告 <span class="vs">— 本仓库 vs RTL 版</span></h1>
+<div class="sub">
+对比对象 A（<b class="pathB">本仓库</b>）：<code>D:/python/scr1</code> · master @ <code>db21fd2</code> + 未提交工作区修改（23 文件，<b style="color:var(--green)">+904 / −178</b> 行，另含 3 个新增 RTL/TB 文件）<br>
+对比对象 B（<b class="pathA">RTL 版</b>）：<code>D:/rtl/scr1</code> · 分支 <code>feat/itcm-dtcm-single-port</code> @ <code>ebb5e35</code>（riscv isa test macro definition update）<br>
+生成日期：2026-10-22 · 所有差异均经两边源码逐文件核查
+</div>
+<div class="badges">
+<span class="badge bA">A：功能落地路线 — TCM slave 直连 + 内嵌 CFU/MTX + halt/中断扩展</span>
+<span class="badge bB">B：协议正确性路线 — 完整 CV-X-IF 四通道 + 全簇地址外部访问</span>
+</div>
+</div>
+</header>
+
+<div class="wrap">
+<nav id="nav">
+<button data-t="t0" class="on">总览</button>
+<button data-t="t1">外部访问路径</button>
+<button data-t="t2">TCM 内部结构</button>
+<button data-t="t3">XIF 与加速器</button>
+<button data-t="t4">调试与控制（A 独有）</button>
+<button data-t="t5">文件级差异</button>
+<button data-t="t6">验证状态与结论</button>
+</nav>
+
+<!-- ============ Tab 0 总览 ============ -->
+<section id="t0" class="on">
+<h2>总体差异概览</h2>
+<div class="warn"><b>基线重要说明：</b>RTL 版当前检出的是 <code>feat/itcm-dtcm-single-port</code> 分支（ebb5e35），<b>不是</b>此前对比文档 <code>COMPARISON_vs_scr1_sp_tcm_db21fd2.md</code> 所指的 master/db21fd2。该分支不含 mtx/cfu/monitor 等模块（加速器仅存在于 TB 参考实现），是一条"协议正确性优先"的独立演进路线。两仓库同源于 TCM 单口 RAM 拆分（B 扩展与 ITCM/DTCM 拆分两块完全同源）。</div>
+
+<div class="grid3">
+<div class="kpi"><div class="num" style="color:var(--blue)">7</div><div class="lbl">差异域</div></div>
+<div class="kpi"><div class="num" style="color:var(--green)">2</div><div class="lbl">已趋同的修法（_sel_r 锁存 / router 无 restart）</div></div>
+<div class="kpi"><div class="num" style="color:var(--orange)">904</div><div class="lbl">A 工作区新增行数（23 文件）</div></div>
+<div class="kpi"><div class="num" style="color:var(--purple)">4</div><div class="lbl">B 独立验证 TB（ext_ahb / xif / tcm / tcm_stress）</div></div>
+</div>
+
+<h3>核心差异一览</h3>
+<div class="card">
+<table>
+<tr><th style="width:150px">维度</th><th style="width:42%">A · 本仓库</th><th>B · RTL 版（feat 分支）</th></tr>
+<tr><td><b>外部总线接入</b> <span class="tag diff">方案分歧</span></td>
+<td><code>scr1_tcm_ahb_sbr</code> <b>直连 TCM bank</b>：仅 ITCM/DTCM 窗口，在 bank 内与核心竞争（3 路仲裁），不占用 dmem_router / arbiter 资源</td>
+<td><code>scr1_ext_ahb_slv</code> <b>挂 dmem_router</b>：经 3 master 仲裁进全簇地址空间（ITCM/DTCM/timer/外部转发），输出 <code>ext_itcm_wr_o</code> 一致性指示，配套 <code>docs/EXT_AHB_SLAVE.md</code></td></tr>
+<tr><td><b>DMEM 仲裁</b> <span class="tag diff">方案分歧</span></td>
+<td><code>scr1_dmem_arbiter</code>（112 行）：2 master + 事务锁（m0=LSU，m1=内嵌 CFU）</td>
+<td><code>scr1_dmem_arb</code>（214 行）：3 master 轮转 RR（m0=LSU，m1=<code>acc_dmem_*</code> 顶层端口→外部加速器，m2=ext_ahb_slv）</td></tr>
+<tr><td><b>TCM bank 仲裁</b> <span class="tag diff">结构差异</span></td>
+<td><b>3 路</b>（imem / dmem / sbr）：核心固定优先 + urgent 反饿死轮转，slv 独立阈值 <code>SCR1_SLV_MAX_WAIT=8</code></td>
+<td><b>2 路</b>（imem / dmem）：urgent + <code>last_served_d</code> 交替（无 slave 口）</td></tr>
+<tr><td><b>CV-X-IF 协议</b> <span class="tag diff">方案分歧</span></td>
+<td>单通道简化：req/resp 两个 struct，<code>core_ready</code> 硬接 1，无 id / commit_kill</td>
+<td>完整四通道（issue/register/commit/result）：<code>xif_pkg</code> 结构体 + <code>scr1_xif_ports.svh</code> 宏化端口（含 vlog 兼容处理）</td></tr>
+<tr><td><b>加速器落地</b> <span class="tag diff">方案分歧</span></td>
+<td class="yes"><b>可综合 RTL 内嵌</b>：<code>scr1_pipe_cfu.sv</code> / <code>scr1_pipe_cfu_mtx.sv</code>（含本轮 cbase 生效、ST 错误码等修正）</td>
+<td class="part"><b>仅 TB 参考实现</b>：<code>src/tb/xif_counit_ref.sv</code>；硬件侧只预留 <code>acc_dmem_*</code> 顶层端口</td></tr>
+<tr><td><b>外部 halt/resume</b> <span class="tag onlyA">A 独有</span></td>
+<td class="yes"><code>ext_halt_req/ext_resume_req</code>：HDU 内 2FF 同步注入（halt 保持现场 + cpu_rst 重启流程验证 PASS）</td>
+<td class="no">无（仅 JTAG 调试链 halt）</td></tr>
+<tr><td><b>中断线数</b> <span class="tag onlyA">A 扩展</span></td>
+<td class="yes"><code>SCR1_IRQ_VECT_NUM = 128</code>（全位宽参数化自适应）</td>
+<td>16</td></tr>
+</table>
+</div>
+
+<h3>架构拓扑对比（自上而下分层）</h3>
+<div class="archrow">
+<div class="archcol">
+<h4>A · 本仓库<span>tcm_sbr 直连 TCM bank，外部路径不经过总线仲裁器</span></h4>
+<svg class="svgbox" viewBox="0 0 560 560" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="mA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#ffb74d"/></marker>
+<marker id="mB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4fc3f7"/></marker>
+<marker id="mC" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#81c784"/></marker>
+<marker id="mD" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#ba68c8"/></marker>
+</defs>
+<!-- 层背景 -->
+<g opacity="0.35">
+<rect x="30" y="14"  width="500" height="52" rx="8" fill="#20303f"/>
+<rect x="30" y="88"  width="500" height="62" rx="8" fill="#20303f"/>
+<rect x="30" y="172" width="500" height="66" rx="8" fill="#20303f"/>
+<rect x="30" y="260" width="500" height="88" rx="8" fill="#20303f"/>
+<rect x="30" y="368" width="500" height="76" rx="8" fill="#20303f"/>
+<rect x="30" y="464" width="500" height="80" rx="8" fill="#20303f"/>
+</g>
+<text x="40" y="34"  fill="#8496a5" font-size="10" font-family="Consolas">① 外部主机层</text>
+<text x="40" y="108" fill="#8496a5" font-size="10" font-family="Consolas">② 顶层端口层</text>
+<text x="40" y="192" fill="#8496a5" font-size="10" font-family="Consolas">③ 协议转换层</text>
+<text x="40" y="280" fill="#8496a5" font-size="10" font-family="Consolas">④ 仲裁 / 路由层</text>
+<text x="40" y="388" fill="#8496a5" font-size="10" font-family="Consolas">⑤ TCM bank 层（单口 RAM）</text>
+<text x="40" y="484" fill="#8496a5" font-size="10" font-family="Consolas">⑥ 核心侧（对照）</text>
+<!-- L1 外部主机 -->
+<g><rect x="180" y="26" width="200" height="32" rx="7" fill="#3a2a1d" stroke="#ffb74d"/>
+<text x="280" y="46" text-anchor="middle" fill="#ffd54f" font-size="12" font-weight="600">外部 Master（宿主/DMA）</text></g>
+<!-- L2 端口 -->
+<g><rect x="180" y="104" width="200" height="36" rx="7" fill="#243040" stroke="#ffb74d"/>
+<text x="280" y="119" text-anchor="middle" fill="#ffb74d" font-size="11.5" font-family="Consolas">tcm_sbr_h* （AHB slave）</text>
+<text x="280" y="133" text-anchor="middle" fill="#8496a5" font-size="9.5">0x0048_xxxx / 0x0049_xxxx → ERROR</text></g>
+<!-- L3 转换 -->
+<g><rect x="150" y="186" width="260" height="40" rx="7" fill="#243040" stroke="#ffb74d"/>
+<text x="280" y="203" text-anchor="middle" fill="#ffb74d" font-size="11.5" font-family="Consolas">scr1_tcm_ahb_sbr（234 行）</text>
+<text x="280" y="217" text-anchor="middle" fill="#8496a5" font-size="9.5">AHB→memif · FSM IDLE/WAIT/ERR · busy_r 防重锁存</text></g>
+<!-- L4 sbr路由 -->
+<g><rect x="150" y="272" width="260" height="64" rx="7" fill="#1d3a2a" stroke="#81c784"/>
+<text x="280" y="291" text-anchor="middle" fill="#81c784" font-size="11.5" font-family="Consolas">scr1_tcm.sbr_* 路由</text>
+<text x="280" y="306" text-anchor="middle" fill="#c8e6c9" font-size="9.5">六路 _sel_r 锁存（imem/dmem/sbr × I/D）</text>
+<text x="280" y="321" text-anchor="middle" fill="#8496a5" font-size="9.5">复位域 rst_n_sync（加载期即响应）</text></g>
+<!-- L5 banks -->
+<g><rect x="60" y="378" width="180" height="56" rx="7" fill="#243040" stroke="#4fc3f7"/>
+<text x="150" y="395" text-anchor="middle" fill="#4fc3f7" font-size="11" font-family="Consolas">ITCM bank（297 行）</text>
+<text x="150" y="410" text-anchor="middle" fill="#c8e6c9" font-size="9.5">3 路仲裁 imem&gt;dmem&gt;slv</text>
+<text x="150" y="423" text-anchor="middle" fill="#8496a5" font-size="9.5">urgent 轮转 · slv 阈值 8</text></g>
+<g><rect x="320" y="378" width="180" height="56" rx="7" fill="#243040" stroke="#4fc3f7"/>
+<text x="410" y="395" text-anchor="middle" fill="#4fc3f7" font-size="11" font-family="Consolas">DTCM bank（297 行）</text>
+<text x="410" y="410" text-anchor="middle" fill="#c8e6c9" font-size="9.5">3 路仲裁 dmem&gt;imem&gt;slv</text>
+<text x="410" y="423" text-anchor="middle" fill="#8496a5" font-size="9.5">urgent 轮转 · slv 阈值 8</text></g>
+<!-- L6 core -->
+<g><rect x="60" y="476" width="180" height="56" rx="7" fill="#1d2a3a" stroke="#4fc3f7"/>
+<text x="150" y="492" text-anchor="middle" fill="#4fc3f7" font-size="11" font-family="Consolas">IFU（取指）</text>
+<text x="150" y="507" text-anchor="middle" fill="#8496a5" font-size="9.5">imem_router → i_imem_req</text>
+<text x="150" y="520" text-anchor="middle" fill="#8496a5" font-size="9.5">（router 无 restart）</text></g>
+<g><rect x="320" y="476" width="180" height="56" rx="7" fill="#1d2a3a" stroke="#81c784"/>
+<text x="410" y="492" text-anchor="middle" fill="#81c784" font-size="11" font-family="Consolas">LSU + CFU/MTX（内嵌）</text>
+<text x="410" y="507" text-anchor="middle" fill="#8496a5" font-size="9.5">dmem_arbiter(2m锁) → dmem_router</text>
+<text x="410" y="520" text-anchor="middle" fill="#8496a5" font-size="9.5">→ TCM / timer / 外部</text></g>
+<!-- 连线：贝塞尔 -->
+<path d="M280,58 C280,75 280,85 280,104" stroke="#ffb74d" fill="none" stroke-width="2" marker-end="url(#mA)"/>
+<path d="M280,140 C280,158 280,166 280,186" stroke="#ffb74d" fill="none" stroke-width="2" marker-end="url(#mA)"/>
+<path d="M280,226 C280,246 280,254 280,272" stroke="#ffb74d" fill="none" stroke-width="2" marker-end="url(#mA)"/>
+<path d="M245,336 C200,352 165,362 152,378" stroke="#ffb74d" fill="none" stroke-width="2" marker-end="url(#mA)"/>
+<path d="M315,336 C360,352 398,362 408,378" stroke="#ffb74d" fill="none" stroke-width="2" marker-end="url(#mA)"/>
+<path d="M150,532 C130,545 90,540 70,510 C48,478 62,448 84,434" stroke="#4fc3f7" fill="none" stroke-width="1.6" marker-end="url(#mB)"/>
+<path d="M410,532 C438,548 492,538 512,505 C532,472 516,444 496,430" stroke="#81c784" fill="none" stroke-width="1.6" marker-end="url(#mC)"/>
+</svg>
+<div class="legend"><span><i style="background:#ffb74d"></i>外部加载路径（不占核心总线）</span><span><i style="background:#4fc3f7"></i>取指路径</span><span><i style="background:#81c784"></i>数据路径</span></div>
+</div>
+
+<div class="archcol">
+<h4>B · RTL 版<span>ext_ahb_slv 挂 dmem_router，覆盖全簇地址空间</span></h4>
+<svg class="svgbox" viewBox="0 0 560 560" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="nA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#ffb74d"/></marker>
+<marker id="nB" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4fc3f7"/></marker>
+<marker id="nC" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#81c784"/></marker>
+<marker id="nD" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#ba68c8"/></marker>
+</defs>
+<g opacity="0.35">
+<rect x="30" y="14"  width="500" height="52" rx="8" fill="#20303f"/>
+<rect x="30" y="88"  width="500" height="62" rx="8" fill="#20303f"/>
+<rect x="30" y="172" width="500" height="66" rx="8" fill="#20303f"/>
+<rect x="30" y="260" width="500" height="88" rx="8" fill="#20303f"/>
+<rect x="30" y="368" width="500" height="76" rx="8" fill="#20303f"/>
+<rect x="30" y="464" width="500" height="80" rx="8" fill="#20303f"/>
+</g>
+<text x="40" y="34"  fill="#8496a5" font-size="10" font-family="Consolas">① 外部主机层</text>
+<text x="40" y="108" fill="#8496a5" font-size="10" font-family="Consolas">② 顶层端口层</text>
+<text x="40" y="192" fill="#8496a5" font-size="10" font-family="Consolas">③ 协议转换层</text>
+<text x="40" y="280" fill="#8496a5" font-size="10" font-family="Consolas">④ 仲裁 / 路由层</text>
+<text x="40" y="388" fill="#8496a5" font-size="10" font-family="Consolas">⑤ TCM bank 层（单口 RAM）</text>
+<text x="40" y="484" fill="#8496a5" font-size="10" font-family="Consolas">⑥ 核心侧（对照）</text>
+<!-- L1 -->
+<g><rect x="170" y="26" width="220" height="32" rx="7" fill="#3a2a1d" stroke="#ffb74d"/>
+<text x="280" y="46" text-anchor="middle" fill="#ffd54f" font-size="12" font-weight="600">外部 Master（宿主/DMA）</text></g>
+<!-- L2 -->
+<g><rect x="170" y="104" width="220" height="36" rx="7" fill="#243040" stroke="#ffb74d"/>
+<text x="280" y="119" text-anchor="middle" fill="#ffb74d" font-size="11.5" font-family="Consolas">ext_h* （AHB-Lite slave）</text>
+<text x="280" y="133" text-anchor="middle" fill="#8496a5" font-size="9.5">SCR1_EXT_AHB_EN 宏</text></g>
+<!-- L3 -->
+<g><rect x="140" y="186" width="280" height="40" rx="7" fill="#243040" stroke="#ffb74d"/>
+<text x="280" y="203" text-anchor="middle" fill="#ffb74d" font-size="11.5" font-family="Consolas">scr1_ext_ahb_slv（371 行）</text>
+<text x="280" y="217" text-anchor="middle" fill="#8496a5" font-size="9.5">AHB→memif · 地址流水 3clk/beat · ext_itcm_wr_o</text></g>
+<!-- L4 arb + router -->
+<g><rect x="100" y="272" width="360" height="64" rx="7" fill="#1d3a2a" stroke="#81c784"/>
+<text x="280" y="290" text-anchor="middle" fill="#81c784" font-size="11.5" font-family="Consolas">scr1_dmem_arb（214 行，3 master RR）</text>
+<text x="175" y="308" text-anchor="middle" fill="#c8e6c9" font-size="9.5">m0=LSU</text>
+<text x="280" y="308" text-anchor="middle" fill="#ba68c8" font-size="9.5">m1=acc_dmem_*(顶层)</text>
+<text x="385" y="308" text-anchor="middle" fill="#ffb74d" font-size="9.5">m2=ext_ahb_slv</text>
+<text x="280" y="326" text-anchor="middle" fill="#8496a5" font-size="9.5">↓ scr1_dmem_router：port0 外部转发 · port1 TCM · port2 timer</text></g>
+<!-- L5 banks -->
+<g><rect x="60" y="378" width="180" height="56" rx="7" fill="#243040" stroke="#4fc3f7"/>
+<text x="150" y="395" text-anchor="middle" fill="#4fc3f7" font-size="11" font-family="Consolas">ITCM bank（219 行）</text>
+<text x="150" y="410" text-anchor="middle" fill="#c8e6c9" font-size="9.5">2 路仲裁 imem vs dmem</text>
+<text x="150" y="423" text-anchor="middle" fill="#8496a5" font-size="9.5">urgent 交替（无 slave 口）</text></g>
+<g><rect x="320" y="378" width="180" height="56" rx="7" fill="#243040" stroke="#4fc3f7"/>
+<text x="410" y="395" text-anchor="middle" fill="#4fc3f7" font-size="11" font-family="Consolas">DTCM bank（219 行）</text>
+<text x="410" y="410" text-anchor="middle" fill="#c8e6c9" font-size="9.5">2 路仲裁 dmem vs imem</text>
+<text x="410" y="423" text-anchor="middle" fill="#8496a5" font-size="9.5">四路 _sel_r 锁存</text></g>
+<!-- L6 -->
+<g><rect x="60" y="476" width="180" height="56" rx="7" fill="#1d2a3a" stroke="#4fc3f7"/>
+<text x="150" y="492" text-anchor="middle" fill="#4fc3f7" font-size="11" font-family="Consolas">IFU（取指）</text>
+<text x="150" y="507" text-anchor="middle" fill="#8496a5" font-size="9.5">imem_router（无 restart）</text>
+<text x="150" y="520" text-anchor="middle" fill="#8496a5" font-size="9.5">imem_addr_r 已删 · _sel_r 锁存</text></g>
+<g><rect x="320" y="476" width="180" height="56" rx="7" fill="#33203d" stroke="#ba68c8"/>
+<text x="410" y="492" text-anchor="middle" fill="#ba68c8" font-size="11" font-family="Consolas">核外 CFU（xif_counit_ref）</text>
+<text x="410" y="507" text-anchor="middle" fill="#8496a5" font-size="9.5">XIF 四通道宏端口 + acc_dmem</text>
+<text x="410" y="520" text-anchor="middle" fill="#e0c0e8" font-size="9.5">scr1_pipe_xif（EXU 内，282 行）</text></g>
+<!-- 连线 -->
+<path d="M280,58 C280,75 280,85 280,104" stroke="#ffb74d" fill="none" stroke-width="2" marker-end="url(#nA)"/>
+<path d="M280,140 C280,158 280,166 280,186" stroke="#ffb74d" fill="none" stroke-width="2" marker-end="url(#nA)"/>
+<path d="M280,226 C280,246 280,254 280,272" stroke="#ffb74d" fill="none" stroke-width="2" marker-end="url(#nA)"/>
+<path d="M240,336 C200,352 168,362 155,378" stroke="#ffb74d" fill="none" stroke-width="2" marker-end="url(#nA)"/>
+<path d="M320,336 C360,352 396,362 405,378" stroke="#81c784" fill="none" stroke-width="1.6" marker-end="url(#nC)"/>
+<path d="M150,532 C120,548 70,540 55,505 C42,475 58,448 82,434" stroke="#4fc3f7" fill="none" stroke-width="1.6" marker-end="url(#nB)"/>
+<path d="M410,532 C442,549 500,538 515,505 C530,474 518,446 498,434" stroke="#ba68c8" fill="none" stroke-width="1.6" stroke-dasharray="5,3" marker-end="url(#nD)"/>
+<path d="M340,504 C330,470 350,440 365,434" stroke="#ba68c8" fill="none" stroke-width="1.4" stroke-dasharray="4,3" marker-end="url(#nD)"/>
+</svg>
+<div class="legend"><span><i style="background:#ffb74d"></i>外部访问路径（经 arb/router）</span><span><i style="background:#4fc3f7"></i>取指路径</span><span><i style="background:#81c784"></i>数据路径</span><span><i style="background:#ba68c8"></i>XIF / 核外 CFU</span></div>
+</div>
+</div>
+</section>
+
+<!-- ============ Tab 1 外部访问 ============ -->
+<section id="t1">
+<h2>差异域 ① — 外部访问 TCM 的路径</h2>
+<div class="card">
+<table>
+<tr><th style="width:150px">属性</th><th>A · tcm_ahb_sbr（直连 bank）</th><th>B · ext_ahb_slv（挂 router）</th></tr>
+<tr><td>地址范围</td><td>仅 ITCM/DTCM 窗口（<code>0x0048_xxxx / 0x0049_xxxx</code>），其余返回两拍 ERROR</td><td><b>全簇地址空间</b>：ITCM/DTCM/timer，未命中转发到核的 AHB/AXI 主口（可访问外部外设）</td></tr>
+<tr><td>竞争位置</td><td>TCM bank 内 3 路仲裁（slv 最低优先 + 8 拍反饿死），<b>不占</b> dmem_router / arbiter</td><td>dmem_arb m2（与 LSU、acc 三方 RR），占用核心数据总线资源</td></tr>
+<tr><td>复位域</td><td><code>rst_n_sync</code>：cpu 复位保持期间即可加载（复位期天然独占）</td><td><code>core_rst_n_local</code></td></tr>
+<tr><td>一致性辅助</td><td>无（依赖 fence.i / cpu_rst 流程）</td><td class="yes"><code>ext_itcm_wr_o</code>：外部写 ITCM 指示信号（供软件一致性处理）</td></tr>
+<tr><td>传输时序</td><td>SINGLE 逐笔，仲裁等待态扩展 <code>HREADYOUT</code></td><td>地址流水（DONE 态收下一地址），3 clk/beat，读路径可 2 等待态</td></tr>
+<tr><td>文档 / TB</td><td>BFM 自动检测场景（<code>scr1_tcm_sbr_bfm.sv</code>，331 行）</td><td class="yes"><code>docs/EXT_AHB_SLAVE.md</code> + 独立 <code>tb_scr1_ext_ahb.sv</code>（DUT 链同顶层）</td></tr>
+</table>
+</div>
+<details open><summary>方案取舍分析</summary><div class="body">
+<p><b>选 A（直连 bank）当：</b>外部 master 只需要加载/校验 TCM（程序装载器场景）——路径最短、不抢核心总线、复位期加载零竞争；代价是访问范围受限、无外部地址转发。</p>
+<p><b>选 B（挂 router）当：</b>外部主机需要操作 timer、访问核外外设或做全簇调试（如另一个 cluster 互访）——通用性强；代价是与 LSU 共享 dmem 仲裁（3 master RR），外部流量大会拖慢核心 load/store。</p>
+<p class="small">两者并不互斥：B 的 ext_ahb_slv 可与 A 的 bank 级 sbr 并存（router 级 + bank 级双层入口），但需处理两条路径同时写 TCM 的仲裁归属——当前两边各自只有一条。</p>
+</div></details>
+<div class="codehead"><span class="fname">scr1_ext_ahb_slv.sv（B，节选）</span><span class="src">地址解码不下沉复制 · 交给 dmem_router</span></div>
+<div class="prewrap"><pre><code>/// @brief      AHB-Lite SLAVE port - external bus master access to the cluster
+///             ITCM / DTCM / timer  - by decoding the address downstream,
+///                                    in scr1_dmem_router
+///             anything else        - forwarded out of the core's own
+///                                    AHB/AXI master port
+///             The extra ISSUE state is not a limitation but a requirement: in
+///             AHB the write data of a transfer only appears one cycle after its
+///             address, so a write can never be issued in the address phase.</code></pre></div>
+<div class="codehead"><span class="fname">scr1_tcm_ahb_sbr.sv（A，节选）</span><span class="src">地址窗口判定 + busy_r 完成拍防重锁存</span></div>
+<div class="prewrap"><pre><code><span class="cm">// Address decode: combined ITCM+DTCM window (bank split is done in scr1_tcm)</span>
+<span class="kw">assign</span> tcm_hit = ((haddr &amp; SCR1_TCM_ADDR_MASK) == SCR1_TCM_ADDR_PATTERN);
+<span class="cm">// busy_r masks the completion cycle: HREADYOUT has just risen but the</span>
+<span class="cm">// master still drives the OLD HTRANS value - sampling here would</span>
+<span class="cm">// duplicate the just-finished transfer with already-invalid HWDATA.</span>
+<span class="kw">assign</span> addr_phase = (fsm == SCR1_SBR_FSM_IDLE) &amp; ~busy_r
+                    &amp; (htrans == SCR1_HTRANS_NONSEQ) &amp; hreadyin;</code></pre></div>
+</section>
+
+<!-- ============ Tab 2 TCM ============ -->
+<section id="t2">
+<h2>差异域 ② — TCM 内部结构</h2>
+<div class="note"><b>趋同部分：</b>两边均已完成"单口 RAM 拆分 ITCM/DTCM + bank 归属 <code>_sel_r</code> 锁存 + router 删除 restart"修法（A 于 2026-10-22 按对比文档修正后与 B 一致；协议压测台 158+153 事务 0 errors）。以下为结构差异。</div>
+<div class="card">
+<table>
+<tr><th style="width:170px">项</th><th>A · 本仓库</th><th>B · RTL 版</th></tr>
+<tr><td>bank 仲裁路数</td><td><b>3 路</b> imem/dmem/slv（为 slave 口新增）</td><td><b>2 路</b> imem/dmem</td></tr>
+<tr><td>反饿死机制</td><td>urgent 集合内 <code>last_served[1:0]</code> 三方轮转；slv 独立阈值 <code>SCR1_SLV_MAX_WAIT=8</code>（核心 2）</td><td>urgent 双方 <code>last_served_d</code> 交替，阈值统一 <code>SCR1_MAX_WAIT=2</code></td></tr>
+<tr><td>merge 锁存路数</td><td>六路（imem/dmem/sbr × I/D），sbr 也锁存</td><td>四路（imem/dmem × I/D）</td></tr>
+<tr><td>模块规模</td><td>itcm/dtcm 各 <b>297 行</b> · tcm 281 行 · sbr 桥 234 行</td><td>itcm/dtcm 各 <b>219 行</b> · tcm 194 行</td></tr>
+<tr><td>协议压测台</td><td><code>tools/tb/tb_scr1_tcm.sv</code>（719 行，0 errors）</td><td><code>tools/tb/tb_scr1_tcm.sv</code> + <code>tb_scr1_tcm_stress.sv</code>（多一个 stress 台）</td></tr>
+</table>
+</div>
+<div class="codehead"><span class="fname">scr1_tcm.sv — A 的六路锁存（节选）</span><span class="src">req_ack 为组合当拍信号，锁存精确</span></div>
+<div class="prewrap"><pre><code><span class="kw">always_ff</span> <span class="kw">@</span>(<span class="kw">posedge</span> clk, <span class="kw">negedge</span> rst_n) <span class="kw">begin</span>
+    <span class="kw">if</span> (~rst_n) <span class="kw">begin</span>
+        itcm_imem_sel_r &lt;= <span class="nm">1'b0</span>;  dtcm_imem_sel_r &lt;= <span class="nm">1'b0</span>;
+        itcm_dmem_sel_r &lt;= <span class="nm">1'b0</span>;  dtcm_dmem_sel_r &lt;= <span class="nm">1'b0</span>;
+        itcm_sbr_sel_r  &lt;= <span class="nm">1'b0</span>;  dtcm_sbr_sel_r  &lt;= <span class="nm">1'b0</span>;
+    <span class="kw">end</span> <span class="kw">else</span> <span class="kw">begin</span>
+        <span class="kw">if</span> (imem_req &amp; imem_req_ack) <span class="kw">begin</span>
+            itcm_imem_sel_r &lt;= itcm_imem_sel;   <span class="cm">// ← B 只有这两对</span>
+            dtcm_imem_sel_r &lt;= dtcm_imem_sel;
+        <span class="kw">end</span>
+        <span class="kw">if</span> (dmem_req &amp; dmem_req_ack) <span class="kw">begin</span>
+            itcm_dmem_sel_r &lt;= itcm_dmem_sel;
+            dtcm_dmem_sel_r &lt;= dtcm_dmem_sel;
+        <span class="kw">end</span>
+        <span class="kw">if</span> (sbr_req &amp; sbr_req_ack) <span class="kw">begin</span>      <span class="cm">// ← A 新增：slave 路径同样锁存</span>
+            itcm_sbr_sel_r  &lt;= itcm_sbr_sel;
+            dtcm_sbr_sel_r  &lt;= dtcm_sbr_sel;
+        <span class="kw">end</span>
+    <span class="kw">end</span>
+<span class="kw">end</span>
+
+<span class="kw">assign</span> imem_rdata = itcm_imem_sel_r ? i_imem_rdata : d_imem_rdata;  <span class="cm">// merge 全用锁存值</span></code></pre></div>
+<div class="codehead"><span class="fname">scr1_itcm.sv — A 的三方 urgent 轮转（节选）</span><span class="src">slv 最低优先 + 独立阈值</span></div>
+<div class="prewrap"><pre><code><span class="kw">assign</span> imem_urgent = imem_req &amp; (imem_wait_cnt &gt;= SCR1_MAX_WAIT[<span class="nm">3:0</span>]);
+<span class="kw">assign</span> slv_urgent  = slv_req  &amp; (slv_wait_cnt  &gt;= SCR1_SLV_MAX_WAIT[<span class="nm">3:0</span>]);  <span class="cm">// 8 拍</span>
+<span class="cm">// 无 urgent：核心固定优先（ITCM: imem &gt; dmem &gt; slv），slave 最后</span>
+<span class="cm">// 有 urgent：按 last_served[1:0] 在 urgent 集合内轮转，防 slave 饿死</span></code></pre></div>
+</section>
+
+<!-- ============ Tab 3 XIF ============ -->
+<section id="t3">
+<h2>差异域 ③ — CV-X-IF 协议与加速器落地</h2>
+<div class="card">
+<table>
+<tr><th style="width:150px">项</th><th>A · 本仓库</th><th>B · RTL 版</th></tr>
+<tr><td>协议通道</td><td class="part">单通道简化（issue 请求 + result 响应两个 struct）</td><td class="yes">完整四通道：issue（req/resp）+ register + commit（含 kill）+ result</td></tr>
+<tr><td>结构体</td><td><code>type_scr1_cvxif_req_s / resp_s</code>（自定义，无 id/hartid）</td><td><code>xif_pkg::x_issue_req_t / x_register_t / x_commit_t …</code>（对齐规范）</td></tr>
+<tr><td>反压</td><td class="no"><code>core_ready</code> 在 EXU 硬接 <code>1'b1</code>（无反压）</td><td class="yes">issue_ready / result_ready 双向握手</td></tr>
+<tr><td>端口暴露</td><td>EXU 内 struct 信号直连内嵌 CFU</td><td class="yes"><code>scr1_xif_ports.svh</code> 宏化端口（含 vlog-13038 兼容处理），CFU 在核外可换</td></tr>
+<tr><td>核内接口模块</td><td>—（EXU 直接驱动）</td><td><code>scr1_pipe_xif.sv</code>（282 行，EXU 内实例）</td></tr>
+<tr><td>CFU 实现</td><td class="yes"><b>可综合 RTL</b>：<code>scr1_pipe_cfu.sv</code> + <code>scr1_pipe_cfu_mtx.sv</code>（4×4 matmul，含 posted 写队列）内嵌 top</td><td class="part">仅 TB 参考 <code>xif_counit_ref.sv</code>；硬件侧预留 <code>acc_dmem_*</code> 顶层端口（外部加速器 DMA 直入 dmem_arb m1）</td></tr>
+<tr><td>协议监控</td><td class="yes"><code>scr1_cvxif_monitor.sv</code>：4 条 property（含 forward-progress 2048 拍）</td><td class="no">无 monitor；有 <code>tb_scr1_pipe_xif.sv</code> 协议 TB</td></tr>
+</table>
+</div>
+<div class="codehead"><span class="fname">scr1_xif_ports.svh（B，节选）— 宏化四通道端口</span><span class="src">vlog 兼容的续行宏写法</span></div>
+<div class="prewrap"><pre><code><span class="mac">,output</span>  <span class="kw">logic</span>                               core2xif_issue_valid_o \
+<span class="mac">,input</span>  <span class="kw">logic</span>                               xif2core_issue_ready_i \
+<span class="mac">,output</span>  <span class="ty">scr1_xif_pkg::x_issue_req_t</span>         core2xif_issue_req_o \
+<span class="mac">,input</span>  <span class="ty">scr1_xif_pkg::x_issue_resp_t</span>        xif2core_issue_resp_i \
+<span class="mac">,output</span>  <span class="kw">logic</span>                               core2xif_register_valid_o \
+<span class="mac">,output</span>  <span class="ty">scr1_xif_pkg::x_register_t</span>          core2xif_register_o \
+<span class="mac">,output</span>  <span class="kw">logic</span>                               core2xif_commit_valid_o \
+<span class="mac">,output</span>  <span class="ty">scr1_xif_pkg::x_commit_t</span>            core2xif_commit_o \
+<span class="mac">,input</span>  <span class="kw">logic</span>                               xif2core_result_valid_i \</code></pre></div>
+<div class="codehead"><span class="fname">scr1_riscv_isa_decoding.svh（A，节选）— 单通道 struct</span><span class="src">core_ready 实际恒 1</span></div>
+<div class="prewrap"><pre><code><span class="kw">typedef struct packed</span> {
+    <span class="kw">logic</span>                   req_valid;
+    <span class="kw">logic</span> [<span class="mac">`SCR1_XLEN</span>-<span class="nm">1</span>:<span class="nm">0</span>]  req_instr;
+    <span class="kw">logic</span> [<span class="mac">`SCR1_XLEN</span>-<span class="nm">1</span>:<span class="nm">0</span>]  req_rs1;      <span class="cm">// ← B 为 x_issue_req_t（含 id/hartid/mode）</span>
+    <span class="kw">logic</span>                   req_rs1_valid;
+    <span class="kw">logic</span> [<span class="mac">`SCR1_XLEN</span>-<span class="nm">1</span>:<span class="nm">0</span>]  req_rs2;
+    <span class="kw">logic</span>                   req_rs2_valid;
+    <span class="kw">logic</span> [<span class="nm">1:0</span>]             req_mode;
+    <span class="kw">logic</span>                   core_ready;   <span class="cm">// EXU: = 1'b1（无反压）</span>
+} <span class="ty">type_scr1_cvxif_req_s</span>;</code></pre></div>
+<div class="warn"><b>定位差异本质：</b>B 把"可综合加速器"留白（TB 参考实现 + 顶层端口），换取<b>标准 IP 边界</b>——第三方 CFU 免改核接入；A 把 CFU/MTX 落成<b>可综合 RTL</b> 内嵌，但接口是私有握手，换 CFU 需改 top。对应此前对比文档结论："拓扑上 B 对，交付上 A 全"——B 分支正是按该结论演进的方向。</div>
+</section>
+
+<!-- ============ Tab 4 调试控制 ============ -->
+<section id="t4">
+<h2>差异域 ④ — 调试与控制扩展（A 独有）</h2>
+<div class="grid2">
+<div class="card">
+<h3>外部 halt / resume（scr1_pipe_hdu.sv，A 新增 51 行）</h3>
+<div class="flow"><span class="n">顶层 <span class="b">ext_halt_req</span>（异步电平）</span>→<span class="n">2FF 同步器</span>→<span class="n">HDU 注入 hart_halt_req / dm_run_req / hart_resume_req 三点</span>→<span class="n">halt 保持现场</span></div>
+<ul style="margin:8px 0 0 18px;font-size:12.5px">
+<li>halt FSM 不受 <code>clk_en</code> 门控 → 无 debug 会话即可 halt</li> 
+<li>halt 窗口核心零总线访问 → 与 TCM slave 加载天然配合</li>
+<li>resume 无 DM 会话不工作（EXU 恢复握手缺失，已知限制）；推荐 halt→加载→<b>cpu_rst 重启</b>，已验证 PASS</li>
+</ul>
+</div>
+<div class="card">
+<h3>128 线中断（scr1_ipic.svh）</h3>
+<div class="flow"><span class="n">16</span>→<span class="n"><span class="b">128</span>（SCR1_IRQ_VECT_NUM）</span>→<span class="n">线宽/LN 字段/顶层端口全参数化自适应</span></div>
+<ul style="margin:8px 0 0 18px;font-size:12.5px">
+<li>约束：2 的幂；编码上限 2^20；工程建议 ≤256</li>
+<li>isr_sample 在 128 线配置下回归 PASS</li>
+<li>B 保持 16 线</li>
+</ul>
+</div>
+</div>
+<div class="card">
+<h3>mtx 修正清单（本轮按对比文档实施，B 分支无此模块）</h3>
+<table>
+<tr><th>修正</th><th>修法</th></tr>
+<tr><td><code>cbase_ff</code> 死配置</td><td><code>post_base &lt;= cbase_ff</code>——<code>mcfg_cbase</code> 真正生效（原写不读，C 基址实际取自 stc 操作数）</td></tr>
+<tr><td>写错误码</td><td>后台 posted 写错误报 <code>ST_ACCESS_FAULT</code>（原统一 LD）</td></tr>
+<tr><td>EXU 异常路径</td><td><code>cfu_rdy = ~resp_exc &amp; (resp_valid | cfu_timeout)</code>——异常不再被超时强放丢弃</td></tr>
+<tr><td>装饰参数</td><td>删除从未引用的 <code>MAX_OUTSTANDING / MAC_PARALLEL</code></td></tr>
+<tr><td>msk 保留编码</td><td>仅接受 <code>rs1[1]==0</code>（原 2'b10 被静默接受且无功能）</td></tr>
+<tr><td>monitor</td><td>新增 <code>p_forward_progress</code>（2048 拍响应窗口，捕获 CFU 死锁）</td></tr>
+</table>
+</div>
+</section>
+
+<!-- ============ Tab 5 文件差异 ============ -->
+<section id="t5">
+<h2>差异域 ⑤ — 文件级对照</h2>
+<div class="grid2">
+<div class="card">
+<h3>src/top/ 对照</h3>
+<table>
+<tr><th>模块</th><th>A</th><th>B</th></tr>
+<tr><td>scr1_itcm / scr1_dtcm</td><td>297 行（3 路仲裁）</td><td>219 行（2 路仲裁）</td></tr>
+<tr><td>scr1_tcm</td><td>281 行（六路锁存+sbr 路由）</td><td>194 行（四路锁存）</td></tr>
+<tr><td>外部访问桥</td><td><code>scr1_tcm_ahb_slv.sv</code> 234 行 <span class="tag onlyA">A独有</span></td><td><code>scr1_ext_ahb_slv.sv</code> 371 行 <span class="tag onlyB">B独有</span></td></tr>
+<tr><td>dmem 仲裁</td><td><code>scr1_dmem_arbiter.sv</code> 112 行（2m+锁）<span class="tag onlyA">A独有</span></td><td><code>scr1_dmem_arb.sv</code> 214 行（3m RR）<span class="tag onlyB">B独有</span></td></tr>
+<tr><td>routers</td><td colspan="2" class="yes">均无 restart（趋同，A 于本轮对齐）</td></tr>
+</table>
+</div>
+<div class="card">
+<h3>src/core/pipeline/ 对照（core.files 差集）</h3>
+<table>
+<tr><th>A 独有</th><th>B 独有</th></tr>
+<tr><td><code>scr1_pipe_cfu.sv</code></td><td><code>scr1_pipe_xif.sv</code>（282 行）</td></tr>
+<tr><td><code>scr1_pipe_cfu_mtx.sv</code></td><td><code>includes/scr1_xif_pkg.sv(h)</code></td></tr>
+<tr><td><code>scr1_cvxif_monitor.sv</code></td><td>—</td></tr>
+<tr><td><code>top/scr1_dmem_arbiter.sv</code>（files 内）</td><td>—</td></tr>
+</table>
+</div>
+</div>
+<div class="card">
+<h3>验证资产对照</h3>
+<table>
+<tr><th>类别</th><th>A · 本仓库</th><th>B · RTL 版</th></tr>
+<tr><td>tools/tb 独立 TB</td><td><code>tb_scr1_tcm.sv</code>（协议压测台，0 errors）</td><td class="yes">4 个：<code>tb_scr1_ext_ahb</code> / <code>tb_scr1_pipe_xif</code> / <code>tb_scr1_tcm</code> / <code>tb_scr1_tcm_stress</code></td></tr>
+<tr><td>集成 BFM</td><td class="yes"><code>scr1_tcm_sbr_bfm.sv</code>（331 行，测试名自动检测）+ <code>scr1_ext_halt_tb.sv</code>（77 行，plusarg 启用）</td><td>—</td></tr>
+<tr><td>测试程序</td><td class="yes"><code>sim/tests/tcm_sbr/</code>（mailbox 场景 + image 加载模式）+ mtx_run_cfg 3 用例（待既有 IFU 问题解决后运行）</td><td>riscv-arch 测试套接入（ebb5e35 提交主题）</td></tr>
+<tr><td>lint / 脚本工具</td><td>run_regression.sh（本轮已可移植化）</td><td class="yes"><code>lint_matrix.py</code>（RVM×RVB×FAST_MUL 矩阵）+ <code>gen_bitmanip_test.py</code> + <code>mdu_clmul_model.py</code></td></tr>
+</table>
+</div>
+</section>
+
+<!-- ============ Tab 6 验证与结论 ============ -->
+<section id="t6">
+<h2>差异域 ⑥⑦ — 验证状态与结论</h2>
+<div class="card">
+<h3>A · 本仓库当前验证矩阵（2026-10-22）</h3>
+<table>
+<tr><th>验证项</th><th>结果</th><th>说明</th></tr>
+<tr><td>AXI 回归（hello / bitmanip / isr_sample / tcm_sbr）</td><td class="yes">4/4 PASS</td><td>isr_sample 在 128 线 IPIC 下通过</td></tr>
+<tr><td>tcm_sbr 加载模式（<code>+tcm_sbr_load=image.hex</code>）</td><td class="yes">PASS</td><td>复位加载 + 读回校验 + 运行中 mailbox 写入</td></tr>
+<tr><td>ext_halt 场景（halt 保持 → cpu_rst 重启）</td><td class="yes">PASS</td><td>ext resume 为已知限制</td></tr>
+<tr><td>TCM 协议压测台</td><td class="yes">0 errors</td><td>158 imem + 153 dmem 事务</td></tr>
+<tr><td>cvxif / mtx 端到端</td><td class="part">阻塞</td><td>受<b>既有</b> IFU 取指错位问题（HEAD 原生，md5 相同 hex 在纯净基线同样 FAIL）——与本轮所有修正无关</td></tr>
+<tr><td>AHB 总线 tb</td><td class="part">预存 X 问题</td><td>基线 hello 即 TIMEOUT（非本轮引入），RTL 编译 0 错误</td></tr>
+</table>
+<p class="small" style="margin-top:6px">B 侧验证未在本次执行（其 4 个独立 TB + riscv-arch 套件为其自有资产）。</p>
+</div>
+<div class="card">
+<h3>结论：两条互补的演进路线</h3>
+<table>
+<tr><th style="width:120px">维度</th><th>优势方</th><th>依据</th></tr>
+<tr><td>外部访问通用性</td><td class="yes">B</td><td>全簇地址 + 地址流水 + ext_itcm_wr_o + 专属文档/TB</td></tr>
+<tr><td>外部访问对核心的隔离度</td><td class="yes">A</td><td>直连 bank 不占 dmem 总线，复位期零竞争加载</td></tr>
+<tr><td>XIF 标准 IP 边界</td><td class="yes">B</td><td>四通道 + xif_pkg + 宏化端口，第三方 CFU 免改核</td></tr>
+<tr><td>加速器可综合性</td><td class="yes">A</td><td>cfu_mtx 落 RTL（B 仅 TB 参考）</td></tr>
+<tr><td>调试/控制扩展</td><td class="yes">A</td><td>ext halt + 128 线中断 + monitor</td></tr>
+<tr><td>验证工程化</td><td class="part">各有</td><td>A：集成 BFM + 协议压测台；B：独立 TB 矩阵 + lint 矩阵 + arch 套件</td></tr>
+</table>
+<div class="note" style="margin-top:10px"><b>融合建议（按优先级）：</b>① P0 — 移植 B 的 <code>ext_ahb_slv</code> 思路与 <code>acc_dmem_*</code> 顶层端口到 A（与现有 bank 级 sbr 分层共存）；② P0 — 移植 B 的四通道 XIF 替换 A 的私有握手（保 A 的 cfu_mtx 作为首个 CFU 实例）；③ P1 — 借鉴 B 的 lint_matrix.py 把回归扩到 RVM×RVB×FAST_MUL 矩阵；④ P1 — 引入 B 的 tcm_stress 压测台；⑤ 前置 — 先解决 A 的 IFU 取指错位（可对照 B 分支 a0679e8 的 auipc-skip 修法），否则 cvxif/mtx 无法端到端验证。</div>
+</div>
+</section>
+
+<div class="footer">
+数据来源：两仓库源码逐文件核查（git diff / grep / wc）· 生成于 2026-10-22 · 仅供内部对比参考
+</div>
+</div>
+
+<script>
+// Tab 切换
+const nav=document.getElementById('nav');
+nav.addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b)return;
+  nav.querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('on'));
+  document.getElementById(b.dataset.t).classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+// SystemVerilog 简易高亮
+function hl(pre){
+  let s=pre.innerHTML;
+  s=s.replace(/&amp;/g,'\x01').replace(/&lt;/g,'\x02').replace(/&gt;/g,'\x03');
+  const kw=/(always_ff|always_comb|always|module|endmodule|assign|typedef|struct|packed|logic|input|output|parameter|localparam|begin|end|if|else|case|endcase|for|posedge|negedge|enum|bit|int unsigned|return|function|break|generate|endgenerate)/g;
+  s=s.replace(/(\/\/[^\n]*)/g,'\x04$1\x05');
+  s=s.replace(kw,'<span class="kw">$1</span>');
+  s=s.replace(/\x04([^\x05]*)\x05/g,(m,c)=>'<span class="cm">'+c+'</span>');
+  s=s.replace(/(`[A-Za-z_][A-Za-z0-9_]*)/g,'<span class="mac">$1</span>');
+  s=s.replace(/('[bdh][0-9a-fA-Fxz_]+)'/g,'<span class="nm">$1</span>');
+  s=s.replace(/\b(type_scr1_[a-z0-9_]+(?:_e|_s)?)\b/g,'<span class="ty">$1</span>');
+  s=s.replace(/\x01/g,'&amp;').replace(/\x02/g,'&lt;').replace(/\x03/g,'&gt;');
+  pre.innerHTML=s;
+}
+document.querySelectorAll('pre').forEach(hl);
+</script>
+</body>
+</html>

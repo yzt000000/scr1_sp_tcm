@@ -97,15 +97,15 @@ MTX 扩展在 custom-1 opcode 空间（opcode = `0101011` = 0x2b）定义 4×4 �
 | cfu.matmul4h | 0000000 | 001 | 4×4 int16, 累加32位 | `.insn r 0x2b, 0x1, 0x0, rd, rs1, rs2` |
 | cfu.matmul4b | 0000000 | 010 | 4×4 int8, 累加32位 | `.insn r 0x2b, 0x2, 0x0, rd, rs1, rs2` |
 | cfu.mcfg_stride | 0000001 | 000 | stride ← rs1 | `.insn r 0x2b, 0x0, 0x1, x0, rs1, x0` |
-| cfu.mcfg_msk    | 0000010 | 000 | 符号/饱和模式 ← rs1[1:0] | `.insn r 0x2b, 0x0, 0x2, x0, rs1, x0` |
+| cfu.mcfg_msk    | 0000010 | 000 | 符号模式 ← rs1[0] | `.insn r 0x2b, 0x0, 0x2, x0, rs1, x0` |
 | cfu.mcfg_cbase  | 0000011 | 000 | C 基地址 ← rs1 | `.insn r 0x2b, 0x0, 0x3, x0, rs1, x0` |
 
 ## 操作数
 
 - `cfu.matmul4 rd, rs1, rs2`：rs1 = A 矩阵基地址，rs2 = B 矩阵基地址，rd = 状态码（0=成功，非0=错误），C 基地址由 `cfu.mcfg_cbase` 预先配置
-- `cfu.mcfg_stride rs1`：设置行步长（元素为单位，紧凑排列 stride=4），rs1 范围 1~256
-- `cfu.mcfg_msk rs1`：rs1[0]=符号位（0=无符号, 1=有符号），rs1[1:0]=11 为非法
-- `cfu.mcfg_cbase rs1`：设置后续 matmul 的 C 矩阵基地址
+- `cfu.mcfg_stride rs1`：设置行步长（元素为单位，紧凑排列 stride=4），rs1 范围 1~255（256 及以上被拒绝：rs1[31:8] != 0 即非法）
+- `cfu.mcfg_msk rs1`：rs1[0]=符号位（0=无符号, 1=有符号）；rs1[1] 为保留编码，必须为 0（无饱和模式）
+- `cfu.mcfg_cbase rs1`：设置后续 stc 写回的 C 矩阵基地址（posted 写队列的基址取自该配置；`cfu.stc` 的 rs1 操作数被忽略）
 
 ## 地址序列
 
@@ -121,8 +121,8 @@ M[i][j] 地址 = base + (i * stride + j) * esz,   i,j ∈ [0,3]
 ## 非法指令
 
 - custom-1 空间中未定义的 funct7/funct3 组合
-- `cfu.mcfg_stride` 中 rs1 = 0 或 rs1 > 256
-- `cfu.mcfg_msk` 中 rs1[1:0] = 11
+- `cfu.mcfg_stride` 中 rs1 = 0 或 rs1 > 255
+- `cfu.mcfg_msk` 中 rs1[1] = 1（保留编码）
 
 ## CFU 内部架构
 
